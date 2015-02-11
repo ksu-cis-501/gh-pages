@@ -1,0 +1,604 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6. Interfaces, Delegates, and Reactive Systems &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">6. Interfaces, Delegates, and Reactive Systems</a><ul>
+<li><a class="reference internal" href="#interfaces-specifications-for-connection">6.1. Interfaces: Specifications for Connection</a><ul>
+<li><a class="reference internal" href="#interfaces-as-data-types">6.1.1. Interfaces as &#8220;Data Types&#8221;</a></li>
+<li><a class="reference internal" href="#interfaces-as-connection-points">6.1.2. Interfaces as Connection Points</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#abstract-classes">6.2. Abstract Classes</a></li>
+<li><a class="reference internal" href="#reactive-systems">6.3. Reactive Systems</a></li>
+<li><a class="reference internal" href="#delegates-how-events-trigger-computation">6.4. Delegates: How Events Trigger Computation</a></li>
+<li><a class="reference internal" href="#models-and-controllers-in-reactive-systems">6.5. Models and Controllers in Reactive Systems</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="interfaces-delegates-and-reactive-systems">
+<span id="interfaces"></span><h1>6. Interfaces, Delegates, and Reactive Systems<a class="headerlink" href="#interfaces-delegates-and-reactive-systems" title="Permalink to this headline">¶</a></h1>
+<p>Components communicate by calling each other&#8217;s methods.
+If object <tt class="docutils literal"><span class="pre">A</span></tt> wants knowledge from object <tt class="docutils literal"><span class="pre">B</span></tt>, <tt class="docutils literal"><span class="pre">A</span></tt> must know the name of
+the method, <tt class="docutils literal"><span class="pre">f</span></tt>, in <tt class="docutils literal"><span class="pre">B</span></tt> to call.
+<em>The method names are more important than the class name.</em></p>
+<p>In this lecture, we learn how to use <em>delegates</em> and <em>interfaces</em> to define the
+&#8220;data type&#8221; of a single method and the &#8220;data type&#8221; of a class-with-methods.
+Both delegates and interfaces are hugely useful in practice for defining
+&#8220;plug-in&#8221; connection points between code assemblies.</p>
+<div class="section" id="interfaces-specifications-for-connection">
+<h2>6.1. Interfaces: Specifications for Connection<a class="headerlink" href="#interfaces-specifications-for-connection" title="Permalink to this headline">¶</a></h2>
+<p>An <em>interface</em> is a listing of the public methods an object must have to connect
+or to be connected to others.
+An interface is a &#8220;data type&#8221; of a collection of classes.
+An example explains it best:</p>
+<div class="section" id="interfaces-as-data-types">
+<h3>6.1.1. Interfaces as &#8220;Data Types&#8221;<a class="headerlink" href="#interfaces-as-data-types" title="Permalink to this headline">¶</a></h3>
+<p>Say we are assembling a computerized card game, where a dealer deals cards to
+players.
+Some players are human, some are computer players &#8212; they&#8217;re mixed together.
+Regardless of the form of player, the dealer will ask a player if it wants a
+card, and if yes, deal it one.</p>
+<p>We might try this awkward coding of <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Dealer</span></tt>:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// dealer for a card game of one human and one computer player:</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Dealer</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">HumanPlayer</span> <span class="n">h</span><span class="p">;</span>
+  <span class="k">private</span> <span class="n">ComputerPlayer</span> <span class="n">c</span><span class="p">;</span>
+  <span class="k">private</span> <span class="n">CardDeck</span> <span class="n">d</span><span class="p">;</span>  <span class="c1">// deck of cards; has a  dealNewCard  method</span>
+
+  <span class="k">public</span> <span class="nf">Dealer</span><span class="p">(</span><span class="n">HumanPlayer</span> <span class="n">h</span><span class="p">,</span> <span class="n">ComputerPlayer</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>  <span class="k">this</span><span class="p">.</span><span class="n">h</span> <span class="p">=</span> <span class="n">h</span><span class="p">;</span>  <span class="k">this</span><span class="p">.</span><span class="n">c</span> <span class="p">=</span> <span class="n">c</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">PlayOneRound</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">h</span><span class="p">.</span><span class="n">wantsCard</span><span class="p">())</span> <span class="p">{</span>
+      <span class="n">h</span><span class="p">.</span><span class="n">getsCard</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">dealNewCard</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">wantsCard</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">c</span><span class="p">.</span><span class="n">getsCard</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">dealNewCard</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The duplicate code is bad, since both the human and computer objects are <em>called
+the same way</em>.
+Here is the situation, summarized in a class diagram:</p>
+<img alt="../_images/card.png" src="../_images/card.png" />
+<p>We can improve this by using an <em>interface</em>:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// a  Player  is any class that has these two methods with</span>
+<span class="c1">//   the behaviors described in the comments:</span>
+<span class="k">public</span> <span class="k">interface</span> <span class="n">Player</span> <span class="p">{</span>
+  <span class="c1">// wantsCard  returns true when the Player wants another card:</span>
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">wantsCard</span><span class="p">();</span>
+  <span class="c1">// getsCard(c)  adds Card  c  to the hand held within the Player:</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">getsCard</span><span class="p">(</span><span class="n">Card</span> <span class="n">c</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The interface describes the &#8220;type of class&#8221; that can be a player in the card
+game.
+We code <tt class="docutils literal"><span class="pre">class</span> <span class="pre">HumanPlayer</span></tt> and <tt class="docutils literal"><span class="pre">class</span> <span class="pre">ComputerPlayer</span></tt> to have the methods
+listed in the interface:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// HumanPlayer is the computerized &quot;proxy&quot; for the human;</span>
+<span class="c1">//   it _implements_ (matches) interface Player:</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">HumanPlayer</span> <span class="p">:</span> <span class="n">Player</span> <span class="p">{</span>     <span class="c1">// READ THIS LINE CAREFULLY!</span>
+  <span class="k">private</span> <span class="n">HandOfCards</span> <span class="n">h</span><span class="p">;</span>
+  <span class="c1">// other fields</span>
+  <span class="c1">// ...</span>
+
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">wantsCard</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Do you want another card?&quot;</span><span class="p">);</span>
+    <span class="kt">string</span> <span class="n">answer</span> <span class="p">=</span> <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">answer</span> <span class="p">==</span> <span class="s">&quot;Yes&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">getsCard</span><span class="p">(</span><span class="n">Card</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span> <span class="n">h</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="p">}</span>
+
+  <span class="c1">// other methods</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="c1">// ComputerPlayer is a computer card player; it also implements Player:</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">ComputerPlayer</span> <span class="p">:</span> <span class="n">Player</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">HandOfCards</span> <span class="n">h</span><span class="p">;</span>
+  <span class="c1">// other fields</span>
+  <span class="c1">// ...</span>
+
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">wantsCard</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">h</span><span class="p">.</span><span class="n">score</span><span class="p">()</span> <span class="p">&lt;</span> <span class="m">17</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">getsCard</span><span class="p">(</span><span class="n">Card</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span> <span class="n">h</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="p">}</span>
+
+  <span class="c1">// other methods</span>
+  <span class="c1">//...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The two classes <em>implement</em> <tt class="docutils literal"><span class="pre">Player</span></tt> &#8212; they have &#8220;data type&#8221; <tt class="docutils literal"><span class="pre">Player</span></tt>.
+The <tt class="docutils literal"><span class="pre">Dealer</span></tt> is simplified to deal to <tt class="docutils literal"><span class="pre">Player</span></tt> s:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// dealer for a card game of Players:</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Dealer</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Player</span><span class="p">&gt;</span> <span class="n">players</span><span class="p">;</span>          <span class="c1">// the players of the game</span>
+     <span class="c1">// we use the interface name as the &quot;data type&quot; of the players</span>
+  <span class="k">private</span> <span class="n">CardDeck</span> <span class="n">d</span><span class="p">;</span>     <span class="c1">// the deck of cards</span>
+
+  <span class="c1">// construct dealer:  pl  is a list of the Player objects</span>
+  <span class="c1">//   that the dealer contacts</span>
+  <span class="k">public</span> <span class="nf">Dealer</span><span class="p">(</span><span class="n">List</span><span class="p">&lt;</span><span class="n">Player</span><span class="p">&gt;</span> <span class="n">pl</span><span class="p">)</span> <span class="p">{</span>  <span class="n">players</span> <span class="p">=</span> <span class="n">pl</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="c1">// plays one round of the card game with the  players:</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">PlayOneRound</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="k">foreach</span><span class="p">(</span><span class="n">Player</span> <span class="n">p</span> <span class="k">in</span> <span class="n">players</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">while</span> <span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">wantsCard</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">p</span><span class="p">.</span><span class="n">getsCard</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">dealNewCard</span><span class="p">())</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The coding is simpler and more general.
+Here is the class diagram, showing how <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Dealer</span></tt> is coded to depend on
+<tt class="docutils literal"><span class="pre">Player</span></tt>.
+On the &#8220;other side&#8221; of the interface, <tt class="docutils literal"><span class="pre">HumanPlayer</span></tt> and <tt class="docutils literal"><span class="pre">ComputerPlayer</span></tt>
+implement (&#8220;plug into&#8221;) the interface:</p>
+<img alt="../_images/card2.png" src="../_images/card2.png" />
+<p>Either or both of <tt class="docutils literal"><span class="pre">ComputerPlayers</span></tt> and <tt class="docutils literal"><span class="pre">HumanPlayers</span></tt> can &#8220;plug into&#8221; a
+<tt class="docutils literal"><span class="pre">Dealer</span></tt> through the interface.</p>
+</div>
+<div class="section" id="interfaces-as-connection-points">
+<h3>6.1.2. Interfaces as Connection Points<a class="headerlink" href="#interfaces-as-connection-points" title="Permalink to this headline">¶</a></h3>
+<p>We use interfaces every day &#8212; we call them &#8220;specifications&#8221; or &#8220;sizes&#8221; &#8212;
+What size of shoe do you wear? (8 narrow? 9 1/2 wide?)
+What type of battery do I need for my flashlight? (1.5 volt AAA?)
+What kind of &#8220;dingle&#8221; do I need to connect this darned VGA cable to my MacBook?</p>
+<p>The brand of shoe or battery or cable is unimportant &#8212; the specification is
+what matters.
+An interface is a specification for a class you want to connect to &#8212;
+it is a &#8220;connection point&#8221; or &#8220;plug-in point&#8221;.</p>
+<p>Here is the typical software situation: A big software system must be divided
+into subassemblies, and each subassembly is built by a separate team.
+The teams work at the same time.
+How can a team compile, build, and test its subassembly without the other
+subassemblies?
+How do we ensure that the completed subassemblies connect together correctly?</p>
+<p>Answer: We use interfaces to define the connection points where one assembly
+connects (&#8220;plugs in&#8221;) to another.
+Here is a diagram of three assemblies that connect together via two interfaces:</p>
+<img alt="../_images/assembly.png" src="../_images/assembly.png" />
+<p>Now, the <tt class="docutils literal"><span class="pre">Assembly1</span></tt> team can code and compile its own part of the system,
+because they use interfaces <tt class="docutils literal"><span class="pre">ConnectionPointA</span></tt> and <tt class="docutils literal"><span class="pre">ConnectionPointB</span></tt> in
+their coding.
+The team can even test their code by writing a simple, &#8220;dummy&#8221; (<em>mock</em>) class
+that implements <tt class="docutils literal"><span class="pre">ConnectionPointA</span></tt> and running their tests with it.
+When it&#8217;s time to combine the three subassemblies, the code projects link
+together because all three were coded to match the two interfaces.
+This is how system building is done.</p>
+<p>Here are three examples of &#8220;plug-in&#8221; interfaces that you have likely used:</p>
+<ol class="arabic">
+<li><p class="first"><em>Data structure plug-ins</em>: If you have dared to look at the .NET library,
+you know there is a huge collection of data-structure classes,
+some graphics-based, some storage-based, far too many to remember.
+Many of the data-structure classes have similar abilities (methods), and
+they use the same method names for doing the same actions.
+Interfaces are used to organize together those classes that do
+&#8220;the same thing&#8221;.</p>
+<p>Look at the .NET reference page for
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/system.collections(v=vs.110).aspx">System.Collections</a>.
+First, you see the names of the basic data structures supported by C#.
+Next, you see the <tt class="docutils literal"><span class="pre">interface</span></tt> s that are used to describe the &#8220;types&#8221; of data
+structures, e.g.,</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Interface</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td>ICollection</td>
+<td>Defines size, enumerators and synchronization methods for all collections.</td>
+</tr>
+<tr class="row-odd"><td>IComparer</td>
+<td>Exposes a method that compares two objects.</td>
+</tr>
+<tr class="row-even"><td>IDictionary</td>
+<td>Represents a collection of key-and-value pairs.</td>
+</tr>
+<tr class="row-odd"><td>IDictionaryEnumerator</td>
+<td>Enumerates the elements of a dictionary.</td>
+</tr>
+<tr class="row-even"><td>IEnumerable</td>
+<td>Exposes the enumerator, which supports a simple iteration over a collection.</td>
+</tr>
+<tr class="row-odd"><td>IEnumerator</td>
+<td>Supports a simple iteration over a collection.</td>
+</tr>
+<tr class="row-even"><td>IHashCodeProvider</td>
+<td>Supplies a hash code for an object, using a custom hash function.</td>
+</tr>
+<tr class="row-odd"><td>IList</td>
+<td>Represents a collection of objects that can be individually accessed by index.</td>
+</tr>
+</tbody>
+</table>
+<hr/><p>If you click on any of the interface names (try <tt class="docutils literal"><span class="pre">IList</span></tt>, the &#8220;data type&#8221; of
+collections that are sequential and are indexed by non-negative ints),
+you will see the definition of the interface and the data structures that
+implement the interface.</p>
+<p>Another important interface is <tt class="docutils literal"><span class="pre">IDictionary</span></tt>, the &#8220;data type&#8221; of table-like
+data structures that use (non-int) keys for lookups.</p>
+<p>Say you are building an assembly that relies on a table, but you do not want
+to commit to a particular coding of a table &#8212; maybe it does not matter or
+maybe you want to leave this work to an expert &#8212; then you code your
+assembly to depend on the <tt class="docutils literal"><span class="pre">IDictionary</span></tt> interface. The idea looks like
+this:</p>
+<img alt="../_images/table.png" src="../_images/table.png" />
+<p>That is, within the assembly, the table, no matter how it is implemented,
+can be indexed and assigned to and can be called with the methods,
+<tt class="docutils literal"><span class="pre">Add</span></tt>, <tt class="docutils literal"><span class="pre">Clear</span></tt>, <tt class="docutils literal"><span class="pre">Contains</span></tt>, etc. (see
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/system.collections.idictionary_methods(v=vs.110).aspx">the methods listing in the .NET documentation</a>).</p>
+<p>The assembly&#8217;s code might be integrated like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre> <span class="c1">// Main assembles my system:</span>
+ <span class="k">public</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+   <span class="c1">// define the system&#39;s main table:</span>
+   <span class="n">IDictionary</span> <span class="n">main_table</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="p">();</span>
+   <span class="c1">// or maybe:   IDictionary main_table = new HybridDictionary();</span>
+   <span class="c1">// or any of the classes listed at</span>
+   <span class="c1">//   http://msdn.microsoft.com/en-us/library/system.collections.idictionary_methods(v=vs.110).aspx</span>
+
+   <span class="c1">// plug the main_table into the constructed assembly:</span>
+   <span class="n">Assembly</span> <span class="n">my_assembly</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Assembly</span><span class="p">(</span><span class="n">main_table</span><span class="p">);</span>
+   <span class="c1">// do more assembly work and start the system:</span>
+   <span class="c1">// ...</span>
+   <span class="n">myassembly</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><em>Subassembly plug-ins</em>: Your company builds business systems
+(&#8220;Enterprise Information Systems&#8221;), which are structured like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>GUI ---&gt; BusinessLogic ---&gt; Database
+</pre></div>
+</div>
+<p>The user talks to the GUI, which relays commands to the Business Logic, which
+translates the commands into Database operations.</p>
+<p>GUIs are tricky to implement well, and specialists write these.
+Databases are also tricky to build, and specialists write these.
+Your company specializes in writing the Business-Logic assembly which
+understands the needs and commands of the user:
+You are given an interface for communicating with the GUI and an interface
+for communicating with the database, and you use these interfaces to write
+the Business Logic:</p>
+<img alt="../_images/cont.png" src="../_images/cont.png" />
+<p>You &#8220;plug&#8221; a <tt class="docutils literal"><span class="pre">UserInterface</span></tt> and a <tt class="docutils literal"><span class="pre">Database</span></tt> into the <tt class="docutils literal"><span class="pre">Controller</span></tt>.</p>
+<p>Your assembly must also have an interface so that your assembly can &#8220;plug&#8221;
+into the one that receives user inputs. (You can think of the <tt class="docutils literal"><span class="pre">-</span> <span class="pre">-</span> <span class="pre">-&gt;</span></tt>
+arrows into the <tt class="docutils literal"><span class="pre">UserInterface</span></tt> and the <tt class="docutils literal"><span class="pre">Database</span></tt> interface as &#8220;sockets&#8221;
+and the <tt class="docutils literal"><span class="pre">---|&gt;</span></tt> arrow out of the assembly to <tt class="docutils literal"><span class="pre">ControllerInterface</span></tt> as a
+&#8220;plug with pins&#8221; that fits into a socket.)</p>
+<p>You test your Controller subassembly with simple-minded class-codings that
+implement the two interfaces and you &#8220;plug&#8221; your assembly into a test harness
+that generates calls to the <tt class="docutils literal"><span class="pre">handle_Input</span></tt> method.
+This assembly testing will minimize the headaches of testing the entire
+system when it is assembled with the actual subassemblies.</p>
+</li>
+<li><p class="first"><em>Network plug-ins</em>: When networks became popular, so did Client-Server
+systems, where a client computer logs in and does business with a server
+computer &#8212; in this way, a company&#8217;s computers can share a common file
+system or data base.
+For clients to share a server, there must be standard methods for logging in,
+transferring data, etc. <em>CORBA</em> (Common Object Request Broker Architecture)
+is a standardized collection of interfaces that a Client server must
+implement to talk to a server.
+(A server computer has its own set of interfaces to implement to be a
+server.)</p>
+<p>The Client computer and Server computer connect through a piece of code
+called the Object Request Broker (ORB), that understands the Client and
+Server interfaces and so can match Client to Server for communication.</p>
+<p>You can read a simple description and see a simple diagram at the
+<a class="reference external" href="http://en.wikipedia.org/wiki/Common_Object_Request_Broker_Architecture">Wikipedia page for CORBA</a>.
+CORBA&#8217;s interfaces make it easy for businesses to communicate with each
+others&#8217; servers.
+And web-based internet commerce (e.g., Amazon.com) is based on a similar set
+of interfaces that define the TCP/IP network protocol.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="abstract-classes">
+<h2>6.2. Abstract Classes<a class="headerlink" href="#abstract-classes" title="Permalink to this headline">¶</a></h2>
+<p>In the example with the Dealer and card Players, you might have noticed that
+both <tt class="docutils literal"><span class="pre">HumanPlayer</span></tt> and <tt class="docutils literal"><span class="pre">ComputerPlayer</span></tt> have duplicate codings of
+<tt class="docutils literal"><span class="pre">getsCard</span></tt>.
+We can make an &#8220;interface&#8221; that holds a partial coding of a class.
+This is called an <em>abstract class</em>.
+Here is the revised example, where the interface is replaced by an abstract
+class:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// a  Player  holds a hand of cards and has the two behaviors listed:</span>
+<span class="k">public</span> <span class="k">abstract</span> <span class="k">class</span> <span class="nc">Player</span> <span class="p">{</span>
+  <span class="k">protected</span> <span class="n">HandOfCards</span> <span class="n">h</span><span class="p">;</span>  <span class="c1">// note change of visibility of field</span>
+  <span class="c1">// ...</span>
+  <span class="k">public</span> <span class="k">abstract</span> <span class="kt">bool</span> <span class="nf">wantsCard</span><span class="p">();</span>  <span class="c1">// note that body of method is MISSING</span>
+
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">getsCard</span><span class="p">(</span><span class="n">Card</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span> <span class="n">h</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">HumanPlayer</span> <span class="p">:</span> <span class="n">Player</span> <span class="p">{</span>
+  <span class="c1">// We must supply the coding for  wantsCard:</span>
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">wantsCard</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Do you want another card?&quot;</span><span class="p">);</span>
+    <span class="kt">string</span> <span class="n">answer</span> <span class="p">=</span> <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">answer</span> <span class="p">==</span> <span class="s">&quot;Yes&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">ComputerPlayer</span> <span class="p">:</span> <span class="n">Player</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">wantsCard</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="k">base</span><span class="p">.</span><span class="n">h</span><span class="p">.</span><span class="n">score</span><span class="p">()</span> <span class="p">&lt;</span> <span class="m">17</span><span class="p">)</span> <span class="c1">// say  base.h  to use var  h  in the superclass</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The abstract class removes duplicate coding, but it splits the classes into
+two pieces, which makes them harder to understand.
+<em>Use an abstract class only when there is a significant reduction in redundant
+coding.</em>
+Otherwise, stick with interfaces, which are simpler and safer.</p>
+</div>
+<div class="section" id="reactive-systems">
+<h2>6.3. Reactive Systems<a class="headerlink" href="#reactive-systems" title="Permalink to this headline">¶</a></h2>
+<p>A console application is controlled by the commands in the <tt class="docutils literal"><span class="pre">Main</span></tt> method &#8212;
+this is the &#8220;algorithm.&#8221; The human might be asked to participate and supply
+input, via <tt class="docutils literal"><span class="pre">Console.ReadLine()</span></tt>, but the algorithm in <tt class="docutils literal"><span class="pre">Main</span></tt> controls what
+is done in what order.
+Traditional programs are built in this style.</p>
+<p>A simulated card game is controlled by the algorithm inside the game&#8217;s Dealer
+object, which acts as a &#8220;referee&#8221; and enforces a &#8220;protocol&#8221; (rules of play).
+<em>The Dealer controls the game.</em>
+The human might supply input, but the Dealer controls what is done and in what
+order.</p>
+<p>Yet another form of program is a <em>reactive system</em> &#8212; a program that is
+<em>controlled by its inputs</em>.
+A vending machine is a classic reactive system: the machine (and its software)
+waits for input (e.g., coins inserted).
+The input triggers some computation, and the machine again waits for input (this time, a press of a button to select a candy bar) which triggers more computation.</p>
+<p>A VS Forms application is a reactive system: the <tt class="docutils literal"><span class="pre">Main</span></tt> method activates a
+Form (via <tt class="docutils literal"><span class="pre">Application.Run(new</span> <span class="pre">Form1())</span></tt>), and the Form waits on user
+input (a button press or text entry) &#8212; these are called <em>events</em> &#8212; to react
+to.
+An event calls an <em>event handler</em> method (e.g.,
+<tt class="docutils literal"><span class="pre">private</span> <span class="pre">void</span> <span class="pre">button1_Click(object</span> <span class="pre">sender,</span> <span class="pre">EventArgs</span> <span class="pre">e)</span></tt> when <tt class="docutils literal"><span class="pre">button1</span></tt> is
+pressed) that does computation.</p>
+</div>
+<div class="section" id="delegates-how-events-trigger-computation">
+<h2>6.4. Delegates: How Events Trigger Computation<a class="headerlink" href="#delegates-how-events-trigger-computation" title="Permalink to this headline">¶</a></h2>
+<p>Say you build a Forms application with a button, <tt class="docutils literal"><span class="pre">button1</span></tt>, and you want the
+code in
+<tt class="docutils literal"><span class="pre">private</span> <span class="pre">void</span> <span class="pre">button1_Click(object</span> <span class="pre">sender,</span> <span class="pre">EventArgs</span> <span class="pre">e)</span></tt> to execute when the
+button is pressed.</p>
+<p>When you tell Visual Studio to register <tt class="docutils literal"><span class="pre">button1_Click</span></tt> as the event handler
+for <tt class="docutils literal"><span class="pre">button1</span></tt> (look at the Properties window for <tt class="docutils literal"><span class="pre">button1</span></tt> and you will find
+this information displayed), Visual Studio generates hidden code that saves the
+&#8220;handle&#8221; for the method (the &#8220;address&#8221; of the method&#8217;s code &#8212; where to &#8220;jump&#8221;)
+in a table buried deep inside the package, <tt class="docutils literal"><span class="pre">System.Windows.Forms</span></tt>.</p>
+<ul>
+<li><p class="first">Deep down within <tt class="docutils literal"><span class="pre">System.Windows.Forms</span></tt> is this <em>delegate declaration</em>:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">delegate</span> <span class="k">void</span> <span class="nf">ClickHandler</span><span class="p">(</span><span class="n">Object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The delegate declaration defines <em>an interface for a single method</em> (and not
+an entire class).
+A delegate declaration is a &#8220;data type&#8221; of a single method. In this case, the
+<tt class="docutils literal"><span class="pre">ClickHandler</span></tt> type is the type of a method that takes two arguments, an
+<tt class="docutils literal"><span class="pre">Object</span></tt> and an <tt class="docutils literal"><span class="pre">EventArgs</span></tt>, and returns a void answer.</p>
+</li>
+<li><p class="first">Also deep down in <tt class="docutils literal"><span class="pre">System.Windows.Forms</span></tt> is this method:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="nf">registerClickHandler</span><span class="p">(</span><span class="n">Button</span> <span class="n">b</span><span class="p">,</span> <span class="n">ClickHandler</span> <span class="n">h</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+  <span class="n">event_table</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="p">=</span> <span class="n">h</span><span class="p">;</span>   <span class="c1">// remember that clicks of  b  should trigger  h</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>When you <tt class="docutils literal"><span class="pre">register</span> <span class="pre">button1_Click</span></tt> as the event handler for <tt class="docutils literal"><span class="pre">button1</span></tt>,
+Visual Studio generates this code:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">System</span><span class="p">.</span><span class="n">Windows</span><span class="p">.</span><span class="n">Forms</span><span class="p">.</span><span class="n">registerClickHandler</span><span class="p">(</span><span class="n">button1</span><span class="p">,</span> <span class="n">button1_Click</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>which adds the information to the internal <tt class="docutils literal"><span class="pre">event_table</span></tt>.
+<em>Notice that ``button1_Click`` has &#8220;data type&#8221; ``ClickHandler``</em> &#8212;
+<tt class="docutils literal"><span class="pre">button1_Click</span></tt> &#8220;implements&#8221; the delegate &#8220;interface&#8221;.</p>
+</li>
+<li><p class="first">Later, when <tt class="docutils literal"><span class="pre">button1</span></tt> is pressed, the code in <tt class="docutils literal"><span class="pre">System.Windows.Forms</span></tt>
+consults the <tt class="docutils literal"><span class="pre">event_table</span></tt>, finds the entry for <tt class="docutils literal"><span class="pre">button1</span></tt>, and <em>calls its
+method directly (jumps to it)</em>, not even knowing the method&#8217;s name or where
+it came from. It executes this code:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">ClickHandler</span> <span class="n">handler</span> <span class="p">=</span> <span class="n">event_table</span><span class="p">[</span><span class="n">button1</span><span class="p">];</span>   <span class="c1">// fetch method from table</span>
+<span class="n">handler</span><span class="p">(</span><span class="n">button1</span><span class="p">,</span> <span class="p">[...</span><span class="n">list</span> <span class="n">of</span> <span class="n">info</span> <span class="n">about</span> <span class="n">the</span> <span class="n">click</span><span class="p">...]);</span>   <span class="c1">// call it!</span>
+</pre></div>
+</div>
+<p>And this is how the code you wrote in <tt class="docutils literal"><span class="pre">button1_Click</span></tt> gets executed when you
+press <tt class="docutils literal"><span class="pre">button1</span></tt>.</p>
+</li>
+</ul>
+<p>Because of the delegate declaration, <tt class="docutils literal"><span class="pre">ClickHandler</span></tt>, inside
+<tt class="docutils literal"><span class="pre">System.Windows.Forms</span></tt>, the developers of <tt class="docutils literal"><span class="pre">System.Windows.Forms</span></tt> were able
+to write &#8220;their subassembly&#8221; for event handling so that it &#8220;plugs into&#8221; the GUI
+you design when you use Visual Studio.</p>
+<p>Again, <em>think of a delegate declaration as an interface for a single method</em>.
+It can be used like an interface to make a &#8220;connection point&#8221;.</p>
+<p>(A method that implements a delegate interface is called a <em>delegate object</em>.
+There are some technical details about a delegate object &#8212;
+the object holds both the handle to the method and also a handle to the frame
+where the method&#8217;s nonlocal variables (class fields) live.
+A delegate object is also called a <em>closure object</em>, which is older terminology.
+We leave it at that; take CIS505 to learn more....)</p>
+<p>Soon, we will use delegate declarations and delegate objects in our own coding.
+See the note on <a class="reference internal" href="../01-tooling/index.html#delegates"><em>Delegates</em></a> to see how delegates are commonly used in
+systems coding.</p>
+</div>
+<div class="section" id="models-and-controllers-in-reactive-systems">
+<h2>6.5. Models and Controllers in Reactive Systems<a class="headerlink" href="#models-and-controllers-in-reactive-systems" title="Permalink to this headline">¶</a></h2>
+<p>Here is critical terminology:</p>
+<ul class="simple">
+<li><strong>Every program has some data structures (tables, trees, lists, databases) to
+be maintained.
+In an object language, a data structure is declared as a field within a class,
+along with methods that know how to do lookups and updates on
+the data structure.
+Such classes are called</strong> <em>model classes</em> <strong>or</strong> <em>entity classes</em>.</li>
+<li><strong>Every program has an algorithm that knows the correct order of
+commands/rules/protocol for building/maintaining the data structures.
+In an object language, the algorithm is called the</strong> <em>controller</em>.</li>
+<li><strong>Every program has an input/output device or display or user-interface.
+In an object language, the device/display/UI is defined within a class,
+called the</strong> <em>view class</em> <strong>or</strong> <em>boundary class</em>.</li>
+</ul>
+<p>If you use Visual Studio to construct a Forms application, you know that
+<tt class="docutils literal"><span class="pre">class</span> <span class="pre">Form1</span></tt> is the view class &#8212; its job is to accept input and show output.
+You must write some additional, separate classes to define program&#8217;s model.
+These classes are usually coded as a separate Project or Solution.</p>
+<p><em>But what about the controller?</em> If you are a Visual Studio user, you can be
+lazy and insert the controller as code inside
+<tt class="docutils literal"><span class="pre">private</span> <span class="pre">void</span> <span class="pre">button1_Click(object</span> <span class="pre">sender,</span> <span class="pre">EventArgs</span> <span class="pre">e)</span></tt>, which resides inside
+<tt class="docutils literal"><span class="pre">class</span> <span class="pre">Form1</span></tt> as the event handler for a button press.
+If you do this, you are basically forced to declare the model objects as fields
+inside class <tt class="docutils literal"><span class="pre">Form1</span></tt> as well.</p>
+<p>Congratulations! Visual Studio has led you to mush together the model,
+controller, and view assemblies inside <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Form1</span></tt>, the template for
+generating a GUI Form!
+This is a bad design that is never used in practice, because teams of engineers
+must develop the Model, View, and Controller assemblies separately,
+test them separately, and assemble them with interfaces.
+We must learn how to do this properly.</p>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/Lecture05S.html">Lecture 5</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

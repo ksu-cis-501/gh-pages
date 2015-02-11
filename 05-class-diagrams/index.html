@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5. Class Diagrams &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">5. Class Diagrams</a><ul>
+<li><a class="reference internal" href="#example-bank-database">5.1. Example: Bank Database</a></li>
+<li><a class="reference internal" href="#example-exam-simulation">5.2. Example: Exam Simulation</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="class-diagrams">
+<span id="id1"></span><h1>5. Class Diagrams<a class="headerlink" href="#class-diagrams" title="Permalink to this headline">¶</a></h1>
+<p>An object diagram is a &#8220;blueprint&#8221; of how storage is managed when a system
+executes.
+It is similar to the &#8220;traffic diagram&#8221; an architect makes of a building that
+shows the movement of people through the building while the building is used.</p>
+<p>But an architect also makes a &#8220;floor plan&#8221; of the building, which shows the
+layout of rooms, halls, and stairs that will be constructed for use.</p>
+<p>A class diagram is a blueprint of the components needed to build an executing
+software system &#8212; it is the &#8220;floor plan&#8221; of the software system.
+It is the most important blueprint form that we learn in this course.</p>
+<p>UML class notation is used to draw a class diagram. We use the variant that is
+supported by Visual Studio, which is documented in the lecture note on
+<a class="reference internal" href="../01-tooling/index.html#uml-notation"><em>Using UML Class Notation</em></a>.</p>
+<div class="section" id="example-bank-database">
+<h2>5.1. Example: Bank Database<a class="headerlink" href="#example-bank-database" title="Permalink to this headline">¶</a></h2>
+<p>At the end of the previous lecture note (<a class="reference internal" href="../04-storage-object-diagrams/index.html#storage-object-diagrams"><em>Storage and Object Diagrams</em></a>),
+there were examples of object diagrams.
+One was of a banking database. Here&#8217;s a repeat of part of that system:</p>
+<img alt="../_images/db.jpg" src="../_images/db.jpg" />
+<p>The object diagram shows how two &#8220;controller&#8221; objects &#8220;own&#8221; the multiple
+customer records (objects) and the multiple account records.
+Further, a customer record holds handles to the accounts that the customer owns.</p>
+<p>When we program the database, we write classes that can generate the object
+diagram.
+This means we need at least classes for <tt class="docutils literal"><span class="pre">CustomerDatabase</span></tt>, <tt class="docutils literal"><span class="pre">BankDatabase</span></tt>,
+<tt class="docutils literal"><span class="pre">Customer</span></tt>, and <tt class="docutils literal"><span class="pre">Account</span></tt>.
+The classes will depend upon (reference) each other in the pattern shown in the
+object diagram.</p>
+<p>A class diagram shows the classes that must be written and the dependencies.
+Here is a class diagram that defines the classes that must be coded to bring to
+life the database:</p>
+<img alt="../_images/dbclass.png" src="../_images/dbclass.png" />
+<p>Additional detail &#8212; field names, methods &#8212; are added to indicate what must
+be coded to implement the database.</p>
+<p>The meanings of boxes and arrows are documented in the lecture note on
+<a class="reference internal" href="../01-tooling/index.html#uml-notation"><em>Using UML Class Notation</em></a>.
+Here is a quick summary:</p>
+<ul class="simple">
+<li>The boxes represent entities: classes, enumerations, interfaces, and code
+fragments (the latter can also be comments).
+Within a class box, the fields and methods are listed.
+Within an interface box, the methods are listed.</li>
+<li>The arrows define relationships. For the above example:<ul>
+<li>A solid arrow defines <em>dependency</em> (coupling, or <strong>association</strong> in
+Visual Studio lingo): &#8220;A refers to B&#8221;, or
+&#8220;A needs B to compile correctly&#8221; and <em>&#8220;A retains a handle to B in a field.&#8221;</em></li>
+<li>The dashed arrow defines dependency also (<strong>dependency</strong> in VS), but where
+there is not a field to remember the entity depended upon.</li>
+<li>A solid arrow with a diamond at its base defines <em>composition</em>: &#8220;A owns B&#8221;
+or &#8220;B is part of A&#8221; or &#8220;if A dies, so does B&#8221;.
+This is a stronger form of dependency and occurs when A constructs B.</li>
+<li>A dashed line with a white arrowhead defines <em>realization</em>: implementation
+of an interface.</li>
+<li>The label on a solid arrow gives the name of the attribute/field that is
+declared within the class, and the numerical-star information states the
+&#8220;multiplicity&#8221; &#8212; how many of the object are remembered.
+Names of collections are enclosed in braces, and the <tt class="docutils literal"><span class="pre">-</span></tt> means private.
+Arrays, lists, dictionaries &#8212; all are collections and are specified with
+the name in braces.
+(We do not write a <tt class="docutils literal"><span class="pre">class</span> <span class="pre">array</span></tt> or <tt class="docutils literal"><span class="pre">class</span> <span class="pre">List</span></tt> &#8212; they are already
+built-in.)</li>
+</ul>
+</li>
+</ul>
+<p>The above format is standard and has been used for decades.
+But some people find the labels on the arrows confusing.
+When you use the Visual Studio to draw the diagrams, you can omit the labels if
+you declare the correct fields, like this:</p>
+<img alt="../_images/dbclass2.png" src="../_images/dbclass2.png" />
+<p>One advantage of this alternate approach is that <em>Visual Studio can generate your
+C# code for you from the class diagram you draw</em> (see MSDN&#8217;s
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/ff657795.aspx">Generate Code from UML Class Diagrams</a>
+article).
+(Of course, Visual Studio will not code the bodies of the methods, but it will
+generate everything else!
+This is a big payoff for drawing a class diagram before you start coding.)</p>
+</div>
+<div class="section" id="example-exam-simulation">
+<h2>5.2. Example: Exam Simulation<a class="headerlink" href="#example-exam-simulation" title="Permalink to this headline">¶</a></h2>
+<p>Say we are designing a computer simulation of students taking an exam.
+The students bring some blank paper, and some pencils and pens.
+At the exam, each student gets a question sheet; all the students share
+(well, look at) the big clock at the front of the room.</p>
+<p>The computer simulation must construct objects for the entities just described;
+here is an object diagram of what the exam simulation might look like while it
+is executing:</p>
+<img alt="../_images/ob1.jpg" src="../_images/ob1.jpg" />
+<p>The object diagram gives big clues about what classes must be written for the
+simulation.
+Here is a class diagram that could generate the above object diagram:</p>
+<img alt="../_images/class.png" src="../_images/class.png" />
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/Lecture04S.html">Lecture 4</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

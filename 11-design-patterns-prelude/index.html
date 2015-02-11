@@ -1,0 +1,506 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>11. Design Patterns Prelude: Interfaces and Delegates &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">11. Design Patterns Prelude: Interfaces and Delegates</a><ul>
+<li><a class="reference internal" href="#interfaces-and-delegates">11.1. Interfaces and delegates</a></li>
+<li><a class="reference internal" href="#inserting-interfaces">11.2. Inserting Interfaces</a><ul>
+<li><a class="reference internal" href="#defining-subassemblies">11.2.1. Defining Subassemblies</a></li>
+<li><a class="reference internal" href="#making-an-entry-point-into-a-library-assembly">11.2.2. Making An Entry Point Into A Library Assembly</a></li>
+<li><a class="reference internal" href="#interchanging-components">11.2.3. Interchanging Components</a></li>
+<li><a class="reference internal" href="#hiding-methods">11.2.4. Hiding Methods</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#inserting-delegates">11.3. Inserting Delegates</a><ul>
+<li><a class="reference internal" href="#connecting-two-assemblies-via-an-individual-method-not-via-a-class">11.3.1. Connecting Two Assemblies via An Individual Method, Not via A Class</a></li>
+<li><a class="reference internal" href="#breaking-an-architectural-cycle">11.3.2. Breaking An Architectural Cycle</a></li>
+<li><a class="reference internal" href="#making-methods-arguments-to-methods">11.3.3. Making Methods Arguments To Methods</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="design-patterns-prelude-interfaces-and-delegates">
+<span id="design-patterns-prelude"></span><h1>11. Design Patterns Prelude: Interfaces and Delegates<a class="headerlink" href="#design-patterns-prelude-interfaces-and-delegates" title="Permalink to this headline">¶</a></h1>
+<p>In object-oriented programming, a <em>design pattern</em> is a solution scheme to a
+common architectural problem.</p>
+<p>The text,
+<a class="reference external" href="http://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612">Design Patterns: Elements of Reusable Object-Oriented Software</a>
+by E. Gamma et al., Addison-Wesley 1994, is a famous text that popularized
+design patterns.
+Experienced programmers know most or all of the 23 patterns described in that
+text.</p>
+<p>Over the next few weeks, we will study about 8-10 patterns from the Gamma book.
+(Many people call the text the &#8220;Gang of Four&#8221; book, because the book has four
+authors.)
+The patterns are also documented in
+<a class="reference external" href="http://people.cis.ksu.edu/~masaaki/">Dr. Mizuno</a>&#8216;s CIS501 lecture notes.
+(Ask him where to buy a copy.)</p>
+<p>The
+<a class="reference external" href="http://en.wikipedia.org/wiki/Software_design_pattern">Wikipedia page on design patterns</a>
+has a nice summary of the patterns in the Gamma book.</p>
+<p>Design patterns are important to know, not only because they define important
+&#8220;programming tricks&#8221;, but because they define a &#8220;language&#8221; that software
+engineers use when they describe their systems to their colleagues (e.g.,
+&#8220;In my subassembly, I used an Observer Pattern to update the views of my model&#8221;.)</p>
+<div class="section" id="interfaces-and-delegates">
+<h2>11.1. Interfaces and delegates<a class="headerlink" href="#interfaces-and-delegates" title="Permalink to this headline">¶</a></h2>
+<p>Most design patterns use interfaces and delegates.
+We should review how these are used before we study any design patterns.</p>
+<p><em>Interfaces</em> are used in these ways:</p>
+<ul class="simple">
+<li>Many systems are first designed from classes only.
+But if several people or teams are coding the system, then the system should
+be divided into subassemblies &#8212; interfaces let us break the design into
+subassemblies that can be developed in parallel.</li>
+<li>Sometimes a subassembly is coded and saved in a library for later use (e.g.,
+the components for GUI-building, or .NET&#8217;s general-purpose dictionary
+collection, or the back-end database of a server).
+An interface can be defined as the &#8220;entry point&#8221; into the subassembly.</li>
+<li>If there are multiple components that are meant to be interchangeable,
+they should be defined so that each implements one and the same interface.
+(We saw an example with the <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Human</span></tt> and <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Android</span></tt> card
+players, which are meant to be interchangeable and both implement
+<tt class="docutils literal"><span class="pre">interface</span> <span class="pre">Player</span></tt>.)</li>
+<li>When a class has more methods coded in it than what are needed, we can hide
+the unneeded ones behind an interface.</li>
+</ul>
+<p>All these examples are illustrated below.</p>
+<p>A <em>delegate</em> can be considered an &#8220;interface&#8221; where there is exactly one
+method, so we don&#8217;t need to connect to a class that holds the method &#8212; we just
+connect to the method directly.
+In C, this is called a &#8220;function pointer&#8221;; in other languages (Lisp, Scheme, ML,
+Haskell, Python, Ruby, Scala), it is called a &#8220;closure&#8221;.</p>
+<p>Here are reasons to use delegates:</p>
+<ul class="simple">
+<li>As just noted, when one needs a connection point that is a single method,
+rather than an object that holds methods, use a delegate.</li>
+<li>When two assemblies are written in completely different languages and execute
+on incompatible platforms, one way of connecting them is via function
+calls (e.g., &#8220;RPC&#8221; &#8212; Remote Procedure Call).
+A delegate specifies the argument-answer structure of such a function call.</li>
+<li>When two classes&#8217; methods call each other (that is, their links form a cycle),
+the design is likely flawed.
+Rather than merge the two classes into one, which will induce poor cohesion,
+we use a delegate to break the cycle.</li>
+<li>When a method needs a parameter that is itself a method, the type of the
+parameter is defined by a delegate.</li>
+</ul>
+<p>Examples follow.</p>
+</div>
+<div class="section" id="inserting-interfaces">
+<h2>11.2. Inserting Interfaces<a class="headerlink" href="#inserting-interfaces" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="defining-subassemblies">
+<h3>11.2.1. Defining Subassemblies<a class="headerlink" href="#defining-subassemblies" title="Permalink to this headline">¶</a></h3>
+<p>Many systems are first designed from classes only.
+But if several people or teams are coding the system, then the system should be
+divided into subassemblies &#8212; interfaces let us break the design into
+subassemblies that can be developed in at the same time, even at different paces.</p>
+<p>Interface insertion goes like this. Say we have a design like:</p>
+<img alt="../_images/start1.png" src="../_images/start1.png" />
+<p>and we wish to &#8220;cut&#8221; the design into two subassemblies, one holding <tt class="docutils literal"><span class="pre">class</span> <span class="pre">C</span></tt>
+and the other holding <tt class="docutils literal"><span class="pre">D</span></tt> and <tt class="docutils literal"><span class="pre">E</span></tt>.
+We insert an interface that lists the names of the methods in <tt class="docutils literal"><span class="pre">class</span> <span class="pre">D</span></tt> that
+are called by the code in <tt class="docutils literal"><span class="pre">class</span> <span class="pre">C</span></tt>:</p>
+<img alt="../_images/start0.png" src="../_images/start0.png" />
+<p>Now, one team builds a VS Project consisting of <tt class="docutils literal"><span class="pre">class</span> <span class="pre">C</span></tt> and <tt class="docutils literal"><span class="pre">interface</span> <span class="pre">ID</span></tt>.
+The project can be written and unit tested.
+(We might write a simplistic &#8220;dummy class&#8221; that implements <tt class="docutils literal"><span class="pre">ID</span></tt> for the
+testing.
+At the same time, another team builds a VS Project consisting of <tt class="docutils literal"><span class="pre">class</span> <span class="pre">D</span></tt>,
+<tt class="docutils literal"><span class="pre">class</span> <span class="pre">E</span></tt>, and <tt class="docutils literal"><span class="pre">interface</span> <span class="pre">ID</span></tt>, such that <tt class="docutils literal"><span class="pre">public</span> <span class="pre">class</span> <span class="pre">D</span> <span class="pre">:</span> <span class="pre">ID</span></tt>, that is,
+<tt class="docutils literal"><span class="pre">C</span></tt> <em>implements</em> <tt class="docutils literal"><span class="pre">ID</span></tt>.
+That project is also written and tested.
+Later, we assemble the two projects and do &#8220;integration testing.&#8221;</p>
+<p>Here is a concrete example of the technique: In the notes for state diagrams,
+we saw an example where an ATM subassembly was developed.
+The subassembly is supposed to link to the bank&#8217;s database, but it was not our
+job to design the database or <em>even know what it will be</em>.
+So, the subassembly is built to connect to interfaces to the bank&#8217;s database
+like this:</p>
+<img alt="../_images/bank0.png" src="../_images/bank0.png" />
+<p>Later, the bank&#8217;s database and its accounts plug-into (implement) the two
+interfaces.
+In the meantime, we test the subassembly with dummy classes (&#8220;stubs&#8221;), such as:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">class</span> <span class="nc">DummyDatabase</span> <span class="p">:</span> <span class="n">BankDatabase</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">BankAccount</span> <span class="n">a</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DummyAccount</span><span class="p">();</span>
+  <span class="k">public</span> <span class="n">BankAccount</span> <span class="nf">login</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">,</span> <span class="kt">string</span> <span class="n">password</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">a</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">logout</span><span class="p">(</span><span class="n">BankAccount</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">b</span> <span class="p">==</span> <span class="n">a</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">DummyAccount</span> <span class="p">:</span> <span class="n">BankAccount</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">balance</span> <span class="p">=</span> <span class="m">100</span><span class="p">;</span>
+  <span class="k">public</span> <span class="kt">int</span> <span class="nf">getBalance</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">balance</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">withdraw</span><span class="p">(</span><span class="kt">int</span> <span class="n">amount</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">amount</span> <span class="p">&gt;</span> <span class="n">balance</span> <span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="k">false</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span> <span class="n">balance</span> <span class="p">=</span> <span class="n">balance</span> <span class="p">-</span> <span class="n">amount</span><span class="p">;</span>  <span class="k">return</span> <span class="k">true</span><span class="p">;</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="making-an-entry-point-into-a-library-assembly">
+<h3>11.2.2. Making An Entry Point Into A Library Assembly<a class="headerlink" href="#making-an-entry-point-into-a-library-assembly" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes a subassembly is coded and saved in a library for later use (e.g.,
+the components for GUI-building, or .NET&#8217;s general-purpose dictionary collection,
+or the back-end database of a server).
+An interface can be defined as the &#8220;entry point&#8221; into the subassembly.</p>
+<p>Look at the previous diagram &#8212; the two interfaces used by the ATM assembly are
+&#8220;entry points&#8221; into a complex collection of classes that implement a database.
+There is no way that the authors of the ATM assembly want to read all the
+database&#8217;s classes and code, so the two interfaces, <tt class="docutils literal"><span class="pre">BankDatabase</span></tt> and
+<tt class="docutils literal"><span class="pre">BankAccount</span></tt>, act as simple entry points into the database assembly.
+The two interfaces, along with many other interfaces (for other means of entry)
+are included in the library of database components.</p>
+<p>Such interfaces are sometimes called <em>API</em> s (Application Programming Interfaces).
+.NET uses lots of APIs to suggest ways that you can connect to their libraries.</p>
+</div>
+<div class="section" id="interchanging-components">
+<h3>11.2.3. Interchanging Components<a class="headerlink" href="#interchanging-components" title="Permalink to this headline">¶</a></h3>
+<p>If there are multiple components that are meant to be interchangeable,
+they should be defined so that each implements one and the same interface.
+The general idea looks like this:</p>
+<img alt="../_images/start2.png" src="../_images/start2.png" />
+<p>The interface provides an opportunity to &#8220;unplug&#8221; <tt class="docutils literal"><span class="pre">class</span> <span class="pre">D</span></tt> from the system
+and replace it with a (better or new-and-improved) alternative,
+<tt class="docutils literal"><span class="pre">class</span> <span class="pre">Dalternative</span></tt>.
+Interfaces are often introduced into systems where there are several candidates
+for &#8220;plugging into&#8221; the system.</p>
+<p>We saw an example early in the notes with the card game, where <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Human</span></tt>
+and <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Android</span></tt> are meant to be interchangeable and both implement
+<tt class="docutils literal"><span class="pre">interface</span> <span class="pre">Player</span></tt>:</p>
+<img alt="../_images/card21.png" src="../_images/card21.png" />
+<p>Here&#8217;s the code for the interface, the two forms of <tt class="docutils literal"><span class="pre">Player</span></tt>, and
+a generalized <tt class="docutils literal"><span class="pre">Dealer</span></tt>:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// a Player is any class that has these two methods with</span>
+<span class="c1">// the behaviors described in the comments:</span>
+<span class="k">public</span> <span class="k">interface</span> <span class="n">Player</span> <span class="p">{</span>
+  <span class="c1">// wantsCard returns true when the Player wants another card:</span>
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">wantsCard</span><span class="p">();</span>
+  <span class="c1">// getsCard(c) adds Card c to the hand held within the Player:</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">getsCard</span><span class="p">(</span><span class="n">Card</span> <span class="n">c</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// HumanPlayer is the computerized &quot;proxy&quot; for the human;</span>
+<span class="c1">// it _implements_ (matches) interface Player:</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">HumanPlayer</span> <span class="p">:</span> <span class="n">Player</span> <span class="p">{</span>  <span class="c1">// READ THIS LINE CAREFULLY!</span>
+  <span class="k">private</span> <span class="n">HandOfCards</span> <span class="n">h</span><span class="p">;</span>
+  <span class="c1">// ... other fields</span>
+
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">wantsCard</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Do you want another card?&quot;</span><span class="p">);</span>
+    <span class="kt">string</span> <span class="n">answer</span> <span class="p">=</span> <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">answer</span> <span class="p">==</span> <span class="s">&quot;Yes&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">getsCard</span><span class="p">(</span><span class="n">Card</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span> <span class="n">h</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="p">}</span>
+
+  <span class="c1">// ... other methods</span>
+<span class="p">}</span>
+
+<span class="c1">// ComputerPlayer is a computer card player; it also implements Player:</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">ComputerPlayer</span> <span class="p">:</span> <span class="n">Player</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">HandOfCards</span> <span class="n">h</span><span class="p">;</span>
+  <span class="p">...</span> <span class="c1">// other fields</span>
+
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">wantsCard</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">h</span><span class="p">.</span><span class="n">score</span><span class="p">()</span> <span class="p">&lt;</span> <span class="m">17</span><span class="p">)</span>
+  <span class="p">}</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">getsCard</span><span class="p">(</span><span class="n">Card</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span> <span class="n">h</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="p">}</span>
+
+  <span class="c1">// ... other methods</span>
+<span class="p">}</span>
+
+<span class="c1">// dealer for a card game of Players:</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Dealer</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Player</span><span class="p">&gt;</span> <span class="n">players</span><span class="p">;</span>          <span class="c1">// the players of the game</span>
+     <span class="c1">// we use the interface name as the &quot;data type&quot; of the players</span>
+
+  <span class="k">private</span> <span class="n">CardDeck</span> <span class="n">d</span><span class="p">;</span>     <span class="c1">// the deck of cards</span>
+
+  <span class="c1">// construct dealer:  pl  is a list of the Player objects</span>
+  <span class="c1">//   that the dealer contacts</span>
+  <span class="k">public</span> <span class="nf">Dealer</span><span class="p">(</span><span class="n">List</span><span class="p">&lt;</span><span class="n">Player</span><span class="p">&gt;</span> <span class="n">pl</span><span class="p">)</span> <span class="p">{</span>  <span class="n">players</span> <span class="p">=</span> <span class="n">pl</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="c1">// plays one round of the card game with the  players:</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">PlayOneRound</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="k">foreach</span><span class="p">(</span><span class="n">Player</span> <span class="n">p</span> <span class="k">in</span> <span class="n">players</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">while</span> <span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">wantsCard</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">p</span><span class="p">.</span><span class="n">getsCard</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">dealNewCard</span><span class="p">())</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="hiding-methods">
+<h3>11.2.4. Hiding Methods<a class="headerlink" href="#hiding-methods" title="Permalink to this headline">¶</a></h3>
+<p>When a class has more methods coded in it than what are needed, we hide the
+unneeded ones behind an interface.
+Sometimes this is critical to ensure correct operation of a system.
+Here&#8217;s a concrete example: Say that a file is shared between a reader thread and
+a writer thread &#8212; the reader wants only to read the lines of the file, and
+the writer wants only to write lines to the file.
+But the file object has methods for both reading and writing!</p>
+<p>To ensure that at most one thread can use the file at any time, and to ensure
+that the thread uses exactly the methods on the file that it requests to use,
+we introduce a controller class along with two interfaces that expose only the
+proper method(s) to each thread:</p>
+<img alt="../_images/filecontroller0.png" src="../_images/filecontroller0.png" />
+<p>So, a <tt class="docutils literal"><span class="pre">ReaderThread</span></tt> asks the <tt class="docutils literal"><span class="pre">FileController</span></tt> for permission to read the
+<tt class="docutils literal"><span class="pre">File</span></tt> object, and the controller returns a handle to a <tt class="docutils literal"><span class="pre">Reader</span></tt> -typed
+object, so that only the object&#8217;s <tt class="docutils literal"><span class="pre">readLine</span></tt> method is available.
+In this way, the reader thread cannot abuse the file by calling <tt class="docutils literal"><span class="pre">writeLine</span></tt>.
+The same technique is used for the <tt class="docutils literal"><span class="pre">WriterThread</span></tt>.</p>
+</div>
+</div>
+<div class="section" id="inserting-delegates">
+<h2>11.3. Inserting Delegates<a class="headerlink" href="#inserting-delegates" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="connecting-two-assemblies-via-an-individual-method-not-via-a-class">
+<h3>11.3.1. Connecting Two Assemblies via An Individual Method, Not via A Class<a class="headerlink" href="#connecting-two-assemblies-via-an-individual-method-not-via-a-class" title="Permalink to this headline">¶</a></h3>
+<p>In the previous example, the reader and writer threads used a file <em>object</em>,
+which they connected to via an interface of just one method.
+This makes sense, because a reader knows that it has a handle to a file object,
+but it plans only to read lines from the file. (Similar for the writer.)</p>
+<p>Sometimes, an assembly will connect to another assembly and the first assembly
+does not know exactly what it is connecting to, and it does not care!
+If the connection is merely a method name, and the connection is merely a method
+call with arguments, then a delegate makes perfect sense to use.</p>
+<p>This situation happens a lot with graphics forms &#8212; a graphic form collects
+some input data, which it sends forward for computation.
+The graphics form does not care if it talks to an &#8220;object&#8221; &#8212; it just wants to
+send the data.
+On the other end of the communication, the controller object is waiting for data
+to process, and it does not care if it receives the data from a GUI object, or
+via some other device/method.
+This situation is well suited for a delegate construction:</p>
+<img alt="../_images/mvc0.png" src="../_images/mvc0.png" />
+<p>The delegate is critical when the graphics forms are written in a separate,
+custom language/tool that is incompatible with the language/tool that the
+controller uses.
+The only way of connecting the graphics to the controller is via function call
+(e.g., &#8220;RPC&#8221; &#8212; Remote Procedure Call).
+A delegate specifies the argument-answer structure of such a function call.
+Each assembly includes the delegate in its coding, ensuring that the two systems
+will communicate correctly.</p>
+</div>
+<div class="section" id="breaking-an-architectural-cycle">
+<h3>11.3.2. Breaking An Architectural Cycle<a class="headerlink" href="#breaking-an-architectural-cycle" title="Permalink to this headline">¶</a></h3>
+<p>When two classes&#8217; methods call each other (that is, their links form a cycle),
+the design is likely flawed.
+Rather than merge the two classes into one, which will induce poor cohesion,
+we use a delegate to break the cycle.</p>
+<p>In object-oriented programming, we might encounter a sequence of method calls
+like this:</p>
+<ol class="arabic simple">
+<li>A <tt class="docutils literal"><span class="pre">Client</span></tt> object calls a <tt class="docutils literal"><span class="pre">Manager</span></tt> object and asks for help to do work.</li>
+<li>The <tt class="docutils literal"><span class="pre">Manager</span></tt> &#8220;opens&#8221; or &#8220;activates&#8221; a <tt class="docutils literal"><span class="pre">Helper</span></tt> object to do the work.</li>
+<li>The <tt class="docutils literal"><span class="pre">Helper</span></tt> object&#8217;s methods are called by the <tt class="docutils literal"><span class="pre">Client</span></tt> and do the work.</li>
+<li>The <tt class="docutils literal"><span class="pre">Helper</span></tt> object is told (or it determines on its own) that its work is
+finished, so it <em>calls back</em> the <tt class="docutils literal"><span class="pre">Manager</span></tt> to tell it to &#8220;close&#8221; or
+&#8220;deactivate&#8221;.</li>
+</ol>
+<p>This sequence can happen when a file object is opened, repeatedly read, and then
+closed.
+It also appears when a GUI Form calls a controller to do computation and then
+the controller calls the GUI back to tell it to refresh its display.
+And it happens when a data structure is told to update itself and then notify
+its &#8220;observer&#8221; Forms.</p>
+<p>Here is a diagram that matches the above story,
+Steps 1-4: The <tt class="docutils literal"><span class="pre">Manager</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">requestHelp()</span></tt> method constructs a <tt class="docutils literal"><span class="pre">Helper</span></tt>
+that the <tt class="docutils literal"><span class="pre">Client</span></tt> calls to <tt class="docutils literal"><span class="pre">doWork()</span></tt>.
+When the <tt class="docutils literal"><span class="pre">Client</span></tt> is happy, it tells the <tt class="docutils literal"><span class="pre">Helper</span></tt> that it is <tt class="docutils literal"><span class="pre">finished()</span></tt>
+with it.
+The <tt class="docutils literal"><span class="pre">Helper</span></tt> calls back the <tt class="docutils literal"><span class="pre">Manager</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">remove()</span></tt> method, which causes
+the <tt class="docutils literal"><span class="pre">Helper</span></tt> object to be &#8220;deactivated&#8221; (and garbage-collected).</p>
+<img alt="../_images/start3.png" src="../_images/start3.png" />
+<p>The cycle between <tt class="docutils literal"><span class="pre">Manager</span></tt> and <tt class="docutils literal"><span class="pre">Helper</span></tt> is awkward, and it exists only
+because the <tt class="docutils literal"><span class="pre">Helper</span></tt> must call the remove method at the end of its life.
+Admittedly, we might eliminate the cycle by making the <tt class="docutils literal"><span class="pre">Client</span></tt> call
+<tt class="docutils literal"><span class="pre">mgr.remove(h)</span></tt>, but the call is not always natural for the <tt class="docutils literal"><span class="pre">Client</span></tt> to make.</p>
+<p>Another solution for both <tt class="docutils literal"><span class="pre">Client</span></tt> and <tt class="docutils literal"><span class="pre">Manager</span></tt> is to use a delegate
+declaration so that the <tt class="docutils literal"><span class="pre">Helper</span></tt> is initialized with the method it should call
+when it is done with its work:</p>
+<img alt="../_images/start4.png" src="../_images/start4.png" />
+</div>
+<div class="section" id="making-methods-arguments-to-methods">
+<h3>11.3.3. Making Methods Arguments To Methods<a class="headerlink" href="#making-methods-arguments-to-methods" title="Permalink to this headline">¶</a></h3>
+<p>When a method needs a parameter that is <em>itself</em> a method, the type of the
+parameter is defined by a delegate.
+Here is an example: Say that we work a lot with arrays of ints, and we find that
+we are doing standard operations on the elements of the arrays &#8212; squaring
+each element, adding one to each element, replacing each element by zero, and
+so on. It is tedious to write this kind of code:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">void</span> <span class="nf">squareAll</span><span class="p">(</span><span class="kt">int</span><span class="p">[]</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">r</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span>
+    <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">*</span> <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">void</span> <span class="nf">incrementAll</span><span class="p">(</span><span class="kt">int</span><span class="p">[]</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">r</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span>
+    <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">+</span> <span class="m">1</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">void</span> <span class="nf">zeroAll</span><span class="p">(</span><span class="kt">int</span><span class="p">[]</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">r</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span>
+    <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There is one underlying idea, that of performing an operation, <tt class="docutils literal"><span class="pre">f</span></tt>, on each
+element of the array.
+We define <tt class="docutils literal"><span class="pre">f</span></tt> as a delegate and write this useful tool, named <tt class="docutils literal"><span class="pre">mapAll</span></tt>:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">delegate</span> <span class="kt">int</span> <span class="nf">ElementOp</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">);</span>
+
+<span class="k">public</span> <span class="k">void</span> <span class="nf">mapAll</span><span class="p">(</span><span class="kt">int</span><span class="p">[]</span> <span class="n">r</span><span class="p">,</span> <span class="n">ElementOp</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">r</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span>
+    <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="n">f</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Method <tt class="docutils literal"><span class="pre">mapAll</span></tt> defines the pattern of applying an operation to each element
+of an array.
+Now, when we have some operation, e.g.,</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="kt">int</span> <span class="nf">square</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">n</span> <span class="p">*</span> <span class="n">n</span><span class="p">;</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>We use it with <tt class="docutils literal"><span class="pre">mapAll</span></tt> like this: <tt class="docutils literal"><span class="pre">mapAll(r,</span> <span class="pre">square)</span></tt>.
+Note: in C#, it is possible to do the previous line without naming method
+<tt class="docutils literal"><span class="pre">square</span></tt>; instead, we place the code body for square in the position of the
+second argument for <tt class="docutils literal"><span class="pre">mapAll</span></tt> as follows:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">mapAll</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span> <span class="p">=&gt;</span> <span class="n">n</span> <span class="p">*</span> <span class="n">n</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/DP0S.html">Lecture 10</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>8. Use Cases and Diagrammatic Realizations &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">8. Use Cases and Diagrammatic Realizations</a><ul>
+<li><a class="reference internal" href="#use-case-realization">8.1. Use Case Realization</a></li>
+<li><a class="reference internal" href="#entity-and-method-extraction">8.2. Entity and Method Extraction</a></li>
+<li><a class="reference internal" href="#communication-diagrams">8.3. Communication Diagrams</a></li>
+<li><a class="reference internal" href="#sequence-diagrams">8.4. Sequence Diagrams</a></li>
+<li><a class="reference internal" href="#on-to-the-class-diagram">8.5. On to The Class Diagram</a></li>
+<li><a class="reference internal" href="#summary">8.6. Summary</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="use-cases-and-diagrammatic-realizations">
+<span id="use-cases"></span><h1>8. Use Cases and Diagrammatic Realizations<a class="headerlink" href="#use-cases-and-diagrammatic-realizations" title="Permalink to this headline">¶</a></h1>
+<p>Where do object and class diagrams come from?
+We now study a way to discover them.</p>
+<p>When someone wants a machine built, they tell us how they want the machine to
+behave when they use it.
+They give us examples, and we develop the machine&#8217;s structure and control from
+the examples.</p>
+<p>An example behavior is called a <em>use case</em>.
+A use case is a &#8220;round of play&#8221; of a game, or a &#8220;session&#8221; with a tool, or
+a &#8220;transaction&#8221; with a reactive system.
+<em>It is the input-output description of the system we must build.</em>
+It describes <em>external behavior</em>.</p>
+<p>Example: a use case of a candy-bar vending machine goes like this:</p>
+<ol class="lowerroman simple">
+<li>human inserts bill;</li>
+<li>human presses button with picture of candy bar;</li>
+<li>matching candy bar falls out of machine and onto floor.</li>
+</ol>
+<div class="section" id="use-case-realization">
+<h2>8.1. Use Case Realization<a class="headerlink" href="#use-case-realization" title="Permalink to this headline">¶</a></h2>
+<p>A use case describes external behavior, from the user&#8217;s perspective.
+But there is also the <em>internal</em> behavior that occurs from the machine&#8217;s
+perspective.
+When we include the latter into the use case, we have a <em>use-case realization</em>
+that tells us how the machine operates.
+<em>It is the &#8220;high-level algorithm&#8221; of the system we must code</em>.
+For the candy machine, the use-case realization might go like this:</p>
+<ol class="lowerroman">
+<li><p class="first"><em>human inserts bill</em></p>
+<p>The machine&#8217;s bill slot rolls the bill under a scanner that checks the
+authenticity and the value of the bill.
+The value goes to the machine&#8217;s money controller, which tells the machine&#8217;s
+&#8220;database&#8221; how much money was inserted. The controller also enables the
+appropriate buttons for candy bars.
+The bill drops in the money box.</p>
+</li>
+<li><p class="first"><em>human presses button with picture of candy next to it</em></p>
+<p>The button-press event notifies the button&#8217;s controller for the selected
+candy bar.
+The button&#8217;s controller tells the database to subtract the price of the bar
+from the amount deposited, and it also tells the candy-bar bin to release
+one bar (which it does &#8212; we hope!)
+A signal/event goes to the change-box to issue coins for change
+(which it does &#8212; we hope!).
+Signals go to all button controllers to disable the buttons for candy bars.</p>
+</li>
+<li><p class="first"><em>matching candy bar falls out of machine and onto floor</em></p>
+</li>
+</ol>
+<p>The use-case realization talks about entity objects, both hard(ware) and
+soft(ware);
+multiple controllers for money and buttons and change; a money box and a
+&#8220;database&#8221;;
+and buttons and pictures of candy bars (the machine&#8217;s boundary entities &#8212;
+the &#8220;view&#8221;).</p>
+<p>Notice that the use-case realization uses <em>nouns that name the internal
+components</em> and <em>active verbs that state the actions</em> the components take.
+(Example: &#8220;The button&#8217;s controller tells the database to subtract the price of
+the bar....&#8221;)</p>
+<p>When we write a use-case realization, we force ourselves to use nouns that name
+the internal components and use active verbs that state actions &#8212; the nouns
+suggest the classes/objects we must build, and the verbs suggest the methods we
+must write!</p>
+<p>With enough use cases documented and realized, we can build a machine that does
+all the desired behaviors.
+Use-case realizations help us design the class diagram and code the classes.
+(In the &#8220;old days&#8221;, the use-case realizations were called
+&#8220;high-level algorithms&#8221; &#8212; the outlines of the code we must write.)</p>
+<p>Here is a use-case realization of one round of a simulated Blackjack card game,
+where a human plays against a &#8220;house player&#8221;.</p>
+<p>When writing the realization part, we should first think about which &#8220;entities&#8221;
+will be part of the realization.
+For a card game, this means Cards, a Deck, human and computerized card Players,
+and a Dealer.
+The use-case realization explains what the entities do:</p>
+<ol class="arabic">
+<li><p class="first"><em>human and house (computer) player each get two cards</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre>for each Player p, both human and computerized:
+  Dealer deals two cards from the Deck and gives them to  p
+</pre></div>
+</div>
+</li>
+<li><p class="first"><em>Dealer checks if either player has already scored 21.
+If yes, the round ends here</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre>if human&#39;s score == 21 or dealer&#39;s score == 21,
+  determine the result of the round --- win, loss, tie  (details supplied later);
+  terminate round
+else continue:
+</pre></div>
+</div>
+</li>
+<li><p class="first"><em>human is repeatedly asked if more cards are desired. Cards are dealt till
+human says no or reaches 21 or &#8220;busts&#8221;</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre>for each Player p, first the human and then the computerized,
+  Dealer asks:
+    while p wants a card and p&#39;s hand&#39;s score &lt;= 21 :
+      Dealer deals a card from the Deck and gives it to  p
+</pre></div>
+</div>
+</li>
+<li><p class="first"><em>human sees the results</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre>for each Player p:
+  p  shows its hand to the Dealer so that the Dealer can calculate
+     the hand&#39;s score and display the results.
+Dealer compares scores of all hands and announces the winner
+</pre></div>
+</div>
+</li>
+</ol>
+<p>How do we convert this verbal use-case realization into a class diagram?
+Let&#8217;s consider this next:</p>
+</div>
+<div class="section" id="entity-and-method-extraction">
+<h2>8.2. Entity and Method Extraction<a class="headerlink" href="#entity-and-method-extraction" title="Permalink to this headline">¶</a></h2>
+<p>The title says what we must do: First, we extract from our use-case realizations
+the entities that the software will need to operate, and we list the methods
+(sometimes called <em>responsibilities</em>) that must be coded within the entities.</p>
+<p><strong>Example continued:</strong></p>
+<p>Look at the above use-case realization.</p>
+<ol class="arabic simple">
+<li>What are the entities? <em>cards, deck, &#8220;hand&#8221;, score, dealer, player, win/loss
+total</em>.
+These entities are candidates for classes.
+(But not all &#8212; the &#8220;score&#8221; of a hand is a function/attribute of the &#8220;hand&#8221;,
+so it won&#8217;t be a class.
+Also, the win/loss total might be just an int and not a class.)</li>
+<li>Next, what are the actions/methods performed during a round?
+<em>wants a card, deals card from deck, player gets card, shows hand,
+dealer computes score, announces winner</em>.
+These are good candidates for methods for the classes.
+We must assign each method to the class that has the &#8220;responsibility&#8221; for
+doing the method.</li>
+<li>Now, we list the entities with the methods and attributes/fields grouped with
+them.
+For example:<ul>
+<li><tt class="docutils literal"><span class="pre">Human/Computerized/Player</span></tt>: has methods <tt class="docutils literal"><span class="pre">wantsCard?</span></tt>, <tt class="docutils literal"><span class="pre">getsCard</span></tt>,
+and <tt class="docutils literal"><span class="pre">showHand</span></tt> and will have an attribute for its win/loss total.</li>
+<li><tt class="docutils literal"><span class="pre">Hand</span></tt>: <tt class="docutils literal"><span class="pre">computesScore</span></tt> of the cards in its hand.</li>
+<li><tt class="docutils literal"><span class="pre">Deck</span></tt>: <tt class="docutils literal"><span class="pre">dealsAcard</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">Dealer</span></tt>: maybe <tt class="docutils literal"><span class="pre">announcesWinner</span></tt> of a round; maybe <tt class="docutils literal"><span class="pre">playsRound</span></tt></li>
+</ul>
+</li>
+</ol>
+<p><em>The above decisions are not final</em>, but they give us the start we need to make
+diagrams of the use-case realizations we have written:</p>
+</div>
+<div class="section" id="communication-diagrams">
+<h2>8.3. Communication Diagrams<a class="headerlink" href="#communication-diagrams" title="Permalink to this headline">¶</a></h2>
+<p>Before we start coding classes, we should draw pictures of how the steps in our
+use-case realization are sequenced as method calls from one entity to the next.
+There are two standard diagram formats for drawing a use-case realization:
+<em>communication diagrams</em> and <em>sequence diagrams</em>.</p>
+<p>A communication diagram (also called a &#8220;collaboration diagram&#8221;) is
+<em>an object diagram labelled by the method calls that occur during a use-case
+realization</em>.
+We should always draw an object diagram when we are designing a system, so
+it is not much extra work to make the object diagram into a communication
+diagram.</p>
+<p>Here is a simplified version of the previous use-case realization for a round of
+card play (we will assume that no player scored 21 at the start):</p>
+<ol class="arabic simple">
+<li>the Dealer gives two cards from the Deck to a Player and then</li>
+<li>asks if the Player wants another card. The Player says &#8220;yes&#8221;, so another card
+is given.
+The Dealer asks if the Player wants yet another card, and the Player says
+&#8220;no&#8221;. Then,</li>
+<li>the Dealer asks the Player for her Hand so that the Hand&#8217;s score can be used
+later to determine if the Player is the winner.</li>
+</ol>
+<p>The diagram that shows the communications between Dealer, Deck, Player, and Hand
+might go like this:</p>
+<img alt="../_images/comm2.jpg" src="../_images/comm2.jpg" />
+<p>The labels on the arrows are method calls; for example, <tt class="docutils literal"><span class="pre">1.0</span> <span class="pre">dealCard</span></tt> states
+that as the opening action for (1) above, the Dealer object calls the Deck
+object&#8217;s <tt class="docutils literal"><span class="pre">dealCard()</span></tt> method &#8212; so, we must define method, <tt class="docutils literal"><span class="pre">dealCard</span></tt>, in
+<tt class="docutils literal"><span class="pre">class</span> <span class="pre">Deck</span></tt>, so that <tt class="docutils literal"><span class="pre">Dealer</span></tt> can call it.
+The numbering lets you follow the sequence of calls that realize the use case.
+The diagram lets see <em>which methods should be coded in which classes</em>.</p>
+<p>In this way, a communication diagram <em>almost</em> maps out the code that we write.</p>
+<p>You can always add more details to the communication diagram, say, add the
+arguments to the method calls and the answers that are returned
+(draw some back arcs),
+if this helps you better understand how to design the system.</p>
+<p>Also, you can always state <em>fewer details</em> in the communication diagram,
+for example, just list the methods that are called during all the steps of the
+use-case realization:</p>
+<img alt="../_images/comm3.jpg" src="../_images/comm3.jpg" />
+<p>This gives you lots of clues for drawing the class diagram.</p>
+</div>
+<div class="section" id="sequence-diagrams">
+<h2>8.4. Sequence Diagrams<a class="headerlink" href="#sequence-diagrams" title="Permalink to this headline">¶</a></h2>
+<p>A communication diagram can get crowded with lots of method calls on its arcs.
+A <em>sequence diagram</em> shows the method calls in a linear order &#8212;
+many people find this easier to read.
+A sequence diagram is also useful when there are tricky sequences of calls
+(such as circular calls &#8211; &#8220;call backs&#8221;, iterations of calls, etc.)
+Here is the sequence diagram for the above example:</p>
+<img alt="../_images/seq.jpg" src="../_images/seq.jpg" />
+<p>Since there is more room to list the method calls, it is easy to label them with
+their arguments and returned answers, like this:</p>
+<img alt="../_images/seq2.jpg" src="../_images/seq2.jpg" />
+<p>From a sequence diagram, you should be able to draw the communication diagram,
+and vice versa.</p>
+<p><em>Communication and sequence diagrams are important documentation tools for a
+finished system.</em>
+So, even if you do not find them so helpful for design and coding, you might
+draw them so that you can more easily explain your work to your colleagues.</p>
+</div>
+<div class="section" id="on-to-the-class-diagram">
+<h2>8.5. On to The Class Diagram<a class="headerlink" href="#on-to-the-class-diagram" title="Permalink to this headline">¶</a></h2>
+<p>If you have listed a proper range of use-cases of a system, and
+if you have written the use-case realizations, and
+if you have drawn the communication diagrams of the realizations, then
+you are ready to draw the system&#8217;s class diagram.
+First, a communication diagram <em>is</em> an object diagram &#8212;
+just erase the method names from the arrows!</p>
+<p>The class diagram is drawn by extracting from the communication diagrams
+the names of the entities and making them into classes.
+The method-labels on the arcs are moved into the classes as methods.
+Next, list the fields (attributes) within the classes.</p>
+<p>This step is not completely mechanical &#8212; you might have two distinct entities
+that should be instances of the same class (e.g., the 52 cards in a card game
+will all be constructed from the same <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Card</span></tt>), and you might want to
+insert an interface or a delegate where you see the need (e.g., to mark off
+a subassembly, or to isolate a component, or to make a connection point for
+an event-handler method).
+But the communication diagram gives you lots of useful hints for drafting
+the class diagram.</p>
+</div>
+<div class="section" id="summary">
+<h2>8.6. Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Most software systems are variations on existing systems.
+When you are building a variant of a system that already exists, you should
+of course start from the class diagram you have.
+But when you are designing a new system <em>or when you want to be confident about
+your new variation</em>, you might follow these steps:</p>
+<ol class="arabic">
+<li><p class="first">Ask the user to describe how the system should behave (define the use cases).</p>
+</li>
+<li><p class="first">Write the use-case realizations &#8212; force yourself to use nouns that name
+the internal components and use active verbs that state the actions
+the components make &#8212; and then make lists of the the entities and actions
+that appear in the realizations &#8212; these are candidates for objects and
+methods.</p>
+</li>
+<li><p class="first">Draw an object diagram whose entities come from the use-case realizations.</p>
+<p>&#8220;Test&#8221; the object diagram by labelling its arrows with the actions that are
+used in the use-case realizations &#8212; this is a communication diagram.
+(If you want more detail, draw the corresponding sequence diagrams.)</p>
+</li>
+<li><p class="first">Based on the communication diagrams, draft a class diagram.</p>
+</li>
+</ol>
+<p>Now you are ready to discuss data structures, algorithms, models, views,
+controllers, and implementation techniques.</p>
+<p>By the way, the techniques outlined in this Lecure Note are sometimes called
+(<em>Booch-Rumbaugh</em>) <em>object-oriented design</em> &#8212; a computer system is designed
+from use-case realizations as a collection of objects that communicate via
+method calls.</p>
+<p>If a software system is built <em>solely</em> from use-case realizations, such that</p>
+<ul class="simple">
+<li>we build the first prototype from a couple of use-case realizations, so that
+the prototype implements exactly the use cases and no more,</li>
+<li>and then we extend the prototype, bit by bit, to implement additional
+use-cases, one by one,</li>
+<li>and so on (!), constantly adding/patching/plugging-in code based on more and
+more use cases,</li>
+</ul>
+<p>then we are practicing a form of <em>agile development</em>, where the software is
+usable quickly and &#8220;grows&#8221; according to the demands of its users.</p>
+<p>It takes a lot of experience to do well agile development (and frankly,
+C# is not the best language for doing it), but if you have good skills at using
+interfaces and delegates, you can make it happen.</p>
+<p><strong>References</strong></p>
+<p>Here are two some references about communication and sequence diagrams:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://www.lucidchart.com/pages/uml">https://www.lucidchart.com/pages/uml</a></li>
+<li><a class="reference external" href="http://sce.uhcl.edu/helm/rationalunifiedprocess/process/artifact/ar_desmd.htm">http://sce.uhcl.edu/helm/rationalunifiedprocess/process/artifact/ar_desmd.htm</a></li>
+</ul>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/Lecture07S.html">Lecture 7</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

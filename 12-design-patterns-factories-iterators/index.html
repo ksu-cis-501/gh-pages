@@ -1,0 +1,427 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>12. Design Patterns I: Factories and Iterators &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">12. Design Patterns I: Factories and Iterators</a><ul>
+<li><a class="reference internal" href="#factory-method">12.1. Factory Method</a><ul>
+<li><a class="reference internal" href="#the-factory-method-design-pattern">12.1.1. The Factory Method Design Pattern</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#iterator">12.2. Iterator</a><ul>
+<li><a class="reference internal" href="#summary">12.2.1. Summary</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#singleton-class">12.3. Singleton Class</a></li>
+<li><a class="reference internal" href="#abstract-factory">12.4. Abstract Factory</a><ul>
+<li><a class="reference internal" href="#id1">12.4.1. Summary</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id2">12.5. Summary</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="design-patterns-i-factories-and-iterators">
+<span id="design-patterns-factories-iterators"></span><h1>12. Design Patterns I: Factories and Iterators<a class="headerlink" href="#design-patterns-i-factories-and-iterators" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="factory-method">
+<h2>12.1. Factory Method<a class="headerlink" href="#factory-method" title="Permalink to this headline">¶</a></h2>
+<p>A method that returns as its answer the handle to a newly constructed object is
+called a <em>factory method</em> &#8212; the method &#8220;manufactures&#8221; an object each time it is
+called.
+We saw an example in the previous lecture in the <tt class="docutils literal"><span class="pre">Manager</span></tt>/<tt class="docutils literal"><span class="pre">Helper</span></tt> example.</p>
+<p>Here is an example that we will develop in detail.
+We did a VS exercise where two threads of execution shared a &#8220;file&#8221; for reading
+and writing.
+The controller was supposed to ensure that the file was never simultaneously
+used for both reading and writing. The example was structured like this:</p>
+<img alt="../_images/fm0.png" src="../_images/fm0.png" />
+<p>The code in <tt class="docutils literal"><span class="pre">FileController</span></tt> remembered whether the <tt class="docutils literal"><span class="pre">File</span></tt> was being used
+for reading or writing.</p>
+<p>The above architecture is limited to at most one <tt class="docutils literal"><span class="pre">ReaderThread</span></tt> doing reading
+at a time.
+But it is safe for multiple threads to read the same file simultaneously, and
+the threads can even read at different rates of speed, since no thread changes
+the file.
+We should modify the above design so that it allows multiple reader threads.</p>
+<p>The solution is for the controller to manufacture, for each reader thread,
+an object that remembers the handle to the file object and the progress of
+reading.
+We use a <em>factory method</em>, <tt class="docutils literal"><span class="pre">makeReader</span></tt>, to manufacture <tt class="docutils literal"><span class="pre">FileReader</span></tt> objects:</p>
+<img alt="../_images/fm00.png" src="../_images/fm00.png" />
+<p>When a <tt class="docutils literal"><span class="pre">ReaderThread</span></tt> wants to read the file, it calls the
+<tt class="docutils literal"><span class="pre">FileController</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">openRead()</span></tt> method, which checks if the file&#8217;s <tt class="docutils literal"><span class="pre">status</span></tt>
+is <tt class="docutils literal"><span class="pre">available</span></tt> or <tt class="docutils literal"><span class="pre">reading</span></tt>.
+In these cases, the <tt class="docutils literal"><span class="pre">status</span></tt> is set to <tt class="docutils literal"><span class="pre">reading</span></tt> and <tt class="docutils literal"><span class="pre">f.makeReader()</span></tt>
+<em>manufactures a</em> <tt class="docutils literal"><span class="pre">FileReader</span></tt> <em>object</em>.
+The <tt class="docutils literal"><span class="pre">FileReader</span></tt> object&#8217;s handle is returned to the <tt class="docutils literal"><span class="pre">ReaderThread</span></tt>, which
+calls the object&#8217;s <tt class="docutils literal"><span class="pre">read</span></tt> method to read the file&#8217;s lines.
+(The <tt class="docutils literal"><span class="pre">FileReader</span></tt> object holds a <tt class="docutils literal"><span class="pre">count</span></tt> of how far the file has been read.)
+We will study the <tt class="docutils literal"><span class="pre">close</span></tt> method in a bit.</p>
+<p><tt class="docutils literal"><span class="pre">makeReader</span></tt> is a factory method &#8212; it manufactures <tt class="docutils literal"><span class="pre">FileReader</span></tt> s.</p>
+<p>When there are multiple <tt class="docutils literal"><span class="pre">ReaderThread</span></tt> s, each one calls <tt class="docutils literal"><span class="pre">openRead()</span></tt> and
+receives its own <tt class="docutils literal"><span class="pre">FileReader</span></tt> for reading the shared file.</p>
+<p>The <tt class="docutils literal"><span class="pre">FileController</span></tt> is programmed to allow a <tt class="docutils literal"><span class="pre">WriterThread</span></tt> to write to the
+file only when the file&#8217;s <tt class="docutils literal"><span class="pre">status</span></tt> is <tt class="docutils literal"><span class="pre">available</span></tt>.
+(Then, the status is set to <tt class="docutils literal"><span class="pre">writing</span></tt>, and the file can be written.)</p>
+<p>This state diagram defines the protocol enforced by the <tt class="docutils literal"><span class="pre">FileController</span></tt>:</p>
+<img alt="../_images/fm.jpg" src="../_images/fm.jpg" />
+<p>In the previous class diagram, notice the delegate, <tt class="docutils literal"><span class="pre">CloseOp</span></tt> &#8212; it is used
+to solve a technical problem: the <tt class="docutils literal"><span class="pre">FileController</span></tt> must be told when a
+<tt class="docutils literal"><span class="pre">ReaderThread</span></tt> is finished reading from its <tt class="docutils literal"><span class="pre">FileReader</span></tt> object.
+So, when the <tt class="docutils literal"><span class="pre">FileReader</span></tt> object is constructed, a handle to
+<tt class="docutils literal"><span class="pre">FileController</span></tt>&#8216;s private method, <tt class="docutils literal"><span class="pre">closeRead</span></tt>, is embedded within the
+<tt class="docutils literal"><span class="pre">FileReader</span></tt>.
+When the <tt class="docutils literal"><span class="pre">ReaderThread</span></tt> calls <tt class="docutils literal"><span class="pre">close()</span></tt> in the <tt class="docutils literal"><span class="pre">FileReader</span></tt>,
+this activates a call to <tt class="docutils literal"><span class="pre">closeRead()</span></tt>, too!</p>
+<div class="section" id="the-factory-method-design-pattern">
+<h3>12.1.1. The Factory Method Design Pattern<a class="headerlink" href="#the-factory-method-design-pattern" title="Permalink to this headline">¶</a></h3>
+<p>If you study the <em>Design Patterns</em> book, you will see a difference between
+a factory method (as illustrated above) and the design pattern that uses
+a factory method.</p>
+<p>The <em>factory method design pattern</em> states that the connection between
+a <tt class="docutils literal"><span class="pre">Client</span></tt> (like the <tt class="docutils literal"><span class="pre">ReaderThread</span></tt>) and the factory method
+(like <tt class="docutils literal"><span class="pre">makeReader</span></tt>) that constructs <tt class="docutils literal"><span class="pre">Helper</span></tt> objects (like the
+<tt class="docutils literal"><span class="pre">FileReader</span></tt> objects) should be defined with interfaces and delegates,
+say like this:</p>
+<img alt="../_images/FacMeth1.png" src="../_images/FacMeth1.png" />
+<p>The pattern shows that the <tt class="docutils literal"><span class="pre">Client</span></tt> does not need to know how the helper
+objects are constructed.
+The delegate and interface are implemented by the factory method (which is coded
+inside some class, <tt class="docutils literal"><span class="pre">Manufacturer</span></tt>) and the class of <tt class="docutils literal"><span class="pre">Helper</span></tt>:</p>
+<img alt="../_images/FacMeth2.png" src="../_images/FacMeth2.png" />
+<p>Indeed, the two classes can be one and the same:</p>
+<img alt="../_images/FacMeth3.png" src="../_images/FacMeth3.png" />
+<p>The factory method design pattern states that the <tt class="docutils literal"><span class="pre">Client</span></tt> can be happily
+ignorant of the details of manufacuring helpers.</p>
+</div>
+</div>
+<div class="section" id="iterator">
+<h2>12.2. Iterator<a class="headerlink" href="#iterator" title="Permalink to this headline">¶</a></h2>
+<p>In the above example, the <tt class="docutils literal"><span class="pre">FileReader</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">read</span></tt> method counts the file&#8217;s
+lines, meaning that the <tt class="docutils literal"><span class="pre">ReaderThread</span></tt> and the <tt class="docutils literal"><span class="pre">FileController</span></tt> do not do
+the counting.</p>
+<p>An object that &#8220;counts through&#8221; the elements of a collection is called an
+<em>iterator object</em>.
+In the above example, each <tt class="docutils literal"><span class="pre">FileReader</span></tt> object is an iterator for the
+<tt class="docutils literal"><span class="pre">TextFile</span></tt> object.</p>
+<p>An iterator object has a method that returns the next item in a collection and
+a method that asks if there are any more items left to be returned.
+For <tt class="docutils literal"><span class="pre">TextFile</span></tt>, these are the <tt class="docutils literal"><span class="pre">read</span></tt> and <tt class="docutils literal"><span class="pre">more</span></tt> methods.
+Using an iterator object, we write a standard loop that reads all the file&#8217;s
+lines and uses them:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">FileReader</span> <span class="n">r</span> <span class="p">=</span> <span class="n">controller</span><span class="p">.</span><span class="n">openRead</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// OK to read?</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">more</span><span class="p">())</span> <span class="p">{</span>  <span class="c1">// reading lines from file, one at a time:</span>
+    <span class="kt">string</span> <span class="n">s</span> <span class="p">=</span> <span class="n">r</span><span class="p">.</span><span class="n">read</span><span class="p">();</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>That&#8217;s it!</p>
+<p>The previous example looks like the iterator objects used in Java, where
+we collect some <tt class="docutils literal"><span class="pre">Item</span></tt> objects in a collection, <tt class="docutils literal"><span class="pre">ItemAggregate</span></tt>:</p>
+<img alt="../_images/itjava.png" src="../_images/itjava.png" />
+<p>(Note: interfaces are often inserted between the <tt class="docutils literal"><span class="pre">Client</span></tt> and the
+<tt class="docutils literal"><span class="pre">Iterator</span></tt>, like we saw at the end of the previous section.
+There is a good reason for this &#8212; see below.)</p>
+<p>Look again at the <tt class="docutils literal"><span class="pre">FileReader</span></tt> example: the &#8220;ItemAggregate&#8221; is class
+<tt class="docutils literal"><span class="pre">TextFile</span></tt>, which holds string &#8220;Items&#8221;.
+<tt class="docutils literal"><span class="pre">Class</span> <span class="pre">FileReader</span></tt> is the &#8220;Iterator&#8221;, and <tt class="docutils literal"><span class="pre">readLine</span></tt> is the &#8220;next&#8221; method.</p>
+<p>The Iterator Design Pattern is important because every system uses
+a data structure or database, and every system must read and process all the
+elements of the data structure.
+The data structure might be a list or a table or a tree or a graph, and
+each of these structures have distinct traversal algorithms.
+<em>By using the iterator design pattern, we hide the traversal algorithm from the
+code that reads and processes all the elements in the data structure.</em></p>
+<p>The previous example looks like the iterator objects used in Java.
+In the C# .NET library, there is an interface, <tt class="docutils literal"><span class="pre">IEnumerable</span></tt>, that defines
+how you are supposed to code an interator class in C#.
+The method names are a little different and work slightly differently:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">interface</span> <span class="n">IEnumerable</span> <span class="p">{</span>
+  <span class="c1">// moves to the next element in the collection and makes it Current;</span>
+  <span class="c1">// returns true if successful;  returns false if there is no next element.</span>
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">MoveNext</span><span class="p">();</span>
+
+  <span class="c1">// resets the counting to the front of the collection:</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">Reset</span><span class="p">();</span>
+
+  <span class="c1">// returns the value of the current element in the collection:</span>
+  <span class="kt">object</span> <span class="n">IEnumerator</span><span class="p">.</span><span class="n">Current</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You are also supposed to write a factory method, <tt class="docutils literal"><span class="pre">GetEnumerator()</span></tt>, which
+constructs the iterator object.
+The C# compiler lets you use objects that implement
+the <tt class="docutils literal"><span class="pre">IEnumerable</span></tt> interface with a <tt class="docutils literal"><span class="pre">foreach</span></tt> loop.
+Indeed, a <tt class="docutils literal"><span class="pre">foreach</span></tt> loop like this one:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">MyCollection</span> <span class="n">collection</span> <span class="p">=</span> <span class="p">...</span> <span class="p">;</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="n">C</span> <span class="n">c</span> <span class="k">in</span> <span class="n">collection</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span> <span class="n">c</span> <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>is reformatted by the C# compiler into this while loop that uses the iterator
+object:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">IEnumerable</span> <span class="n">iterator</span> <span class="p">=</span> <span class="n">collection</span><span class="p">.</span><span class="n">GetEnumerator</span><span class="p">();</span>
+<span class="n">iterator</span><span class="p">.</span><span class="n">Reset</span><span class="p">();</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">iterator</span><span class="p">.</span><span class="n">MoveNext</span><span class="p">())</span> <span class="p">{</span>
+  <span class="n">C</span> <span class="n">c</span> <span class="p">=</span>  <span class="p">(</span><span class="n">C</span><span class="p">)(</span><span class="n">iterator</span><span class="p">.</span><span class="n">Current</span><span class="p">);</span>
+  <span class="p">...</span> <span class="n">c</span> <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Whenever you define a data structure in C# that holds a collection of objects
+&#8212; a matrix, a tree, a linked list, etc. &#8212; you should define an iterator that
+can traverse the structure and enumerate the objects.
+Then you use the <tt class="docutils literal"><span class="pre">foreach</span></tt> loop to process the data structure.</p>
+<div class="section" id="summary">
+<h3>12.2.1. Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
+<p>Masaaki Mizuno&#8217;s CIS501 notes has this good example of the iterator pattern:</p>
+<img alt="../_images/mmit1.jpg" src="../_images/mmit1.jpg" />
+<img alt="../_images/mmit2.jpg" src="../_images/mmit2.jpg" />
+<img alt="../_images/mmit3.jpg" src="../_images/mmit3.jpg" />
+<img alt="../_images/mmit4.jpg" src="../_images/mmit4.jpg" />
+</div>
+</div>
+<div class="section" id="singleton-class">
+<h2>12.3. Singleton Class<a class="headerlink" href="#singleton-class" title="Permalink to this headline">¶</a></h2>
+<p>In the previous example, <tt class="docutils literal"><span class="pre">class</span> <span class="pre">FileReader</span></tt> does the work of reading the file;
+this simplifies <tt class="docutils literal"><span class="pre">class</span> <span class="pre">FileController</span></tt> and makes possible multiple active
+<tt class="docutils literal"><span class="pre">FileReader</span></tt> s.
+<tt class="docutils literal"><span class="pre">class</span> <span class="pre">FileWriter</span></tt> works the same way, but <em>there should be at most one object
+constructed from</em> <tt class="docutils literal"><span class="pre">class</span> <span class="pre">FileWriter</span></tt> <em>at any one time</em>.
+A class from which we build exactly one object is a <em>singleton class</em>.</p>
+<p>Here is <tt class="docutils literal"><span class="pre">class</span> <span class="pre">FileWriter</span></tt>, rewritten so that only one object is ever
+constructed from it. (The key is the <tt class="docutils literal"><span class="pre">private</span></tt> constructor method!)</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// constructs a single object for writing to a text file (list of strings)</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">FileWriter</span> <span class="p">{</span>
+  <span class="c1">// IMPORTANT: holds the handle to the &quot;singleton&quot; FileWriter object:</span>
+  <span class="k">private</span> <span class="k">static</span> <span class="n">FileWriter</span> <span class="n">writerOb</span> <span class="p">=</span> <span class="k">new</span> <span class="n">FileWriter</span><span class="p">();</span>
+
+  <span class="k">private</span> <span class="k">static</span> <span class="kt">bool</span> <span class="n">inUse</span><span class="p">;</span>  <span class="c1">// remembers if  writerOb  is being used</span>
+  <span class="k">private</span> <span class="k">static</span> <span class="n">File</span> <span class="n">myfile</span><span class="p">;</span> <span class="c1">// the file to write to</span>
+
+  <span class="c1">// IMPORTANT: the constructor is private !</span>
+  <span class="k">private</span> <span class="nf">FileWriter</span><span class="p">()</span> <span class="p">{</span> <span class="n">inUse</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">write</span><span class="p">(</span><span class="kt">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="n">myfile</span><span class="p">.</span><span class="n">writeLine</span><span class="p">(</span><span class="n">s</span><span class="p">);</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">close</span><span class="p">()</span> <span class="p">{</span> <span class="n">inUse</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="c1">// returns the handle to the FileWriter object, if it isn&#39;t inUse</span>
+  <span class="k">public</span> <span class="k">static</span> <span class="n">FileWriter</span> <span class="nf">newWriter</span><span class="p">(</span><span class="n">File</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">FileWriter</span> <span class="n">w</span> <span class="p">=</span> <span class="k">null</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(!</span><span class="n">inUse</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">inUse</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>  <span class="n">w</span> <span class="p">=</span> <span class="n">writerOb</span><span class="p">;</span>
+      <span class="n">myfile</span> <span class="p">=</span> <span class="n">f</span><span class="p">;</span>  <span class="n">myfile</span><span class="p">.</span><span class="n">reset</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">w</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The class <tt class="docutils literal"><span class="pre">File</span></tt> &#8220;manufactures&#8221; the singleton object like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="n">FileWriter</span> <span class="nf">makeWriter</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">reset</span><span class="p">();</span>
+  <span class="k">return</span> <span class="n">FileWriter</span><span class="p">.</span><span class="n">newWriter</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>It is <em>invalid</em> to say:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">FileWriter</span> <span class="n">mywriter</span> <span class="p">=</span> <span class="k">new</span> <span class="n">FileWriter</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>because the constructor is <tt class="docutils literal"><span class="pre">private</span></tt>.
+Now, it is impossible to have two writers to the same file at the same time,
+no matter how the <tt class="docutils literal"><span class="pre">FileController</span></tt> is programmed.</p>
+</div>
+<div class="section" id="abstract-factory">
+<h2>12.4. Abstract Factory<a class="headerlink" href="#abstract-factory" title="Permalink to this headline">¶</a></h2>
+<p>Thanks to the factory methods, the <tt class="docutils literal"><span class="pre">FileController</span></tt> has one job only &#8212;
+to enforce the protocol of file usage.
+This is the true job of the controller.</p>
+<p>We see that the <tt class="docutils literal"><span class="pre">FileController</span></tt> can be used to control other kinds of
+resources besides textfiles.
+Maybe we use it with binary files or with a shared data buffer or with
+a hardware device with readable/writable data.</p>
+<p>We can &#8220;cut&#8221; the above design into two, to expose how the <tt class="docutils literal"><span class="pre">FileController</span></tt>
+might connect to other resources. Here is the controller part, where
+we inserted interfaces on the outgoing arcs:</p>
+<img alt="../_images/rw43.png" src="../_images/rw43.png" />
+<p>The interfaces are &#8220;plug-in&#8221; points for the form of file and the forms of
+reader/writer.
+When we replug-in the classes we coded so far, we have the system we started
+with:</p>
+<img alt="../_images/rw24.png" src="../_images/rw24.png" />
+<p>But we can reuse the controller with other forms of file:</p>
+<img alt="../_images/rw45.png" src="../_images/rw45.png" />
+<p>When there are a set of interfaces that include factory methods, this is called
+an <em>abstract factory</em>.
+We plug into the interfaces a &#8220;concrete factory&#8221; of classes that &#8220;manufacture&#8221;
+a family of objects.
+In the above example, we have a simple abstract factory for manufacturing
+readers and writers. There are two concrete factories &#8212; one for text files and
+one for binary files.</p>
+<div class="section" id="id1">
+<h3>12.4.1. Summary<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The best-known example of an abstract factory is a collection of factory methods
+and interfaces for manufacturing graphics.
+We might have a set of Windows XP widget classes, a set of Windows 7 widget
+classes, and a set of Mac widget classes, all implementing an abstract factory
+of widget interfaces.</p>
+<p>Here is a page from <em>Design Patterns</em>, by E. Gamma, et al.
+(Addison Wesley, 1995, copied under &#8220;fair use&#8221; laws), that explains the example
+well:</p>
+<img alt="../_images/absfac.jpg" src="../_images/absfac.jpg" />
+</div>
+</div>
+<div class="section" id="id2">
+<h2>12.5. Summary<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>A <em>factory method</em> is a method that, when called, &#8220;manufactures&#8221; (constructs)
+a new &#8220;helper&#8221; object and returns the handle of the helper object as its
+answer.
+A client object calls the factory method to obtain a helper to do computation.</li>
+<li>An <em>iterator object</em> is an object that enumerates (returns, one by one,
+one at a time) the elements of a data-structure (model).
+The iterator object hides the traversal algorithm that traverses
+the data structure and extracts the elements.</li>
+<li>A <em>singleton class</em> is a class designed to manufacture at most one object.
+It is implemented with a private constructor method and a static method that
+returns the handle to the one-and-only object (that was constructed from
+calling the private constructor method just one time).</li>
+<li>An <em>abstract factory</em> is a collection of interfaces for factory methods and
+classes.
+A &#8220;concrete factory&#8221; of factory methods and classes plug-into (implement) the
+abstract factory.
+The concrete factory manufactures a family of objects that belong together as
+a subassembly, e.g., a family of GUI widgets or a family of file formats.</li>
+</ol>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/DP1S.html">Lecture 11</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

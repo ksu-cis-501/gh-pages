@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. Introduction to Software Architecture &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">2. Introduction to Software Architecture</a><ul>
+<li><a class="reference internal" href="#small-and-large-programs">2.1. Small and large programs</a></li>
+<li><a class="reference internal" href="#from-c-programming-to-object-oriented-programming">2.2. From C programming to object-oriented programming</a></li>
+<li><a class="reference internal" href="#visual-studio-for-c">2.3. Visual Studio for C#</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="introduction-to-software-architecture">
+<span id="intro-softwarearch"></span><h1>2. Introduction to Software Architecture<a class="headerlink" href="#introduction-to-software-architecture" title="Permalink to this headline">¶</a></h1>
+<p>We will learn to design and implement <em>component-based programs</em>,
+where the components are designed and coded in an object-oriented language.</p>
+<div class="section" id="small-and-large-programs">
+<h2>2.1. Small and large programs<a class="headerlink" href="#small-and-large-programs" title="Permalink to this headline">¶</a></h2>
+<p>Programs contain data structures and functions that read and update the data
+structures.
+A small program declares the data structures and functions all together,
+in the same file, so that every function can use every data structure and every
+function.
+There is not much design and not much structure.</p>
+<p>When programs got large (e.g., computer operating systems in the 1960s),
+they became a mess.
+(Large programs are built by teams, and it is impossible for multiple people to
+share and alter one single large program, let alone understand the entire thing!)
+In the 1970s, the Multics operating system was designed to have levels/&#8221;tiers&#8221;
+of functions and data structures:</p>
+<img alt="../_images/multics.jpg" src="../_images/multics.jpg" />
+<p>Each tier of functions use data structures only at their own level and call
+functions at the same level or only one level lower.</p>
+<p>The functions that talk to the computer hardware live at the lowest,
+kernel-level, and assembly-level functions (open file, read word,
+allocate storage) and their data structures are grouped together at the
+&#8220;utilities level&#8221;.
+Then, &#8220;applications&#8221; (user programs) are grouped at the next level.</p>
+<p>The Multics <em>software architecture</em> was a huge success because the operating
+system was written, tested, and understood in layers.
+It could also be <em>ported</em> to other computer hardware,
+merely by recoding the functions in the kernel.</p>
+<p><em>All modern operating systems, as well as networking software, are now built in
+this layered architectural style.</em></p>
+</div>
+<div class="section" id="from-c-programming-to-object-oriented-programming">
+<h2>2.2. From C programming to object-oriented programming<a class="headerlink" href="#from-c-programming-to-object-oriented-programming" title="Permalink to this headline">¶</a></h2>
+<p>The C programming language is &#8220;assembly language with functions, arrays, and
+structs&#8221;.
+That is, you write systems code (OS kernels, utilities) with it.
+But some people use C for everything.</p>
+<p>This can be bad, because a C program lets all functions share all data
+structures.
+This doesn&#8217;t work well for large data-base programs, large games, large ANYTHING.</p>
+<p>Object-oriented languages let you build programs in pieces
+(components, assemblies), like cars, electronic gadgets, and buildings are built.</p>
+<p>Further, just like cars have blueprints, electronics have schematics, and
+buildings have floor plans, so do object-based software systems.
+A system&#8217;s blueprint defines its software architecture.
+We will learn several forms of software blueprints in this course; the forms are
+often called the <em>Unified Modeling Language (UML)</em>.</p>
+</div>
+<div class="section" id="visual-studio-for-c">
+<h2>2.3. Visual Studio for C#<a class="headerlink" href="#visual-studio-for-c" title="Permalink to this headline">¶</a></h2>
+<p>You can code and assemble a large software system with Notepad and the C#
+compiler, but it is not so fun.
+(See David Schmidt&#8217;s
+<a class="reference external" href="http://people.cis.ksu.edu/~schmidt/200f07/">CIS200 notes</a> to see how.)
+An IDE (Integrated Development Environment) is an editor, compiler, linker,
+loader, and debugger, all in one.
+Most IDEs also load pre-written libraries for graphics, networking, and data
+structures.
+Some IDEs &#8220;lead you&#8221; towards a certain style of software architecture.</p>
+<p>What forms of architecture does Visual Studio &#8220;lead you to&#8221;? It&#8217;s time for a lab
+exercise.</p>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/Lecture01S.html">Lecture 1</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

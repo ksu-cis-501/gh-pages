@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>16. Design Patterns Postlude: When to Use Them &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">16. Design Patterns Postlude: When to Use Them</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="design-patterns-postlude-when-to-use-them">
+<span id="design-patterns-postlude"></span><h1>16. Design Patterns Postlude: When to Use Them<a class="headerlink" href="#design-patterns-postlude-when-to-use-them" title="Permalink to this headline">¶</a></h1>
+<p>Almost all presentations of design patterns start by showing you patterns,
+one after the other, until you have overdosed and cannot remember what any of
+them are good for.</p>
+<p>Here is a &#8220;reverse list-table&#8221;, that lists the problems you might face when you
+are designing a system and which patterns might help your situation.
+There are a few patterns that were not introduced in the previous lecture notes,
+but you can look them up and learn them easily.</p>
+<p><em>But first</em>,</p>
+<ol class="arabic simple">
+<li>Use <em>interfaces</em> to define &#8220;plug-in&#8221; (exit) and &#8220;plug-out&#8221; (entry) points
+from/to each subassembly in your system.</li>
+<li>When a connection point is just a single method, because there is no need to
+know if there is even a class/object on the other end, use a <em>delegate</em>.</li>
+</ol>
+<hr class="docutils" />
+<blockquote>
+<div>You have designed a complicated implementation of a data structure/data base,
+and you do not trust your users to use the structure correctly.</div></blockquote>
+<ul class="simple">
+<li>If it is complicated to traverse the structure, say to answer a query to it,
+incorporate <em>iterator</em> objects that collect the results from a traversal and
+hand them out to the user, one by one.</li>
+<li>If your data structure is organized in layers or levels, or
+it contains a mix of various classes of elements that it stores,
+use the <em>composite</em> layout to define it.</li>
+<li>Define a <em>facade</em> class that holds the methods for building a starter version
+of your data structure and methods for querying it and updated it.</li>
+<li>To handle complex, SQL-like, queries, implement an <em>interpreter</em>.</li>
+<li>If the structure holds hundreds or thousands of data objects all constructed
+from the same class, use the <em>flyweight</em> pattern to extract the data common
+to all the objects and save it in a &#8220;static&#8221; object that is shared by all
+the thousands of data objects.</li>
+</ul>
+<hr class="docutils" />
+<blockquote>
+<div>Your system holds a model assembly that is queried a lot, and you are worried
+that the entry to the model is a &#8220;bottleneck&#8221;.</div></blockquote>
+<ul class="simple">
+<li>In response to a client&#8217;s login or access request, use a <em>factory method</em> to
+generate a helper object to give back to the client.</li>
+<li>The object that is returned to the client might act as a <em>remote proxy</em> or
+a <em>virtual proxy</em> to relieve the load on the model.</li>
+</ul>
+<hr class="docutils" />
+<blockquote>
+<div>Your subassembly builds compound objects that are assembled from
+a mix-and-match kit of &#8220;features&#8221;.
+(Think of how a car is assembled with features and how a laptop is assembled
+with features.)</div></blockquote>
+<ul class="simple">
+<li>For software features that are field-based, use the <em>decorator</em> and
+<em>composite</em> patterns.</li>
+<li>For software features that are method-based, use the <em>chain of
+responsibility</em> or <em>command</em> pattern, which allow you to connect together
+objects that hold useful command code and to pass around command sequences
+as objects.</li>
+</ul>
+<hr class="docutils" />
+<blockquote>
+<div>You have written a driver or controller that is meant to work with different
+families of model objects that &#8220;plug into&#8221; the driver (e.g., a typesetter into
+which a font family is plugged or a graphics driver into which a widget family
+is plugged).</div></blockquote>
+<ul class="simple">
+<li>Use the <em>abstract factory</em> pattern. It is one of the most important and
+well known patterns.</li>
+</ul>
+<hr class="docutils" />
+<blockquote>
+<div>Two assemblies need to be connected, and they use different protocols
+(data args, method names, order of method calls).</div></blockquote>
+<ul class="simple">
+<li>Use an <em>adaptor</em>.</li>
+</ul>
+<hr class="docutils" />
+<blockquote>
+<div>You have connected multiple assemblies, and the result is a mess.</div></blockquote>
+<ul class="simple">
+<li>Use <em>observers</em> to decouple the assemblies.</li>
+<li>Construct a <em>mediator</em> (a controller-for-the-controllers) to enforce
+a complex protocol between controllers.</li>
+</ul>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/MiscS.html">Lecture 15</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

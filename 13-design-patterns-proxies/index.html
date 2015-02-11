@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>13. Design Patterns II: Proxies &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">13. Design Patterns II: Proxies</a><ul>
+<li><a class="reference internal" href="#remote-proxy">13.1. Remote Proxy</a></li>
+<li><a class="reference internal" href="#virtual-proxy">13.2. Virtual Proxy</a></li>
+<li><a class="reference internal" href="#access-proxy">13.3. Access Proxy</a></li>
+<li><a class="reference internal" href="#summary">13.4. Summary</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="design-patterns-ii-proxies">
+<span id="design-patterns-proxies"></span><h1>13. Design Patterns II: Proxies<a class="headerlink" href="#design-patterns-ii-proxies" title="Permalink to this headline">¶</a></h1>
+<p>A &#8220;proxy&#8221; is a &#8220;substitute&#8221; or a &#8220;stand-in&#8221; for the &#8220;real item&#8221;.
+Perhaps you have heard of &#8220;proxy voting&#8221;, where a person with a vote authorizes
+another person to vote in their place.</p>
+<p>Computing systems use proxies, too.</p>
+<div class="section" id="remote-proxy">
+<h2>13.1. Remote Proxy<a class="headerlink" href="#remote-proxy" title="Permalink to this headline">¶</a></h2>
+<p>A <em>remote proxy</em> is a local object, a copy, that looks and acts like the &#8220;real&#8221;
+object which is situated at a remote site.
+The remote proxy is used to minimize slow, long-distance communications.
+It is also used to hide the technical details of making the long-distance
+communications.</p>
+<p>Consider a banking example, where an ATM and its controller must communicate
+with the bank&#8217;s database to login and do transactions on an account.
+Here is a super-simplistic architecture:</p>
+<img alt="../_images/bank1.png" src="../_images/bank1.png" />
+<p>The class diagram does not show it, but the ATM is at one physical site and
+the database is at another site, far away.
+The sequence of actions goes like this:</p>
+<ol class="arabic simple">
+<li>Using the <tt class="docutils literal"><span class="pre">ATMForm</span></tt>, a user tells <tt class="docutils literal"><span class="pre">ATMController</span></tt> to call
+<tt class="docutils literal"><span class="pre">database.login(user's</span> <span class="pre">account</span> <span class="pre">number)</span></tt>.
+The call goes to the <tt class="docutils literal"><span class="pre">AccountDatabase</span></tt> at the remote site.
+<em>This generates a &#8220;remote procedure call&#8221; (RPC) &#8212; an internet/phone-line
+transmission</em> of the method call.
+(The call, which takes multiple lines of code, contains an IP address
+as well as a port number and an encoded handle and the method name and its
+arguments. Some serious coding is needed for making RPCs: see
+<a class="reference external" href="http://www.codeproject.com/Articles/4837/Introduction-to-RPC-Part-1">this web page</a>
+for &#8220;simple&#8221; examples.)</li>
+<li>The remote procedure call reaches the <tt class="docutils literal"><span class="pre">AccountDatabase</span></tt>, which finds
+the correct <tt class="docutils literal"><span class="pre">Account</span></tt> object, adds it to the <tt class="docutils literal"><span class="pre">checkedOut</span></tt> list, and
+returns the handle.
+<em>The handle is an address at the database&#8217;s site, which means that each time
+the ATM assembly uses the handle, it must generate a remote procedure call
+(RPC).</em></li>
+<li>The <tt class="docutils literal"><span class="pre">ATMcontroller</span></tt> uses the account&#8217;s handle to query and update
+the account.
+This generates multiple RPCs.</li>
+<li>When the user finishes, the <tt class="docutils literal"><span class="pre">ATMcontroller</span></tt> calls
+<tt class="docutils literal"><span class="pre">database.logout(account's</span> <span class="pre">handle)</span></tt>, which removes the handle from
+the <tt class="docutils literal"><span class="pre">checkedOut</span></tt> list.</li>
+</ol>
+<p>This implementation generates too many remote procedure calls.
+It also fills the ATM&#8217;s controller with the complex coding for RPCs.
+It would be better if the ATM has no RPC code and contacts the database just
+once to &#8220;load the account into the ATM&#8221; and once to &#8220;unload and logout&#8221;.
+The ATM would work with a local copy of the account &#8212; its <em>remote proxy</em>.</p>
+<p>To redesign the system, we first separate the ATM assembly from the database
+assembly, using interfaces.
+Here is the situation from the ATM&#8217;s perspective:</p>
+<img alt="../_images/bank2.png" src="../_images/bank2.png" />
+<p>We now insert a remote proxy for the <tt class="docutils literal"><span class="pre">Account</span></tt>.
+The design will look like the ones used in the CORBA and DCOM (.NET)
+client-server architectures.</p>
+<p>First, the ATM assembly &#8220;thinks&#8221; it is talking to the bank&#8217;s database and
+the account retrieved from the database.
+But the reality is different: Within each ATM assembly, we add a proxy object,
+<tt class="docutils literal"><span class="pre">DatabaseProxy</span></tt>, that stands for the remote database, and we add
+<tt class="docutils literal"><span class="pre">class</span> <span class="pre">AccountProxy</span></tt> that will be used to construct a proxy account object:</p>
+<img alt="../_images/bank31.png" src="../_images/bank31.png" />
+<p>(Note: there might be a link from <tt class="docutils literal"><span class="pre">AccountProxy</span></tt> to <tt class="docutils literal"><span class="pre">Account</span></tt>, so that
+the <tt class="docutils literal"><span class="pre">Account</span></tt> can generate RPCs as needed to its &#8220;real&#8221; counterpart to do
+computation.) Again,</p>
+<ul class="simple">
+<li>The ATM assembly is constructed from <tt class="docutils literal"><span class="pre">ATMform</span></tt>, <tt class="docutils literal"><span class="pre">ATMcontroller</span></tt>,
+<tt class="docutils literal"><span class="pre">DatabaseProxy</span></tt>, and <tt class="docutils literal"><span class="pre">AccountProxy</span></tt>.</li>
+<li>The bank&#8217;s assembly is constructed from <tt class="docutils literal"><span class="pre">AccountDatabase</span></tt> and <tt class="docutils literal"><span class="pre">Account</span></tt>.</li>
+<li>Interfaces <tt class="docutils literal"><span class="pre">IDB</span></tt> and <tt class="docutils literal"><span class="pre">IAcct</span></tt> connect the ATM&#8217;s &#8220;front end&#8221; to the
+&#8220;back end&#8221;.</li>
+</ul>
+<p>Here is how the system operates:</p>
+<ol class="arabic simple">
+<li>Using the <tt class="docutils literal"><span class="pre">ATMForm</span></tt>, a user tells the <tt class="docutils literal"><span class="pre">ATMController</span></tt> to call
+<tt class="docutils literal"><span class="pre">database.login(user's</span> <span class="pre">account</span> <span class="pre">id)</span></tt>.
+The call goes to the <tt class="docutils literal"><span class="pre">DatabaseProxy</span></tt> object, which is stored locally to
+the ATM.</li>
+<li>The <tt class="docutils literal"><span class="pre">DatabaseProxy</span></tt> formulates and sends the remote procedure call,
+<tt class="docutils literal"><span class="pre">theRealDatabase.login(user's</span> <span class="pre">account</span> <span class="pre">id)</span></tt>.
+IMPORTANT: the RPC call will be much more complex than the cute one-liner,
+<tt class="docutils literal"><span class="pre">theRealAccount</span> <span class="pre">=</span> <span class="pre">theRealDatabase.login(accountID)</span></tt>,
+stated in the above diagram.</li>
+<li>The <tt class="docutils literal"><span class="pre">AccountDatabase</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">login</span></tt> method finds the correct <tt class="docutils literal"><span class="pre">Account</span></tt>
+object, adds it to the <tt class="docutils literal"><span class="pre">checkedOut</span></tt> list, and returns the handle (or,
+it returns the data inside the <tt class="docutils literal"><span class="pre">Account</span></tt> object, packaged as a string).</li>
+<li>The <tt class="docutils literal"><span class="pre">DatabaseProxy</span></tt> uses the information it receives to construct a
+<tt class="docutils literal"><span class="pre">new</span> <span class="pre">AccountProxy(...)</span></tt> object, and <em>it returns the handle of the local</em>
+<tt class="docutils literal"><span class="pre">AccountProxy</span></tt> <em>object to the</em> <tt class="docutils literal"><span class="pre">ATMController</span></tt>.</li>
+<li>The <tt class="docutils literal"><span class="pre">ATMcontroller</span></tt> uses the account-proxy&#8217;s handle to query and update
+the account.
+<em>The</em> <tt class="docutils literal"><span class="pre">ATMcontroller</span></tt> <em>does not need any code for RPCs</em>, since the proxy
+is stored locally in the ATM assembly.</li>
+<li>When the user finishes, the <tt class="docutils literal"><span class="pre">ATMcontroller</span></tt> calls
+<tt class="docutils literal"><span class="pre">database.logout(account</span> <span class="pre">handle)</span></tt>.
+The call goes to the <tt class="docutils literal"><span class="pre">DatabaseProxy</span></tt>, which queries the <tt class="docutils literal"><span class="pre">AccountProxy</span></tt>
+object for its <tt class="docutils literal"><span class="pre">balance</span></tt> (and maybe additional logging info), which
+it sends via RPC to update the real, remote <tt class="docutils literal"><span class="pre">Account</span></tt> object.
+The <tt class="docutils literal"><span class="pre">DatabaseProxy</span></tt> also contacts the bank&#8217;s <tt class="docutils literal"><span class="pre">AccountDatabase</span></tt> to
+<tt class="docutils literal"><span class="pre">logout</span></tt>.</li>
+<li>The <tt class="docutils literal"><span class="pre">AccountDatabase</span></tt> removes the account&#8217;s handle from the <tt class="docutils literal"><span class="pre">checkedOut</span></tt>
+list.</li>
+</ol>
+<p>Again, the advantages of the remote proxy are</p>
+<ul class="simple">
+<li>There are fewer remote procedure calls;</li>
+<li>The code for the RPCs is hidden from the client&#8217;s &#8220;front end&#8221;.</li>
+<li>The front end communicates with the &#8220;back end&#8221; as if the back end were locally stored.</li>
+<li>There are standardized interfaces used by both front end and back end to connect together.</li>
+<li>These are the reasons why proxies are used in all modern client-server distributed architectures.</li>
+</ul>
+<p>The <em>Proxy Design Pattern</em> shown here made possible business commerce on
+the internet:
+the &#8220;back end&#8221; is a collection of servers and databases that implement a set of
+standardized interfaces.
+The &#8220;front end&#8221; are client computers, situated at remote sites that use
+the interfaces.
+The proxies are installed with the clients and conduct commerce with the servers.</p>
+<p>CORBA is the best known client-server architecture based on the proxy pattern,
+but DCOM (embedded in .NET) works this way, too.
+Enterprise Java Beans also uses proxies, but for client objects stored as
+proxies in the &#8220;back end&#8221; (server side).</p>
+<p>Client-server systems implemented in Java sometimes use <em>applets</em> or <em>servlets</em>
+as proxy objects.
+A servlet is an applet (a Java-coded object that can be sent and run on any
+Java Virtual Machine) that is constructed by the client and sent by internet to
+the server, where the servlet acts as the clients&#8217;s remote proxy at the server&#8217;s
+site.
+This approach is useful for internet commerce: a web client can build
+a merchandise order within a servlet object and send the servlet to the vendor&#8217;s
+server, which communicates with the servlet to process and fulfill the order.</p>
+</div>
+<div class="section" id="virtual-proxy">
+<h2>13.2. Virtual Proxy<a class="headerlink" href="#virtual-proxy" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes it is too expensive to construct a complex object or an assembly of
+objects all at once, because the computation might use only a small part of
+the object/assembly, anyway.
+In this case, we construct only the parts we know will be used and insert
+&#8220;dummy values&#8221; &#8212; <em>virtual proxies</em> &#8212; for all the other parts.
+If the user/client calls on a virtual proxy, then the virtual proxy constructs
+the actual object that is needed.
+In this way, components are constructed and loaded only when it is certain
+they are needed.
+In general, a &#8220;virtual proxy&#8221; is any object that is &#8220;partially filled-in&#8221; and
+whose internal fields get &#8220;filled in&#8221; bit by bit as the proxy&#8217;s users/clients
+call the proxy&#8217;s methods and ask for data.</p>
+<p>Here is an example where a virtual proxy is used: If you are like most people,
+you have thousands of email messages in your mail file.
+When you start your mail program, the mailer would take &#8220;almost forever&#8221; to load
+the thousands of email messages with attachments and build the massive header
+file that it shows you.</p>
+<p>A modern mail program loads as your mail-file-object only the most recent
+messages and builds the headers for just them, since these are the messages that
+will likely be read by you.
+The mail-file-object holds virtual-proxy objects for the headers and messages of
+the older mails, which are not so likely to be read.
+If you want to read an old message, then your search for the old message
+contacts a virtual-proxy, which loads and constructs the older headers and
+mails.
+(Maybe you have noticed that sometimes your mail program &#8220;slows down&#8221; when you
+suddenly jump into a region of old emails &#8211; that&#8217;s why.)</p>
+<p>Here is a second example: When you load a web page into a browser, the text
+loads immediately, but the images do not.
+As you scroll through the web page, the images that come into view get
+filled in.
+That is because the web page is a mix of HTML code for the text and Javascript
+code that act as virtual proxies for the images, finding and loading the images
+as they are needed (that is, when viewed on the web browser&#8217;s display).</p>
+<p>Here is a nice explanation of the details of the above example, taken from the
+<em>Design Patterns</em> text by Gamma, et al. (Addison Wesley, 1995), reproduced under
+&#8220;fair use&#8221; laws:</p>
+<img alt="../_images/vp1.jpg" src="../_images/vp1.jpg" />
+<img alt="../_images/vp2.jpg" src="../_images/vp2.jpg" />
+</div>
+<div class="section" id="access-proxy">
+<h2>13.3. Access Proxy<a class="headerlink" href="#access-proxy" title="Permalink to this headline">¶</a></h2>
+<p>An <em>access proxy</em> is used when a system&#8217;s designer wants to limit the range of
+use of an actual object.
+The access proxy acts as an &#8220;imposter&#8221;, taking requests and refusing to do some
+of them, forwarding the others to the real object.</p>
+<p>The standard example of access proxy is the HTTP proxy used by a coffee shop to
+limit the web activities of its customers.
+That is, when a coffee-shop customer uses the shop&#8217;s internet to load a web page
+with an HTTP address, the request goes first to the access proxy, which checks
+if the request is allowable.
+(Maybe MMO games, streaming, and gambling sites are not allowed at the coffee
+shop.)
+An allowable request is forwarded to the shop&#8217;s HTTP server, which does
+the request and returns the web page to the customer.</p>
+</div>
+<div class="section" id="summary">
+<h2>13.4. Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Proxies are an important design tool in modern systems:</p>
+<ul class="simple">
+<li>A remote proxy is a local object, a copy, that looks and acts like the &#8220;real&#8221;
+object which is situated at a remote site.
+The remote proxy minimizes slow, long-distance communications and also hides
+the complex coding of remote procedure calls (RPCs) from the client-part,
+the &#8220;front end&#8221;, of the system.</li>
+<li>When it is too expensive to construct an assembly of objects all at once,
+we construct only the objects we know will be used and insert &#8220;dummy values&#8221;
+&#8212; <em>virtual proxies</em> &#8212; for all the others.
+If the computation calls one of the virtual proxies, then the virtual proxy
+constructs the actual object.
+In this way, objects are constructed only when they are needed.</li>
+<li>An access proxy is used when a system&#8217;s designer wants to limit the range of
+use of an actual object.
+The access proxy acts as an &#8220;imposter&#8221;, taking requests and refusing to do
+some of them, forwarding the others to the real object.</li>
+</ul>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/DP2S.html">Lecture 12</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

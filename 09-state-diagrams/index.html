@@ -1,0 +1,512 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9. State Diagrams for Programming Controllers &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">9. State Diagrams for Programming Controllers</a><ul>
+<li><a class="reference internal" href="#example-number-game">9.1. Example: Number Game</a></li>
+<li><a class="reference internal" href="#example-atm-protocol">9.2. Example: ATM protocol</a></li>
+<li><a class="reference internal" href="#a-state-diagram-defines-an-input-language">9.3. A State Diagram Defines An Input Language</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="state-diagrams-for-programming-controllers">
+<span id="state-diagrams"></span><h1>9. State Diagrams for Programming Controllers<a class="headerlink" href="#state-diagrams-for-programming-controllers" title="Permalink to this headline">¶</a></h1>
+<p>A controller holds an algorithm or protocol.
+A controller&#8217;s methods hold steps of the algorithm/protocol.
+In a reactive system, the steps (methods) of the algorithm are executed one at
+a time, in response to input events.</p>
+<ul class="simple">
+<li>We must design the controller so that the steps are executed in correct order.</li>
+<li>We must design the controller so that it remembers the current stage of
+execution when it is time to do another step.</li>
+</ul>
+<p>When you have an algorithm that gets divided into stages, due to input events,
+then use a state diagram to document the stages and define the methods that the
+controller will need.</p>
+<div class="section" id="example-number-game">
+<h2>9.1. Example: Number Game<a class="headerlink" href="#example-number-game" title="Permalink to this headline">¶</a></h2>
+<p>At the beginning of the course, we did a little exercise like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>Use Visual Studio to code a console app and then to code a Forms app for the following game:
+
+   &quot;Guess an int, M, in range 0..10:  M = &quot;
+   (User types int, m)
+   &quot;I, the computer, guess this int, N, in range  0..10-M: N = (Computer randomly gens  n)
+   &quot;Now you type an int, P, such that M + N + P = 10:  P = &quot;
+   (User types int, p)
+   &quot;You win!&quot; or &quot;You lose!&quot; (depending on how the ints total)
+</pre></div>
+</div>
+<p>We have this use-case realization (algorithm):</p>
+<ol class="arabic">
+<li><p class="first"><em>&#8220;Guess an int, M, in range 0..10:&#8221; (User types int, m)</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre>Input int m is checked to see if it is in range, 0..10.
+If  yes, int  n  is randomly generated for display:
+</pre></div>
+</div>
+</li>
+<li><p class="first"><em>&#8220;Computer guesses this int, N = n. Now you guess P such that M + N + P = 10:&#8221;
+(User types int, p)</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre>Input int  p  is added to  m  and  n  to see if the sum is 10.
+The result is displayed:
+</pre></div>
+</div>
+</li>
+<li><p class="first"><em>&#8220;You win!&#8221; or &#8220;You lose!&#8221; (depending on how the ints total)</em></p>
+</li>
+</ol>
+<p>If we implement the game as a console application, the <tt class="docutils literal"><span class="pre">Console</span></tt> is the &#8220;View&#8221;
+that receives input and displays output, and the console app&#8217;s <tt class="docutils literal"><span class="pre">Main</span></tt> method
+is the controller that implements the realization:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// Step 1:</span>
+  <span class="n">Console</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;Guess an int, M, in range 0..10: &quot;</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">m</span> <span class="p">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">());</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">m</span> <span class="p">&gt;=</span> <span class="m">0</span> <span class="p">&amp;&amp;</span> <span class="n">m</span> <span class="p">&lt;=</span> <span class="m">10</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="p">=</span> <span class="p">(</span><span class="k">new</span> <span class="n">Random</span><span class="p">()).</span><span class="n">Next</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">10</span> <span class="p">-</span> <span class="n">m</span><span class="p">);</span>
+    <span class="c1">// Step 2:</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;Computer guesses this int, N = {0}.\nNow you guess P such that M + N + P = 10: &quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">p</span> <span class="p">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">());</span>
+    <span class="c1">// Step 3:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">m</span> <span class="p">+</span> <span class="n">n</span> <span class="p">+</span> <span class="n">p</span> <span class="p">==</span> <span class="m">10</span><span class="p">)</span> <span class="p">{</span> <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;You win!&quot;</span><span class="p">);</span> <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span> <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;You lose!&quot;</span><span class="p">);</span> <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span> <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;You lose!&quot;</span><span class="p">);</span> <span class="p">}</span>
+  <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>  <span class="c1">// retain command window till user presses Enter</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The algorithm is a simple &#8220;straight-line&#8221; sequence &#8212; beginner stuff.</p>
+<p>If the game is implemented as a Forms app (reactive system),
+there is a View (Form), a Controller, and more work,
+<em>because the game is split into two stages</em>:</p>
+<ul class="simple">
+<li>Stage 1, triggered by int <tt class="docutils literal"><span class="pre">m</span></tt> and a button press in the View, signals the
+Controller to check <tt class="docutils literal"><span class="pre">m</span></tt>, generate <tt class="docutils literal"><span class="pre">n</span></tt>, and return <tt class="docutils literal"><span class="pre">n</span></tt> to the View for
+display.</li>
+<li>Stage 2, triggered by int <tt class="docutils literal"><span class="pre">p</span></tt> and a second button press in the View
+(the same button? a different button?), signals the Controller to retrieve
+<tt class="docutils literal"><span class="pre">m</span></tt> and <tt class="docutils literal"><span class="pre">n</span></tt>; add <tt class="docutils literal"><span class="pre">m</span></tt>, <tt class="docutils literal"><span class="pre">n</span></tt>, and <tt class="docutils literal"><span class="pre">p</span></tt>; and return the result to the
+View for display.</li>
+</ul>
+<p><em>The straight-line code must be chopped into pieces.</em> )-:</p>
+<p>There is a special diagram that we draw to list the stages a controller must
+traverse when computing the algorithm in a reactive system &#8212; a state diagram.
+For complex controllers, a state diagram is a critical part of the design that
+you do before you code the controller.</p>
+<p>We reformat the use-case realizations as this state diagram:</p>
+<img alt="../_images/game11.jpg" src="../_images/game11.jpg" />
+<p>The states are the blue ellipses.
+The labels on the arcs have form, <tt class="docutils literal"><span class="pre">event</span> <span class="pre">[condition]</span> <span class="pre">/</span> <span class="pre">action</span></tt>.
+The <tt class="docutils literal"><span class="pre">event</span></tt> is the external, input event that triggers computation.
+The <tt class="docutils literal"><span class="pre">condition</span></tt> must be true for the arc to move to the next state in the
+computation (this is a way of remembering where <tt class="docutils literal"><span class="pre">if</span></tt> commands are needed), and
+the action describes the computation to do if the condition is true.</p>
+<p>The state diagram shows how the game moves from its start state on an input
+event (&#8220;int <tt class="docutils literal"><span class="pre">m</span></tt> arrives&#8221;) to a state where two ints are known.
+At this point, a second input event transitions to an end state.</p>
+<p>The Controller implements the state diagram via a handler method that is called
+when a button is pressed.
+Here is how we might code it, using the states of the state diagram as data
+values:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// states of the number-guessing game</span>
+<span class="k">public</span> <span class="k">enum</span> <span class="n">Status</span> <span class="p">{</span> <span class="n">Start</span><span class="p">,</span> <span class="n">HaveMN</span><span class="p">,</span> <span class="n">Win</span><span class="p">,</span> <span class="n">Lose</span> <span class="p">};</span>
+
+<span class="c1">// controller for number-guessing game</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">GameController</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">m</span><span class="p">;</span>                        <span class="c1">// user&#39;s initial guess</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">n</span> <span class="p">=</span> <span class="p">-</span><span class="m">1</span><span class="p">;</span>                   <span class="c1">// the randomly generated response</span>
+  <span class="k">private</span> <span class="n">Status</span> <span class="n">state</span> <span class="p">=</span> <span class="n">Status</span><span class="p">.</span><span class="n">Start</span><span class="p">;</span>  <span class="c1">// how far the algorithm has progressed</span>
+
+  <span class="c1">// handle  executes the next step of the game based on the current state</span>
+  <span class="c1">// param:  s is a string representing an int</span>
+  <span class="c1">// returns:  a tuple holding  (the new state of the game, an int to be displayed)</span>
+  <span class="k">public</span> <span class="n">Tuple</span> <span class="nf">handle</span><span class="p">(</span><span class="kt">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// check current state to decide what to do:</span>
+      <span class="k">case</span> <span class="n">Status</span><span class="p">.</span><span class="n">Start</span><span class="p">:</span> <span class="p">{</span>   <span class="c1">// start of game: s is a user-supplied int</span>
+        <span class="kt">bool</span> <span class="n">intOK</span> <span class="p">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">TryParse</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="k">out</span> <span class="n">m</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">intOK</span> <span class="p">&amp;&amp;</span> <span class="n">m</span> <span class="p">&gt;=</span> <span class="m">0</span> <span class="p">&amp;&amp;</span> <span class="n">m</span> <span class="p">&lt;=</span> <span class="m">10</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">n</span> <span class="p">=</span> <span class="p">(</span><span class="k">new</span> <span class="n">Random</span><span class="p">()).</span><span class="n">Next</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">10</span> <span class="p">-</span> <span class="n">m</span><span class="p">);</span>  <span class="c1">// generate random int</span>
+          <span class="n">state</span> <span class="p">=</span> <span class="n">Status</span><span class="p">.</span><span class="n">HaveMN</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span> <span class="n">state</span> <span class="p">=</span> <span class="n">Status</span><span class="p">.</span><span class="n">Lose</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">break</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">case</span> <span class="n">Status</span><span class="p">.</span><span class="n">HaveMN</span><span class="p">:</span> <span class="p">{</span>  <span class="c1">// middle of game: s is user&#39;s second int guess</span>
+        <span class="kt">int</span> <span class="n">p</span><span class="p">;</span>
+        <span class="kt">bool</span> <span class="n">intOK</span> <span class="p">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">TryParse</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="k">out</span> <span class="n">p</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">intOK</span> <span class="p">&amp;&amp;</span> <span class="p">(</span><span class="n">m</span> <span class="p">+</span> <span class="n">n</span> <span class="p">+</span> <span class="n">p</span> <span class="p">==</span> <span class="m">10</span><span class="p">))</span> <span class="p">{</span> <span class="n">state</span> <span class="p">=</span> <span class="n">Status</span><span class="p">.</span><span class="n">Win</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span> <span class="n">state</span> <span class="p">=</span> <span class="n">Status</span><span class="p">.</span><span class="n">Lose</span><span class="p">;</span> <span class="p">}</span>
+        <span class="k">break</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">default</span><span class="p">:</span> <span class="p">{</span>  <span class="c1">// game is over and state is  Status.Win or Status.Lose</span>
+        <span class="k">break</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Tuple</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">Status</span></tt> of the game (<tt class="docutils literal"><span class="pre">Start</span></tt>, <tt class="docutils literal"><span class="pre">HaveMN</span></tt>, <tt class="docutils literal"><span class="pre">Win</span></tt>, <tt class="docutils literal"><span class="pre">Lose</span></tt>) is defined
+by a C# enumeration; the values came from the state diagram.
+Variable <tt class="docutils literal"><span class="pre">state</span></tt> is called a <em>state variable</em> because it remembers the
+&#8220;state of the game.&#8221;
+<em>The state variable helps the controller enforce the game&#8217;s protocol (steps of
+its algorithm) in the correct order.</em></p>
+<p>Notice that <tt class="docutils literal"><span class="pre">handle</span></tt> returns a pair (<tt class="docutils literal"><span class="pre">Tuple</span></tt>) that holds the new state of
+the game and an int to be displayed.
+The View object (Form) uses this information to select the correct message to
+display.
+That is, the View also uses enumeration <tt class="docutils literal"><span class="pre">Status</span></tt> to track the progress of
+the game.
+By the way, here is how a pair is disassembled in C#:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">GameController</span> <span class="n">c</span> <span class="p">=</span> <span class="k">new</span> <span class="n">GameController</span><span class="p">(...);</span>
+<span class="c1">// ...</span>
+<span class="n">Tuple</span> <span class="n">pair</span> <span class="p">=</span> <span class="n">c</span><span class="p">.</span><span class="n">handle</span><span class="p">(</span><span class="n">mytextbox</span><span class="p">.</span><span class="n">Text</span><span class="p">);</span>
+<span class="n">Status</span> <span class="n">state</span> <span class="p">=</span> <span class="n">pair</span><span class="p">.</span><span class="n">Item1</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">data</span> <span class="p">=</span> <span class="n">pair</span><span class="p">.</span><span class="n">Item2</span><span class="p">;</span>
+<span class="c1">// ...</span>
+</pre></div>
+</div>
+<p>Now, <em>match the code in method</em> <tt class="docutils literal"><span class="pre">handle</span></tt> <em>to the code in method</em> <tt class="docutils literal"><span class="pre">main</span></tt>.
+The former is easier to read, but the latter is what we are forced to write when
+we build a reactive system.
+State diagrams help us do the latter.</p>
+<p>As an exercise, you should write a <tt class="docutils literal"><span class="pre">class</span> <span class="pre">GameForm</span></tt>, a Form with a Textbox and
+a single Button, that calls <tt class="docutils literal"><span class="pre">GameController</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">handle</span></tt> method and uses the
+information that is returned to refresh the display and tell the human player
+what to do next.</p>
+<p>It is also possible to code the state diagram as multiple methods,
+one for each state in the diagram.
+Here&#8217;s what the controller would look like:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">class</span> <span class="nc">GameController</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">m</span><span class="p">;</span>                        <span class="c1">// user&#39;s initial guess</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">n</span> <span class="p">=</span> <span class="p">-</span><span class="m">1</span><span class="p">;</span>                   <span class="c1">// the randomly generated response</span>
+  <span class="k">private</span> <span class="n">Status</span> <span class="n">state</span> <span class="p">=</span> <span class="n">Status</span><span class="p">.</span><span class="n">Start</span><span class="p">;</span>  <span class="c1">// how far the algorithm has progressed</span>
+
+  <span class="c1">// handleStart  checks initial guess and generates a random response int.</span>
+  <span class="c1">// precondition: game is in Start state</span>
+  <span class="c1">// param:  s is a string representing an int</span>
+  <span class="c1">// returns: a tuple holding   (the state of the game, a random int)</span>
+  <span class="k">public</span> <span class="n">Tuple</span> <span class="nf">handleStart</span><span class="p">(</span><span class="kt">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">bool</span> <span class="n">intOK</span> <span class="p">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">TryParse</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="k">out</span> <span class="n">m</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">intOK</span> <span class="p">&amp;&amp;</span> <span class="n">state</span> <span class="p">==</span> <span class="n">Status</span><span class="p">.</span><span class="n">Start</span> <span class="p">&amp;&amp;</span> <span class="n">m</span> <span class="p">&gt;=</span> <span class="m">0</span> <span class="p">&amp;&amp;</span> <span class="n">m</span> <span class="p">&lt;=</span> <span class="m">10</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">n</span> <span class="p">=</span> <span class="p">(</span><span class="k">new</span> <span class="n">Random</span><span class="p">()).</span><span class="n">Next</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">10</span> <span class="p">-</span> <span class="n">m</span><span class="p">);</span>  <span class="c1">// generate random int</span>
+      <span class="n">state</span> <span class="p">=</span> <span class="n">Status</span><span class="p">.</span><span class="n">HaveMN</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span> <span class="n">state</span> <span class="p">=</span> <span class="n">Status</span><span class="p">.</span><span class="n">Lose</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Tuple</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="c1">// handleMN  checks final guess and computes outcome.</span>
+  <span class="c1">// precondition: game is at  HaveMN  state</span>
+  <span class="c1">// param:  s  is a string representing an int</span>
+  <span class="c1">// returns: state of the game (is either Lose or Win)</span>
+  <span class="k">public</span> <span class="n">Status</span> <span class="nf">handleMN</span><span class="p">(</span><span class="kt">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">p</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="n">intOK</span> <span class="p">=</span> <span class="kt">int</span><span class="p">.</span><span class="n">TryParse</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="k">out</span> <span class="n">p</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">intOK</span> <span class="p">&amp;&amp;</span> <span class="n">state</span> <span class="p">==</span> <span class="n">Status</span><span class="p">.</span><span class="n">HaveMN</span> <span class="p">&amp;&amp;</span> <span class="p">(</span><span class="n">m</span> <span class="p">+</span> <span class="n">n</span> <span class="p">+</span> <span class="n">p</span> <span class="p">==</span> <span class="m">10</span><span class="p">))</span> <span class="p">{</span>
+      <span class="n">state</span> <span class="p">=</span> <span class="n">Status</span><span class="p">.</span><span class="n">Win</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span> <span class="n">state</span> <span class="p">=</span> <span class="n">Status</span><span class="p">.</span><span class="n">Lose</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="n">state</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// handleWin  does nothing --- the game is over</span>
+  <span class="c1">// precondition: game is at  Win  state</span>
+  <span class="c1">// returns: state of the game</span>
+  <span class="k">public</span> <span class="n">Status</span> <span class="nf">handleWin</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">state</span> <span class="p">!=</span> <span class="n">Status</span><span class="p">.</span><span class="n">Win</span> <span class="p">)</span> <span class="p">{</span> <span class="n">state</span> <span class="p">=</span> <span class="n">Status</span><span class="p">.</span><span class="n">Lose</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="n">state</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// handleLose  does nothing --- the game is over</span>
+  <span class="c1">// precondition: game is at  Lose  state</span>
+  <span class="c1">// returns: state of the game</span>
+  <span class="k">public</span> <span class="n">Status</span> <span class="nf">handleLose</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">state</span> <span class="p">=</span> <span class="n">Status</span><span class="p">.</span><span class="n">Lose</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">state</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The above coding might be used when the View form has multiple buttons that
+can call distinct handlers.
+The View form would use its own state variable to remember the status of the
+game and to enable the appropriate button(s).</p>
+<p>To summarize,</p>
+<ul class="simple">
+<li>State diagrams are critical to designing controllers in complex reactive
+systems: input data arrives in bits, in stages, and the controller must
+collect the data and remember how much progress is accomplished in the
+computation, the transaction.
+The state diagram documents how the controller will be programmed.</li>
+<li>State diagrams are also useful for coding views (input forms) in reactive
+systems: as the user interacts with the view, some of the view&#8217;s elements may
+appear/disappear, enable/disable.
+The state diagram documents how the view will be programmed to display and
+enable its widgets.
+The controller computes and returns the current state to the view, which uses
+it to update its presentation.</li>
+</ul>
+</div>
+<div class="section" id="example-atm-protocol">
+<h2>9.2. Example: ATM protocol<a class="headerlink" href="#example-atm-protocol" title="Permalink to this headline">¶</a></h2>
+<p>When you login to a web form or an ATM, you do it in stages: you provide a login
+name (it&#8217;s on the magnetic strip or chip of your bank card), which is verified,
+you provide a password (PIN), which is verified, then you are shown a menu of
+options, of which you select one, and that leads you to more options that you
+follow to complete a transaction.
+Like the number game above, there are stages that must be completed for the
+transation.
+Use-case realizations help you list all the operations.
+From the realizations, you generate one big state diagram that lists the
+protocol/algorithm for the ATM&#8217;s controller:</p>
+<img alt="../_images/bank11.jpg" src="../_images/bank11.jpg" />
+<p>It is almost a mechanical process to define the controller&#8217;s fields, methods,
+and even the methods&#8217; codings from the state diagram.
+Here is what we might design if we write multiple handler methods from the
+diagram:</p>
+<img alt="../_images/bank3.png" src="../_images/bank3.png" />
+</div>
+<div class="section" id="a-state-diagram-defines-an-input-language">
+<h2>9.3. A State Diagram Defines An Input Language<a class="headerlink" href="#a-state-diagram-defines-an-input-language" title="Permalink to this headline">¶</a></h2>
+<p>You type instructions in C# to tell a computer what to do.
+C# is a language that instructs the computer.
+When you use a reactive tool to tell the computer what to do,
+your key presses and mouse clicks define a &#8220;baby language&#8221; that instructs
+the computer.</p>
+<p>The event-protocol for a system defines a programming language,
+an &#8220;input language.&#8221;</p>
+<p>A state diagram lists the events that cause the controller to move from one
+computational state to the next.
+The paths through the state diagram list event sequences.
+Each event sequence along a path defines an input program.</p>
+<p>When you take a course on language theory, you will learn that a state diagram
+defines a <em>finite-state automaton</em> and the paths define a <em>regular language</em>.</p>
+<p>Reconsider the two examples seen above. Here are the langauges they define:</p>
+<ul>
+<li><p class="first"><em>Number game</em>: The input language consists of just these two event sequences,
+these two &#8220;programs&#8221;:</p>
+<div class="highlight-python"><div class="highlight"><pre>m arrives   p arrives
+m arrives
+</pre></div>
+</div>
+<p>The specific values of ints <tt class="docutils literal"><span class="pre">m</span></tt> and <tt class="docutils literal"><span class="pre">p</span></tt> generate differing outputs, but
+there are just two legal sequences that one uses with the game.
+So, we build a GUI with a button and textbox so that the human can &#8220;write&#8221;
+these &#8220;programs&#8221;, which are sent to the controller that implements the state
+diagram.</p>
+</li>
+<li><p class="first">Bank ATM: There are many (indeed, infinitely many) distinct input programs for
+the ATM. Here are three examples:</p>
+<div class="highlight-python"><div class="highlight"><pre>login name   password   check balance   logout
+login name   password   password   withdraw   amount   logout
+login name   password   check balance   withdraw   amount   amount   logout
+</pre></div>
+</div>
+<p>The second and third examples show that a password and then a withdrawal
+amount were reentered due to errors.</p>
+<p>We can write a <em>regular expresion</em> (an &#8220;and-then&#8221;/or&#8221;/&#8221;repeat&#8221;) expression to
+define precisely the ATM&#8217;s input language:</p>
+<div class="highlight-python"><div class="highlight"><pre>login name
+  password+
+    ( check balance  ( logout  |  (withdraw  amount+  logout ))
+    | withdraw  amount+  logout )
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">|</span></tt> means &#8220;or&#8221; and the <tt class="docutils literal"><span class="pre">+</span></tt> means &#8220;repeat one or more times&#8221;.
+You read it like this:
+&#8220;An input program starts with <tt class="docutils literal"><span class="pre">login</span> <span class="pre">name</span></tt> followed by one or more
+<tt class="docutils literal"><span class="pre">password</span></tt> s followed by <em>either</em> <tt class="docutils literal"><span class="pre">check</span> <span class="pre">balance</span></tt> followed by ... <em>or</em>
+<tt class="docutils literal"><span class="pre">withdraw</span></tt> followed by one or more <tt class="docutils literal"><span class="pre">amount</span></tt> s then <tt class="docutils literal"><span class="pre">logout</span></tt>.&#8221;</p>
+</li>
+</ul>
+<p>State diagrams define regular languages, which are formalized by regular
+expressions.</p>
+<p>State diagrams cannot define all languages.
+Languages like English and C# have nested, internal structure.
+(Think about how assignments are nested in loops, which are nested in methods,
+which are nested in....)</p>
+<p>In particular, languages that used nested, matching brackets cannot be defined
+by a state diagram.
+A simple and good example is arithmetic, where the user submits/writes a
+nested expression, bracketed with parentheses, e.g., <tt class="docutils literal"><span class="pre">(</span> <span class="pre">(</span> <span class="pre">3</span> <span class="pre">+</span> <span class="pre">2</span> <span class="pre">)</span> <span class="pre">*</span> <span class="pre">4</span> <span class="pre">)</span></tt>.</p>
+<p>Treat the symbols, <tt class="docutils literal"><span class="pre">(</span></tt>, <tt class="docutils literal"><span class="pre">(</span></tt>, <tt class="docutils literal"><span class="pre">3</span></tt>, <tt class="docutils literal"><span class="pre">+</span></tt>, etc., as &#8220;events&#8221; that trigger
+computation.
+<em>A state diagram, by itself, cannot define the algorithm for reading and
+computing the arithmetic expression.</em></p>
+<p>&#8220;Nested languages&#8221; are called <em>context-free languages</em>, and their computations
+are defined by <em>attributed grammar rules</em>.
+Here is the attributed grammar that defines how to compute an arithmetic program
+to its output, its <em>meaning</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre>Syntax (format of &quot;event sequences&quot;):
+-------------------------------------
+EXPRESSION ::=  NUMERAL  |  ( EXPRESSION1 OPERATOR EXPRESSION2 )
+OPERATOR ::=  +  |  -  |  *
+NUMERAL ::=  0  |  1  |  2  |  ...  |  9
+
+Semantic attributes (&quot;actions&quot; triggered by events):
+--------------------------------------------
+meaningOfNUMERAL[ 0 ] =  zero
+meaningOfNUMERAL[ 1 ] =  one
+meaningOfNUMERAL[ 2 ] =  two
+ ...
+meaningOfNUMERAL[ 9 ] =  nine
+
+meaningOfOPERATOR[ + ] =  add,  where  add(m,n){ return m+n }
+meaningOfOPERATOR[ - ] =  sub,  where  sub(m,n){ return m-n }
+meaningOfOPERATOR[ * ] =  mult, where  mult(m,n){ return m*n }
+
+meaningOfEXPRESSION[ NUMERAL ] =  meaningOfNUMERAL[ NUMERAL ]
+meaningOfEXPRESSION[ ( EXPRESSION1 OPERATOR EXPRESSION2 ) ] =  meaningOfOPERATOR[ OPERATOR ]( meaningOfEXPRESSION[ EXPRESSION1 ], meaningOfEXPRESSION[ EXPRESSION2 ])
+</pre></div>
+</div>
+<p>An example:</p>
+<ul>
+<li><p class="first">The &#8220;event sequence&#8221; defined by <tt class="docutils literal"><span class="pre">(</span> <span class="pre">(</span> <span class="pre">3</span> <span class="pre">+</span> <span class="pre">2</span> <span class="pre">)</span> <span class="pre">*</span> <span class="pre">4</span> <span class="pre">)</span></tt> is this nested,
+tree structure:</p>
+<img alt="../_images/tree1.jpg" src="../_images/tree1.jpg" />
+</li>
+<li><p class="first">and the actions/meaning generated by the tree is this:</p>
+<img alt="../_images/tree2.jpg" src="../_images/tree2.jpg" />
+</li>
+</ul>
+<p>Both the &#8220;event sequences&#8221; and the actions are nested in recurrence-equation
+style.
+(The event sequences are trees, called <em>parse trees</em>.)
+There are automated tools, called <em>parser generators</em>, that convert definitions
+like the one above into code.
+The C# compiler converts your C# program into a parse tree and then computes the
+tree&#8217;s meaning &#8212; an <tt class="docutils literal"><span class="pre">.exe</span></tt>-file that computes your program&#8217;s output.</p>
+<p>We will not study context-free languages here; you will see them if you take
+CIS505.
+There are also context-sensitive languages and unrestricted (Turing machine)
+languages.</p>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/Lecture08S.html">Lecture 8</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

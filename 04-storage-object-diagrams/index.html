@@ -1,0 +1,542 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4. Storage and Object Diagrams &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">4. Storage and Object Diagrams</a><ul>
+<li><a class="reference internal" href="#storage-layout">4.1. Storage Layout</a><ul>
+<li><a class="reference internal" href="#storage-diagram-example-with-static-vars-an-array-and-a-dictionary">4.1.1. Storage diagram: Example with static vars, an array, and a dictionary</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#storage-diagram-example-with-user-defined-class">4.2. Storage diagram: Example with user-defined class</a><ul>
+<li><a class="reference internal" href="#object-diagrams">4.2.1. Object Diagrams</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#object-serialization-deserialization">4.3. Object Serialization/Deserialization</a></li>
+<li><a class="reference internal" href="#object-diagrams-for-design">4.4. Object Diagrams for Design</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="storage-and-object-diagrams">
+<span id="storage-object-diagrams"></span><h1>4. Storage and Object Diagrams<a class="headerlink" href="#storage-and-object-diagrams" title="Permalink to this headline">¶</a></h1>
+<p>You can&#8217;t be a good programmer if you do not understand how data structures are
+laid out in storage.
+Here is a short quiz: What is allocated in storage by these declarations?</p>
+<ul>
+<li><p class="first">Consider the following declaration:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="kt">int</span> <span class="n">x</span> <span class="p">=</span> <span class="m">3</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>It declares a fullword named <tt class="docutils literal"><span class="pre">x</span></tt> is allocated to hold integer <tt class="docutils literal"><span class="pre">3</span></tt>.</p>
+</li>
+<li><p class="first">Or this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="kt">int</span><span class="p">[]</span> <span class="n">r</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="m">5</span><span class="p">];</span>
+</pre></div>
+</div>
+<p>A sequence of five fullwords is allocated for the
+array, and the addresss &#8212; handle &#8212; of the array is stored in a fullword
+named <tt class="docutils literal"><span class="pre">r</span></tt></p>
+</li>
+<li><p class="first">This example is from C:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">BankAccount</span> <span class="p">{</span>  <span class="c1">// template for allocating a &quot;frame&quot; (namespace) of vars</span>
+  <span class="kt">int</span> <span class="n">acct_number</span><span class="p">;</span>
+  <span class="kt">char</span><span class="p">[</span><span class="mi">50</span><span class="p">]</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+  <span class="kt">float</span> <span class="n">balance</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">BankAccount</span> <span class="n">s</span><span class="p">;</span>   <span class="c1">// allocates a frame and names it  s</span>
+<span class="n">s</span><span class="p">.</span><span class="n">acct_number</span> <span class="o">=</span> <span class="mi">999</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>A sequence of fullwords, large enough to hold an int, fifty chars, and a float,
+is allocated and the handle of the sequence is saved in a fullword named <tt class="docutils literal"><span class="pre">s</span></tt>.
+The sequence of fullwords is indexed by <tt class="docutils literal"><span class="pre">acct_number</span></tt>, <tt class="docutils literal"><span class="pre">name</span></tt>, and <tt class="docutils literal"><span class="pre">balance</span></tt>.
+Call this a <em>frame</em>.</p>
+</li>
+<li><p class="first">This example is from C#:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">class</span> <span class="nc">BankAccount</span> <span class="p">{</span>  <span class="c1">// template for allocating a frame/namespace of vars</span>
+                     <span class="c1">// and for associating methods to compute on the frame</span>
+  <span class="k">public</span> <span class="k">readonly</span> <span class="kt">int</span> <span class="n">acct_number</span><span class="p">;</span>
+  <span class="k">public</span> <span class="k">readonly</span> <span class="kt">string</span> <span class="n">name</span><span class="p">;</span>
+  <span class="k">private</span> <span class="kt">float</span> <span class="n">balance</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">BankAccount</span><span class="p">(</span><span class="kt">int</span> <span class="n">num</span><span class="p">,</span> <span class="kt">string</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="n">acct_number</span> <span class="p">=</span> <span class="n">num</span><span class="p">;</span>  <span class="n">name</span> <span class="p">=</span> <span class="n">n</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">deposit</span><span class="p">(</span><span class="kt">float</span> <span class="n">m</span><span class="p">)</span> <span class="p">{</span> <span class="k">if</span> <span class="p">(</span><span class="n">m</span><span class="p">&gt;</span><span class="m">0</span><span class="p">){</span> <span class="n">balance</span> <span class="p">=</span> <span class="n">balance</span> <span class="p">+</span> <span class="n">m</span><span class="p">;</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="kt">float</span> <span class="nf">getBalance</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">balance</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+  <span class="k">static</span> <span class="n">BankAccount</span> <span class="n">master_acct</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BankAccount</span><span class="p">(</span><span class="m">000</span><span class="p">,</span> <span class="s">&quot;Bank&quot;</span><span class="p">);</span>
+
+  <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">BankAccount</span> <span class="n">customer</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BankAccount</span><span class="p">(</span><span class="m">999</span><span class="p">,</span> <span class="s">&quot;Edward&quot;</span><span class="p">);</span>  <span class="c1">// allocates and names object</span>
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Two sequences are allocated.
+Each sequence is large enough to hold an int, a (handle to a) string, and a
+float.
+The handles to the sequences are saved in fullwords named <tt class="docutils literal"><span class="pre">master_acct</span></tt>
+and <tt class="docutils literal"><span class="pre">customer</span></tt>.</p>
+</li>
+</ul>
+<p>The last two explanations are not terribly precise, so we learn to draw
+storage diagrams and object diagrams to make the explanations better.</p>
+<p>A <tt class="docutils literal"><span class="pre">struct</span></tt> in C is a template for allocating a frame.
+A <em>class</em> in C++/Java/C# is a template for allocating a frame <em>and</em>
+defining functions (<em>methods</em>) that access the frame.</p>
+<p>An <em>object</em> is the frame that is allocated when you construct a new instance of
+a class template.
+A <em>static</em> variable or method is a single instance that is &#8220;pre-declared&#8221;
+(and not constructed while the program executes).</p>
+<div class="section" id="storage-layout">
+<h2>4.1. Storage Layout<a class="headerlink" href="#storage-layout" title="Permalink to this headline">¶</a></h2>
+<p>A von Neumann-style computer uses linear primary storage.
+When you start a computer and then start, say, a web browser, storage looks
+somewhat like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>+-----------------------+------------------+------------------------+
+| operating system code | web browser code | ... ( free space ) ... |
++-----------------------+------------------+------------------------+
+</pre></div>
+</div>
+<p>Say you start a C# program, which is an <tt class="docutils literal"><span class="pre">.exe</span></tt> file.
+Some of the free space is used: The program (<tt class="docutils literal"><span class="pre">.exe</span></tt> file) itself is loaded and
+there is space reserved for a &#8220;static area&#8221;, a &#8220;stack&#8221;, and a &#8220;heap&#8221;.
+The layout looks like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>+-- ... --+------------+-------------+----------------------------+------------------------------------------+
+| OS etc. | C# program | static area | stack --&gt; (empty) &lt;-- heap | ...(remaining free space)...             |
++-- ... --+------------+-------------+----------------------------+------------------------------------------+
+</pre></div>
+</div>
+<p>The code and static vars are copied into fixed segments.
+The stack and heap both grow while the program executes, so they are laid out at
+opposite ends of the allocated segment.
+(If they grow together, the OS is asked to allocate more storage for the program
+&#8212; we won&#8217;t worry about this!)</p>
+<p>When a new object is allocated, its frame is allocated in the heap part.</p>
+<p>When a method is called, its parameter-argument bindings and its local variables
+are saved in a new frame that is allocated &#8220;on top of&#8221; the stack.
+(When the method finishes, the frame is &#8220;popped&#8221; from the stack.)</p>
+<p>So, <em>a frame and an object are the same thing in computer storage</em>, but
+they are allocated at different places.
+(The reason they look the same is due to a lot of pre-computation,
+embedded in the <tt class="docutils literal"><span class="pre">.exe</span></tt> file, done by the C# compiler.)</p>
+<div class="section" id="storage-diagram-example-with-static-vars-an-array-and-a-dictionary">
+<h3>4.1.1. Storage diagram: Example with static vars, an array, and a dictionary<a class="headerlink" href="#storage-diagram-example-with-static-vars-an-array-and-a-dictionary" title="Permalink to this headline">¶</a></h3>
+<p>Let&#8217;s study the storage layout for this example, when the execution reaches <tt class="docutils literal"><span class="pre">//***</span></tt>:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">Storage_Object_Diagrams_1</span> <span class="p">{</span>
+
+  <span class="c1">// example that shows static variable and two objects</span>
+  <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="kt">int</span> <span class="n">size</span> <span class="p">=</span> <span class="m">4</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+      <span class="kt">int</span><span class="p">[]</span> <span class="n">r</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="n">size</span><span class="p">];</span>
+      <span class="n">r</span><span class="p">[</span><span class="m">0</span><span class="p">]</span> <span class="p">=</span> <span class="n">size</span><span class="p">;</span>
+      <span class="kt">int</span> <span class="n">j</span> <span class="p">=</span> <span class="n">size</span> <span class="p">-</span> <span class="m">1</span><span class="p">;</span>
+      <span class="n">r</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="p">=</span> <span class="n">f</span><span class="p">(</span><span class="n">j</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="kt">int</span> <span class="nf">f</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// this dictionary is a kind of array, indexed by strings, that can grow:</span>
+      <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">int</span><span class="p">&gt;</span> <span class="n">d</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">int</span><span class="p">&gt;();</span>
+      <span class="n">d</span><span class="p">[</span><span class="s">&quot;a&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">x</span><span class="p">;</span>
+      <span class="n">d</span><span class="p">[</span><span class="s">&quot;c&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&quot;a&quot;</span><span class="p">]</span> <span class="p">+</span> <span class="n">x</span><span class="p">;</span>
+      <span class="c1">//***  insert breakpoint at the front of the next line:</span>
+      <span class="k">return</span> <span class="n">size</span> <span class="p">+</span> <span class="n">x</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Here&#8217;s the <em>storage diagram</em>, which shows the layout of this program&#8217;s memory
+partition. (This is drawn in &#8220;sort-of linear layout&#8221;.)</p>
+<img alt="../_images/ExA.jpg" src="../_images/ExA.jpg" />
+<p>Data structures likes arrays and dictionaries are allocated in the heap.
+(Note: I drew the dictionary as a kind-of array, but most languages implement
+a dictionary as a hash table.)
+Frames for method/procedure/function calls are saved on the stack.
+When a method completes, its frame is &#8220;popped&#8221; (erased).
+A frame in the heap is never popped (but if the frame is no longer used by
+the program, a garbage collector program, running in background,
+erases the frame).</p>
+<p>Now, run VS on the example and break at point <tt class="docutils literal"><span class="pre">//***</span></tt> to see how VS presents
+the storage layout in its Debug windows; compare it to the storage diagram &#8212;
+you will see VS is not so good at displaying static variables.
+Also, it displays the dictionary as a complicated array
+(it&#8217;s really a hash table!).
+Also, VS does not show that the array and the dictionary are saved in the heap.</p>
+</div>
+</div>
+<div class="section" id="storage-diagram-example-with-user-defined-class">
+<h2>4.2. Storage diagram: Example with user-defined class<a class="headerlink" href="#storage-diagram-example-with-user-defined-class" title="Permalink to this headline">¶</a></h2>
+<p>Run this example, and stop it when the execution reaches <tt class="docutils literal"><span class="pre">//***</span></tt>:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">Storage_Object_Diagrams_2</span> <span class="p">{</span>
+
+  <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+    <span class="c1">// example that shows two objects that share a static field</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">Clock</span> <span class="n">c</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Clock</span><span class="p">(</span><span class="m">80</span><span class="p">);</span>
+      <span class="n">Clock</span> <span class="n">d</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Clock</span><span class="p">(</span><span class="m">90</span><span class="p">);</span>
+      <span class="n">c</span><span class="p">.</span><span class="n">tick</span><span class="p">(</span><span class="m">2</span><span class="p">);</span>
+      <span class="n">Clock</span> <span class="n">e</span> <span class="p">=</span> <span class="n">d</span><span class="p">;</span>
+      <span class="n">d</span><span class="p">.</span><span class="n">tick</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
+      <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">getTime</span><span class="p">());</span>
+      <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>   <span class="c1">//*** insert break point at beginning of this line</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">class</span> <span class="nc">Clock</span> <span class="p">{</span>
+    <span class="k">static</span> <span class="kt">int</span> <span class="n">count</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+    <span class="k">private</span> <span class="kt">int</span> <span class="n">t</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="nf">Clock</span><span class="p">(</span><span class="kt">int</span> <span class="n">start</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">t</span> <span class="p">=</span> <span class="n">start</span><span class="p">;</span>
+      <span class="n">count</span> <span class="p">=</span> <span class="n">count</span> <span class="p">+</span> <span class="m">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">tick</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">//*** insert break point at beginning of next line:</span>
+      <span class="n">t</span> <span class="p">=</span> <span class="n">t</span> <span class="p">+</span> <span class="n">n</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="kt">int</span> <span class="nf">getTime</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">t</span><span class="p">;</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>When the breakpoint is reached the second time, due to the call, <tt class="docutils literal"><span class="pre">d.tick(3)</span></tt>,
+here is the storage diagram:</p>
+<img alt="../_images/ExB.jpg" src="../_images/ExB.jpg" />
+<p><em>The methods for the two Clocks are saved in the Code area, and not in the
+objects (frames)</em>.
+Doing the latter would be correct but a waste of storage.
+This little optimization causes a serious complication &#8212; see below.</p>
+<p>Now, run VS on the example and break at point <tt class="docutils literal"><span class="pre">//***</span></tt> to see how VS presents
+the storage layout.
+Match it to the above diagram.</p>
+<p>Visual Studio does not show the handles (addresses) of objects, and
+VS does <em>not</em> show the difference between the stack and the heap, and
+it does not show that <tt class="docutils literal"><span class="pre">c</span></tt> and <tt class="docutils literal"><span class="pre">e</span></tt> hold the same handle to
+(that is, they <em>alias</em>)
+the same object, which is can be bad! Be careful!
+To show object handles (thus, one can tell object aliases),
+right-click on the objects of interest in the debugger&#8217;s &#8220;Locals&#8221; view,
+and select &#8220;Make Object ID&#8221;.</p>
+<p>Now, consider the code in tick:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">void</span> <span class="nf">tick</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">t</span> <span class="p">=</span> <span class="n">t</span> <span class="p">+</span> <span class="n">n</span> <span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Variable <tt class="docutils literal"><span class="pre">n</span></tt> is local and saved in <tt class="docutils literal"><span class="pre">tick</span></tt>&#8216;s frame.
+But <tt class="docutils literal"><span class="pre">t</span></tt> is nowhere to be seen.
+<em>To find it, ``this`` is used: ``t`` is read as ``this.t``</em>, which locates the
+correct variable.
+The value of <tt class="docutils literal"><span class="pre">this</span></tt> was set in <tt class="docutils literal"><span class="pre">tick</span></tt>&#8216;s frame by the call, <tt class="docutils literal"><span class="pre">d.tick(3);</span></tt>.</p>
+<p><em>The handle saved in variable ``d`` becomes the value of variable ``this``.</em>
+Indeed, the C# compiler reformats <tt class="docutils literal"><span class="pre">d.tick(3)</span></tt> into this call,
+<tt class="docutils literal"><span class="pre">tick(d,</span> <span class="pre">3)</span></tt>, which calls this reformatted definition:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">void</span> <span class="nf">tick</span><span class="p">(</span><span class="n">Clock</span> <span class="k">this</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="n">t</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">t</span> <span class="p">+</span> <span class="n">n</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><em>The C# compiler does this reformatting to all definitions and all calls of
+non-static (class) methods.</em></p>
+<p>This setup lets the code for <tt class="docutils literal"><span class="pre">tick</span></tt>, saved in the Code Area, work correctly
+with all of object <tt class="docutils literal"><span class="pre">c</span></tt> and <tt class="docutils literal"><span class="pre">d</span></tt> (and <tt class="docutils literal"><span class="pre">e</span></tt>).</p>
+<div class="section" id="object-diagrams">
+<h3>4.2.1. Object Diagrams<a class="headerlink" href="#object-diagrams" title="Permalink to this headline">¶</a></h3>
+<p>A well-written program will allocate its objects in a pattern (&#8220;topology&#8221;) in
+the heap.
+The pattern is important to understanding what the program does.
+Say that a program is started and is in the middle of its execution.
+A picture showing just its heap (no code, statics, stack, and breakpoints), is
+called an object diagram.</p>
+<p>The object diagrams for the two previous examples are really simple!
+Here is the second example&#8217;s object diagram:</p>
+<img alt="../_images/obB.jpg" src="../_images/obB.jpg" />
+<p>Real programs have interesting object diagrams.
+Here is an example: This code allocates and uses a table that is a ragged array:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">size</span> <span class="p">=</span> <span class="n">Int32</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">(</span><span class="s">&quot;Type size:&quot;</span><span class="p">));</span>
+  <span class="kt">int</span><span class="p">[][]</span> <span class="n">table</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="n">size</span><span class="p">][];</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">!=</span> <span class="n">table</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span>
+    <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="n">i</span><span class="p">+</span><span class="m">1</span><span class="p">];</span>
+  <span class="p">}</span>
+  <span class="c1">// ... compute on table ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Once the program starts and allocates its objects, the object diagram looks like
+this:</p>
+<img alt="../_images/arr.jpg" src="../_images/arr.jpg" />
+<p>The diagram displays the pattern of data structure maintained by the program.</p>
+<p>An object diagram is used by a programmer to explain to others what the program
+&#8220;builds&#8221; in storage.
+It is a standard form of documentation that accompanies a system.
+You will use object diagrams a lot when you design, implement, test, and explain
+complex systems.</p>
+</div>
+</div>
+<div class="section" id="object-serialization-deserialization">
+<h2>4.3. Object Serialization/Deserialization<a class="headerlink" href="#object-serialization-deserialization" title="Permalink to this headline">¶</a></h2>
+<p>Many tools for object-oriented programming languages like C# exist that provide
+object serialization/deserialization in a textual form.
+The tools aim to provide the ability to &#8220;persist&#8221; object states across app
+sessions.
+That is, one can &#8220;save&#8221; the object state by <em>serializing</em> the object and all
+objects reachable from it (i.e., by following the arrows in the object diagram),
+as a string and then write it to a file; the object can later then be &#8220;restored&#8221;
+by <em>deserializing</em> the string stored in the file.
+It just so happen that the typical textual form used by these tools is actually
+a textual encoding of the object diagram.</p>
+<p>One such tool that we will use here is
+<a class="reference external" href="http://http://james.newtonking.com/json">Json.NET</a>.
+For example, for the <tt class="docutils literal"><span class="pre">Clock</span></tt> example in the <tt class="docutils literal"><span class="pre">Storage_Object_Diagrams_2</span></tt>
+above, we serialize the objects stored in <tt class="docutils literal"><span class="pre">c</span></tt>, <tt class="docutils literal"><span class="pre">d</span></tt>, and <tt class="docutils literal"><span class="pre">e</span></tt> of the
+<tt class="docutils literal"><span class="pre">Program</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">Main</span></tt> method as follows:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">Clock</span> <span class="n">c</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Clock</span><span class="p">(</span><span class="m">80</span><span class="p">);</span>
+  <span class="n">Clock</span> <span class="n">d</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Clock</span><span class="p">(</span><span class="m">90</span><span class="p">);</span>
+  <span class="n">c</span><span class="p">.</span><span class="n">tick</span><span class="p">(</span><span class="m">2</span><span class="p">);</span>
+  <span class="n">Clock</span> <span class="n">e</span> <span class="p">=</span> <span class="n">d</span><span class="p">;</span>
+  <span class="n">d</span><span class="p">.</span><span class="n">tick</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
+  <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">getTime</span><span class="p">());</span>
+
+  <span class="c1">// serializes values of c, d, and e as mString</span>
+  <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Object</span><span class="p">&gt;</span> <span class="n">m</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Object</span><span class="p">&gt;();</span>
+  <span class="n">m</span><span class="p">[</span><span class="s">&quot;c&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">c</span><span class="p">;</span>
+  <span class="n">m</span><span class="p">[</span><span class="s">&quot;d&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">d</span><span class="p">;</span>
+  <span class="n">m</span><span class="p">[</span><span class="s">&quot;e&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">e</span><span class="p">;</span>
+  <span class="n">JsonSerializerSettings</span> <span class="n">settings</span> <span class="p">=</span> <span class="k">new</span> <span class="n">JsonSerializerSettings</span> <span class="p">{</span>
+    <span class="n">ContractResolver</span> <span class="p">=</span> <span class="k">new</span> <span class="n">CustomJsonContractResolver</span><span class="p">(),</span>
+    <span class="n">PreserveReferencesHandling</span> <span class="p">=</span> <span class="n">PreserveReferencesHandling</span><span class="p">.</span><span class="n">Objects</span>
+  <span class="p">};</span>
+  <span class="kt">string</span> <span class="n">mString</span> <span class="p">=</span> <span class="n">JsonConvert</span><span class="p">.</span><span class="n">SerializeObject</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">Formatting</span><span class="p">.</span><span class="n">Indented</span><span class="p">,</span> <span class="n">settings</span><span class="p">);</span>
+  <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">mString</span><span class="p">);</span>
+
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The important part is the call to <tt class="docutils literal"><span class="pre">JsonConvert.SerializeObject</span></tt> that can
+serialize any .Net object (of any type) into a string in the form of
+Javascript Object Notation (JSON). JSON format is simply a (possibly-nested)
+dictionary object format consisting of keys and values:
+<tt class="docutils literal"><span class="pre">{</span></tt> key1 <tt class="docutils literal"><span class="pre">:</span></tt> value1 <tt class="docutils literal"><span class="pre">,</span></tt> ... <tt class="docutils literal"><span class="pre">,</span></tt> keyN <tt class="docutils literal"><span class="pre">:</span></tt> valueN <tt class="docutils literal"><span class="pre">}</span></tt>
+where the keys are field names (or array indices) and the values are the
+corresponding values of the fields (or the array elements).</p>
+<p>For the example above, the content of <tt class="docutils literal"><span class="pre">mString</span></tt> is as follows.</p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+  <span class="nt">&quot;$id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;c&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;$id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">82</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;d&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;$id&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">93</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>As can be observed, for each object, Json.NET assigns an object handle with
+mapped to the key <tt class="docutils literal"><span class="pre">$id</span></tt>. The first JSON object with <tt class="docutils literal"><span class="pre">$id</span></tt> equal to <tt class="docutils literal"><span class="pre">&quot;1&quot;</span></tt>
+is the object pointed to by <tt class="docutils literal"><span class="pre">m</span></tt>, which is a <tt class="docutils literal"><span class="pre">Dictionary&lt;string,</span> <span class="pre">Object&gt;</span></tt>.
+Object <tt class="docutils literal"><span class="pre">m</span></tt> contains the values of <tt class="docutils literal"><span class="pre">c</span></tt>, <tt class="docutils literal"><span class="pre">d</span></tt>, and <tt class="docutils literal"><span class="pre">e</span></tt> (which are mapped by
+keys <tt class="docutils literal"><span class="pre">&quot;c&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;d&quot;</span></tt>, and <tt class="docutils literal"><span class="pre">&quot;e&quot;</span></tt>, respectively). Notice that the JSON object
+<tt class="docutils literal"><span class="pre">&quot;e&quot;</span></tt> contains a reference to <tt class="docutils literal"><span class="pre">&quot;3&quot;</span></tt> (indicated by the key <tt class="docutils literal"><span class="pre">&quot;$ref&quot;</span></tt>).
+This indicates that the object has been serialized before (i.e., in <tt class="docutils literal"><span class="pre">&quot;d&quot;</span></tt>);
+thus, we can see that <tt class="docutils literal"><span class="pre">&quot;d&quot;</span></tt> and <tt class="docutils literal"><span class="pre">&quot;e&quot;</span></tt> (hence <tt class="docutils literal"><span class="pre">d</span></tt> and <tt class="docutils literal"><span class="pre">e</span></tt>) are actually
+pointing to the same object (alias), which we do not see in the VS debugger.</p>
+<p>To deserialize the object back from <tt class="docutils literal"><span class="pre">mString</span></tt>, one can use
+<tt class="docutils literal"><span class="pre">JsonConvert.DeserializeObject</span></tt> as follows:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Object</span><span class="p">&gt;</span> <span class="n">m2</span> <span class="p">=</span> <span class="n">JsonConvert</span><span class="p">.</span><span class="n">DeserializeObject</span><span class="p">&lt;</span><span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Object</span><span class="p">&gt;&gt;(</span><span class="n">mString</span><span class="p">,</span> <span class="n">settings</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>When <tt class="docutils literal"><span class="pre">m2</span></tt> is serialized, the resulting string is equal to <tt class="docutils literal"><span class="pre">mString</span></tt>!</p>
+</div>
+<div class="section" id="object-diagrams-for-design">
+<h2>4.4. Object Diagrams for Design<a class="headerlink" href="#object-diagrams-for-design" title="Permalink to this headline">¶</a></h2>
+<p>Object diagrams are especially useful when we design large systems, because
+they are a kind of &#8220;blueprint&#8221; of how computer storage will be organized.</p>
+<p>When an object diagram is used for design, only the heap is drawn and details
+about fields within the objects are optional.
+Class names are usually attached to the objects.</p>
+<p>Here is an example:
+We plan to build a database of bank accounts and customers, where a customer
+might own multiple bank accounts.
+Access to the accounts is made through two &#8220;manager&#8221; objects, which enforce
+the rules for &#8220;checking out&#8221;, using, and &#8220;checking in&#8221; the accounts.
+The data base also has a global clock and an &#8220;administrator&#8221; object.
+Here is a design object diagram that shows how the heap might look once
+the system is executing:</p>
+<img alt="../_images/ob.jpg" src="../_images/ob.jpg" />
+<p>The arrows are pointers (handles) held in objects that connect to other objects.
+List/Dictionary/Array-like collections are drawn as vectors.
+Objects are labelled, <tt class="docutils literal"><span class="pre">:CLASSNAME</span></tt>, since we will be coding classes to
+generate the objects.
+It is optional to list the fields that are held in the objects.
+(Do this if it helps you better understand the design.)</p>
+<p>The example shows how there is exactly one clock in the system;
+there are two databases, one holding customers and one holding accounts.
+A customer can own handles/pointers to zero or more accounts.
+Each account must be owned/pointed-to by exactly one customer.</p>
+<p>An object diagram like this can be shown to the other engineers on the project
+and even the bank manager, so that everyone understands what must be built.</p>
+<p>Another example: we are designing a card game that uses Cards, a Deck to
+hold the cards, and a Hand-of-Cards for each Player.
+Here is a design expressed as an object diagram:</p>
+<img alt="../_images/ob2.jpg" src="../_images/ob2.jpg" />
+<p>The design shows that each Player object holds (some methods) and a handle to a
+HandOfCards object, which itself holds (some methods) and a handle to a vector
+of (handles to) Card objects. There is only one DeckOfCards object, which holds
+(some methods) and a handle to a vector that holds (handles to) Card objects.
+Clearly, each Card object is &#8220;owned&#8221; by at most one vector at a time &#8212;
+no sharing.
+When you code this system, you compare the storage layouts generated by the
+execution to the object diagram.</p>
+<p>There is more to say about this next time.</p>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/Lecture03S.html">Lecture 3</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,807 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>7. Coupling and the Model-View-Controller (MVC) Architecture &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">7. Coupling and the Model-View-Controller (MVC) Architecture</a><ul>
+<li><a class="reference internal" href="#coupling">7.1. Coupling</a></li>
+<li><a class="reference internal" href="#architecture-for-a-multi-window-reactive-system">7.2. Architecture for A Multi-Window Reactive System</a><ul>
+<li><a class="reference internal" href="#version-1-naively-mixing-control-with-the-view">7.2.1. Version 1: Naively Mixing Control with The View</a></li>
+<li><a class="reference internal" href="#measuring-the-architecture-s-coupling">7.2.2. Measuring The Architecture&#8217;s Coupling</a></li>
+<li><a class="reference internal" href="#version-2-controller-separated-from-views">7.2.3. Version 2: Controller Separated from Views</a></li>
+<li><a class="reference internal" href="#version-3-model-view-controller">7.2.4. Version 3: Model-View-Controller</a></li>
+<li><a class="reference internal" href="#version-4-xerox-parc-style-mvc-with-sub-classing-observer-design-pattern">7.2.5. Version 4: Xerox PARC-style MVC with Sub-classing: Observer Design Pattern</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#model-view-controller-topology">7.3. Model-View-Controller &#8220;topology&#8221;</a></li>
+<li><a class="reference internal" href="#variations-of-mvc">7.4. Variations of MVC</a><ul>
+<li><a class="reference internal" href="#model-view-presenter-one-view-does-input-and-simplistic-output">7.4.1. Model View Presenter: One View does input and simplistic output</a></li>
+<li><a class="reference internal" href="#model-view-binder-using-an-xml-html-based-view">7.4.2. Model View Binder: Using an XML/HTML-based View</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#weak-and-strong-coupling">7.5. Weak and Strong Coupling</a></li>
+<li><a class="reference internal" href="#distributed-control">7.6. Distributed Control</a></li>
+<li><a class="reference internal" href="#cohesion">7.7. Cohesion</a><ul>
+<li><a class="reference internal" href="#measuring-cohesion">7.7.1. Measuring Cohesion</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#software-metrics">7.8. Software Metrics</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="coupling-and-the-model-view-controller-mvc-architecture">
+<span id="coupling-mvc"></span><h1>7. Coupling and the Model-View-Controller (MVC) Architecture<a class="headerlink" href="#coupling-and-the-model-view-controller-mvc-architecture" title="Permalink to this headline">¶</a></h1>
+<p>The ending of the previous lecture should have you wondering &#8212;
+what is the best way to design a single-user reactive software system with
+&#8220;independent&#8221; sub-assemblies?</p>
+<p>This question also intrigued the researchers at Xerox&#8217;s Palo Alto Lab (PARC)
+in the 1970s when they wrote the first GUI-based systems in Smalltalk,
+a Simula67-like object language implemented on top of Lisp.</p>
+<p>The Xerox researchers quickly learned that it was critical to <em>isolate</em> the
+assemblies so that there was independent development, containment of execution
+errors, smooth maintenance, and component reuse.
+The style of connectivity they used became known as the
+<em>Model-View-Controller</em> (MVC) software architecture.
+We will study it here.</p>
+<div class="section" id="coupling">
+<h2>7.1. Coupling<a class="headerlink" href="#coupling" title="Permalink to this headline">¶</a></h2>
+<p>A component, <tt class="docutils literal"><span class="pre">A</span></tt>, is coupled to component, <tt class="docutils literal"><span class="pre">B</span></tt>, if <tt class="docutils literal"><span class="pre">A</span></tt> depends on <tt class="docutils literal"><span class="pre">B</span></tt>,
+in the sense of UML class diagrams &#8212; <tt class="docutils literal"><span class="pre">A</span></tt>&#8216;s code needs <tt class="docutils literal"><span class="pre">B</span></tt>&#8216;s code to
+compile;
+if <tt class="docutils literal"><span class="pre">B</span></tt>&#8216;s public fields and methods are changed, then <tt class="docutils literal"><span class="pre">A</span></tt>&#8216;s coding must
+change;
+if <tt class="docutils literal"><span class="pre">B</span></tt> works incorrectly, then so will <tt class="docutils literal"><span class="pre">A</span></tt>; if <tt class="docutils literal"><span class="pre">A</span></tt> is extracted for reuse
+in a new system, <tt class="docutils literal"><span class="pre">B</span></tt> must be extracted, too.
+<em>Large software systems must minimize coupling</em> so that compile errors and
+execution errors are limited in scope;
+components can be tested, plugged, unplugged, and replaced easily;
+and sub-assemblies can be saved and reused in subsequent systems.</p>
+<p>Couplings are a key feature in modern software architectures.
+Here is an important case study:</p>
+</div>
+<div class="section" id="architecture-for-a-multi-window-reactive-system">
+<h2>7.2. Architecture for A Multi-Window Reactive System<a class="headerlink" href="#architecture-for-a-multi-window-reactive-system" title="Permalink to this headline">¶</a></h2>
+<p>Software systems like games, spreadsheets, and IDEs accept input from multiple
+sources and produce output to multiple windows.</p>
+<p>A standard example is an IDE like Visual Studio: It consists of multiple windows
+(main window, edit window, toolbox window, solution window, and debug windows).
+Input is entered into all of these windows (text entry and mouse clicks), and
+input entered into one window can affect multiple other windows.
+(Example: you type the text for a label in the solution window, and the change
+shows in the solution window and also in the edit window.
+Or, you click &#8220;Start Debug&#8221; in the main window, and a breakpoint appears in the
+edit window and the call stack and local variables appear in the debug windows.)</p>
+<p>It is a major problem coordinating input and output when there are multiple
+windows (Forms).
+We now study the architectures that might apply.</p>
+<p>Let&#8217;s consider the simplest version of this problem: A baby reactive toy uses
+a model (data structure + operations), a controller (algorithm/protocol), and
+wo views (forms), one that accepts input and the other that displays output &#8212;
+input entered into the input view causes computation on the model and generates
+changes to the output view, which displays information from the model.</p>
+<div class="section" id="version-1-naively-mixing-control-with-the-view">
+<h3>7.2.1. Version 1: Naively Mixing Control with The View<a class="headerlink" href="#version-1-naively-mixing-control-with-the-view" title="Permalink to this headline">¶</a></h3>
+<p>This is a naive Visual-Studio-style implementation, where the controller code is
+coded inside the <tt class="docutils literal"><span class="pre">private</span> <span class="pre">void</span> <span class="pre">button_Click(object</span> <span class="pre">sender,</span> <span class="pre">EventArgs</span> <span class="pre">e)</span></tt>
+method, which sits in the <tt class="docutils literal"><span class="pre">InputViewForm</span></tt> class, which itself owns all the
+system&#8217;s components:</p>
+<img alt="../_images/V1.png" src="../_images/V1.png" />
+<p>The relevant code for this diagram reads like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre> <span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">InputViewForm</span> <span class="p">:</span> <span class="n">Form</span>  <span class="p">{</span>
+   <span class="k">private</span> <span class="n">Model</span> <span class="n">model</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Model</span><span class="p">();</span>
+   <span class="k">private</span> <span class="n">OutputViewForm</span> <span class="n">form</span> <span class="p">=</span> <span class="k">new</span> <span class="n">OutputViewForm</span><span class="p">();</span>
+
+   <span class="k">public</span> <span class="nf">InputViewForm</span><span class="p">()</span> <span class="p">{</span> <span class="n">InitializeComponent</span><span class="p">();</span> <span class="p">}</span>
+
+   <span class="k">private</span> <span class="k">void</span> <span class="nf">onButton_Click</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+     <span class="c1">//...</span>
+     <span class="n">model</span><span class="p">.</span><span class="n">update</span><span class="p">();</span>
+     <span class="n">out_form</span><span class="p">.</span><span class="n">update</span><span class="p">();</span>
+   <span class="p">}</span>
+ <span class="p">}</span>
+
+<span class="k">static</span> <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+  <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Application</span><span class="p">.</span><span class="n">EnableVisualStyles</span><span class="p">();</span>
+    <span class="n">Application</span><span class="p">.</span><span class="n">SetCompatibleTextRenderingDefault</span><span class="p">(</span><span class="k">false</span><span class="p">);</span>
+    <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">(</span><span class="k">new</span> <span class="n">InputViewForm</span><span class="p">());</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><em>This is bad.</em>
+It is bad because the entire system lives in the Form that handles input events.
+How can one team (typically the software engineers) develop the control and
+the model and another team (typically the graphical designers) develop the view,
+when all of these are mixed into one file?</p>
+<p>Further, how can the components be extracted for reuse in future systems?
+And, why should a GUI with a button &#8220;own&#8221; the output form and also the system&#8217;s
+model (data base)?
+Will this architecture generalize to multiple forms where each form accepts
+input and shows output?</p>
+</div>
+<div class="section" id="measuring-the-architecture-s-coupling">
+<h3>7.2.2. Measuring The Architecture&#8217;s Coupling<a class="headerlink" href="#measuring-the-architecture-s-coupling" title="Permalink to this headline">¶</a></h3>
+<p>The above doesn&#8217;t sound good, and the problem is that there is
+&#8220;too much&#8221;/&#8221;too strong&#8221; coupling (dependency).
+There is a simple way to measure &#8220;degree of coupling&#8221; of a class-diagram
+assembly, <tt class="docutils literal"><span class="pre">A</span></tt>, in terms of <tt class="docutils literal"><span class="pre">A</span></tt>&#8216;s sub-assemblies:</p>
+<ul>
+<li><p class="first">Let <tt class="docutils literal"><span class="pre">N(A)</span></tt> is the number of classes in <tt class="docutils literal"><span class="pre">A</span></tt>.
+Define the number of sub-assemblies, <tt class="docutils literal"><span class="pre">S(A)</span></tt>, as the number of subgraphs of
+<tt class="docutils literal"><span class="pre">A</span></tt> that contain at least one class and have no outgoing edges.</p>
+<p>(An edge in a subgraph is outgoing if it starts at a node in the subgraph and
+has an arrow to a node outside the subgraph.)</p>
+</li>
+<li><p class="first">Diagram <tt class="docutils literal"><span class="pre">A</span></tt>&#8216;s coupling ratio, <tt class="docutils literal"><span class="pre">C(A)</span></tt>, is the ratio of sub-assemblies per
+class: <tt class="docutils literal"><span class="pre">C(A)</span> <span class="pre">=</span> <span class="pre">S(A)</span> <span class="pre">/</span> <span class="pre">N(A)</span></tt>.</p>
+</li>
+</ul>
+<p>The larger the value of <tt class="docutils literal"><span class="pre">C(A)</span></tt>, the better &#8212; If there are more subassemblies
+per component, this means there are more possible ways of disassembling the
+system so that we can design, code, and test the system in stages.
+We can also find more ways of disassembling the system so that we can reuse its
+parts in other systems.</p>
+<p>For the above architecture, <tt class="docutils literal"><span class="pre">V1</span></tt>, we have <tt class="docutils literal"><span class="pre">S(V1)</span> <span class="pre">=</span> <span class="pre">3</span></tt> and <tt class="docutils literal"><span class="pre">C(V1)</span> <span class="pre">=</span> <span class="pre">3/3</span> <span class="pre">=</span> <span class="pre">1</span></tt>.
+That is, there are only 3 sub-assemblies (including the entire system) that we
+can extract and reuse out of this 3-component system.
+We can do better.</p>
+</div>
+<div class="section" id="version-2-controller-separated-from-views">
+<h3>7.2.3. Version 2: Controller Separated from Views<a class="headerlink" href="#version-2-controller-separated-from-views" title="Permalink to this headline">¶</a></h3>
+<p>We simply must untangle the controller code and model from the views:
+We extract the control code from the event-handler method
+(<tt class="docutils literal"><span class="pre">private</span> <span class="pre">void</span> <span class="pre">button_Click(object</span> <span class="pre">sender,</span> <span class="pre">EventArgs</span> <span class="pre">e)</span></tt>) in the input form
+and place it in its own class.
+Also, the model is not owned by any other assembly:</p>
+<img alt="../_images/V2.png" src="../_images/V2.png" />
+<p><em>This is better.</em>
+When you implement this architecture in Visual Studio, construct and connect the
+<tt class="docutils literal"><span class="pre">InputView</span></tt>, <tt class="docutils literal"><span class="pre">Controller</span></tt>, and <tt class="docutils literal"><span class="pre">Model</span></tt> objects in the <tt class="docutils literal"><span class="pre">Main</span></tt> method of
+<tt class="docutils literal"><span class="pre">Program.cs</span></tt>.
+(For the above, the <tt class="docutils literal"><span class="pre">OutputView</span></tt> is still constructed and owned by the
+<tt class="docutils literal"><span class="pre">InputView</span></tt>.)
+Here&#8217;s how to do it:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">InputViewForm</span> <span class="p">:</span> <span class="n">Form</span>  <span class="p">{</span>
+  <span class="k">private</span> <span class="n">OutputViewForm</span> <span class="n">out_form</span><span class="p">;</span>
+  <span class="k">private</span> <span class="n">Model</span> <span class="n">model</span><span class="p">;</span>
+  <span class="k">private</span> <span class="n">Controller</span> <span class="n">cont</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">InputViewForm</span><span class="p">(</span><span class="n">Controller</span> <span class="n">c</span><span class="p">,</span> <span class="n">Model</span> <span class="n">m</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">InitializeComponent</span><span class="p">();</span>  <span class="n">cont</span> <span class="p">=</span> <span class="n">c</span><span class="p">;</span>  <span class="n">model</span> <span class="p">=</span> <span class="n">m</span><span class="p">;</span>
+    <span class="n">out_form</span> <span class="p">=</span> <span class="k">new</span> <span class="n">OutputViewForm</span><span class="p">(</span><span class="n">model</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">private</span> <span class="k">void</span> <span class="nf">onButton_Click</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cont</span><span class="p">.</span><span class="n">handle</span><span class="p">();</span>  <span class="n">out_form</span><span class="p">.</span><span class="n">update</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>  <span class="c1">// construct and connect the components here:</span>
+    <span class="n">Model</span> <span class="n">m</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Model</span><span class="p">();</span>
+    <span class="n">Controller</span> <span class="n">c</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Controller</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+    <span class="n">InputViewForm</span> <span class="n">i</span> <span class="p">=</span> <span class="k">new</span> <span class="n">InputViewForm</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">);</span>
+    <span class="c1">// ...</span>
+    <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>  <span class="c1">// give control to the input view</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Now, the <tt class="docutils literal"><span class="pre">Main</span></tt> method&#8217;s code documents the software architecture &#8212;
+you read it first to learn about the system.
+Also, this architecture makes it easier to extract sub-assemblies for coding,
+testing, and future reuse.</p>
+<p>For this system, <tt class="docutils literal"><span class="pre">V2</span></tt>, we have <tt class="docutils literal"><span class="pre">S(V2)</span> <span class="pre">=</span> <span class="pre">5</span></tt> and <tt class="docutils literal"><span class="pre">C(V2)</span> <span class="pre">=</span> <span class="pre">5/4</span> <span class="pre">=</span> <span class="pre">1.25</span></tt>,
+better than before.</p>
+<p>It is still a (minor) problem that the input view owns and contacts the output
+view.
+Also, we would like to separate (decouple) the input view from the controller.
+This is because the input view (the &#8220;user interface&#8221;, the &#8220;GUI&#8221;) is often
+developed in a different language and in a different design tool than
+C#/Visual Studio.</p>
+<p>Finally, modern GUI-based systems (like Visual Studio!), use multiple input
+views/forms and also multiple output views/form.
+We want a software architecture where it is easy to add and remove views, even
+while the system is executing.
+(Think about how windows appear and disappear when you run Visual Studio.
+What happens is more that just Showing and Hide-ing windows &#8212;
+windows are constructed, attached, used, removed, and deallocated.)</p>
+</div>
+<div class="section" id="version-3-model-view-controller">
+<h3>7.2.4. Version 3: Model-View-Controller<a class="headerlink" href="#version-3-model-view-controller" title="Permalink to this headline">¶</a></h3>
+<p>Now we study the first version of the Model-View-Controller (MVC) architecture.
+This version works well when there is just <em>one controller object that handles
+all input events and does all model updates</em>:</p>
+<img alt="../_images/V3.png" src="../_images/V3.png" />
+<p>The key(s) are the delegate declarations.
+(Recall that a delegate is an &#8220;interface/data-type that specifies a single
+method.&#8221;)</p>
+<ul class="simple">
+<li>The input view depends on <tt class="docutils literal"><span class="pre">delegate</span> <span class="pre">inputHandler</span></tt>, which specifies the type
+of method that should be called when there is an input event.</li>
+<li>Delegate <tt class="docutils literal"><span class="pre">Observer</span></tt> specifies the type of method(s) that are called when
+the model is updated and the output view(s) should be called to repaint their
+displays.
+Each output view&#8217;s <tt class="docutils literal"><span class="pre">update</span></tt> method implements the <tt class="docutils literal"><span class="pre">Observer</span></tt> delegate,
+and <em>it is</em> <strong>register</strong>-ed <em>with the controller</em>, in the controller&#8217;s
+registry.
+(See the code just below.)</li>
+</ul>
+<p>The remaining dependencies are:</p>
+<ul class="simple">
+<li>The controller depends on the model, because the controller&#8217;s purpose is to
+enforce the algorithm/protocol for calling the model&#8217;s methods.</li>
+<li>The output view depends on the model, because the output view&#8217;s purpose is to
+display a representation (a &#8220;view&#8221;!) of the model on the display.
+(If an output view/form is written in a language/tool different from C#/VS,
+we can insert a delegate declaration between the output view and the model.)</li>
+</ul>
+<p>The <tt class="docutils literal"><span class="pre">Main</span></tt> method assembles the system and registers the <tt class="docutils literal"><span class="pre">Observer</span></tt> (s):</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// the type of method that handles input events:</span>
+<span class="k">public</span> <span class="k">delegate</span> <span class="k">void</span> <span class="nf">InputHandler</span><span class="p">();</span>
+<span class="c1">// the type of method that calls output views when there is a &quot;model-update event&quot;:</span>
+<span class="k">public</span> <span class="k">delegate</span> <span class="k">void</span> <span class="nf">Observer</span><span class="p">();</span>
+
+<span class="k">static</span> <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Model</span> <span class="n">m</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Model</span><span class="p">();</span>
+    <span class="n">Controller</span> <span class="n">c</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Controller</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+    <span class="n">InputViewForm</span> <span class="n">i</span> <span class="p">=</span> <span class="k">new</span> <span class="n">InputViewForm</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">handle</span><span class="p">);</span>  <span class="c1">// recall that  c.handle  has type InputHandler</span>
+    <span class="n">OutputViewForm</span> <span class="n">f</span> <span class="p">=</span> <span class="k">new</span> <span class="n">OutputViewForm</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+    <span class="n">f</span><span class="p">.</span><span class="n">Show</span><span class="p">();</span>    <span class="c1">// C# requires that you tell an output form to show itself</span>
+    <span class="n">c</span><span class="p">.</span><span class="n">register</span><span class="p">(</span><span class="n">f</span><span class="p">.</span><span class="n">update</span><span class="p">);</span>   <span class="c1">//  f.update  has type  Observer</span>
+    <span class="c1">// ...</span>
+    <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>When there is an input event, the <tt class="docutils literal"><span class="pre">InputViewForm</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">onButton_Click</span></tt> method
+(indirectly) calls <tt class="docutils literal"><span class="pre">handle</span></tt> in the controller, which executes the
+algorithm/protocol for the input event.
+<em>The input view/form is not coupled to any controller or model</em>.
+This makes it easy to develop the input view separately from the rest of the
+system.</p>
+<p>When the controller does a model update, all methods saved in registry are
+called.
+So, <em>the controller is not coupled to any view</em>.
+This makes it easy to extend the system to have multiple forms (views) for
+inputs and outputs, like a spreadsheet or IDE does.
+It makes it easy for views to &#8220;come and go&#8221; while the system is executing.
+This is a standard technique in systems building, maybe the most important one
+you will learn in this course.</p>
+<p>For this system, call it, <tt class="docutils literal"><span class="pre">V3</span></tt>, we have <tt class="docutils literal"><span class="pre">S(V3)</span> <span class="pre">=</span> <span class="pre">9</span></tt>, and
+<tt class="docutils literal"><span class="pre">C(V3)</span> <span class="pre">=</span> <span class="pre">9/4</span> <span class="pre">=</span> <span class="pre">2.25</span></tt>, which shows marked improvement.</p>
+<p>An important variation on the above is to save the registry in the Model.
+Here is the revised sub-assembly:</p>
+<img alt="../_images/V4a.png" src="../_images/V4a.png" />
+<p>This arrangement can be used when there are multiple input views, each of which
+contacts a distinct controller object to update the model.
+In such a situation, the registry cannot be saved in any one of the controllers,
+so we can save it with the model.</p>
+<p>The previous arrangement is a bit less attractive because Model components
+(&#8220;data structures&#8221;) are rarely written with registries embedded in them.
+This flaw is repaired in Version 4, below.</p>
+<p><strong>Principles of MVC design</strong></p>
+<ul class="simple">
+<li>Controllers are written to compute answers and to control/enforce the proper
+use of models (the &#8220;proper use&#8221; is the &#8220;protocol&#8221; or the &#8220;rules of the game&#8221;),
+so controllers are typically coupled to (depend on) the models they control.</li>
+<li>Output views are coupled to models, because the purpose of an output view is
+to display/pretty-print information embedded in a model.
+No component should be coupled to an output view.</li>
+<li>Models should not be coupled to any other assembly.</li>
+<li>If they are coupled to any other component, an input view/form is coupled to
+the controller that does the computation requested by the input event.
+No component should be coupled to an input view.</li>
+</ul>
+</div>
+<div class="section" id="version-4-xerox-parc-style-mvc-with-sub-classing-observer-design-pattern">
+<h3>7.2.5. Version 4: Xerox PARC-style MVC with Sub-classing: Observer Design Pattern<a class="headerlink" href="#version-4-xerox-parc-style-mvc-with-sub-classing-observer-design-pattern" title="Permalink to this headline">¶</a></h3>
+<p>Here is an improvement on the immediately previous architecture,
+where there are multiple controllers that update the model:
+We store the registry of observers in a super-class to which the model attaches:</p>
+<img alt="../_images/V4b.png" src="../_images/V4b.png" />
+<p>Now, the model component extends (is a subclass of) an &#8220;observed model&#8221;, which
+is a class that holds the registry.
+This last pattern was the version of MVC developed by the Xerox PARC team.
+It is called the <em>Observer design pattern</em>.
+Here is the pattern of coding you can use:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">delegate</span> <span class="k">void</span> <span class="nf">InputHandler</span><span class="p">(...);</span>  <span class="c1">// data type of input-event methods</span>
+<span class="k">public</span> <span class="k">delegate</span> <span class="k">void</span> <span class="nf">Observer</span><span class="p">();</span>  <span class="c1">// data type of output-refresh methods</span>
+
+<span class="k">public</span> <span class="k">abstract</span> <span class="k">class</span> <span class="nc">Observed</span> <span class="n">Model</span> <span class="p">{</span>  <span class="c1">// &quot;abstract&quot; means &quot;unfinished&quot;</span>
+  <span class="k">private</span> <span class="n">List</span> <span class="n">registry</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">();</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">register</span><span class="p">(</span><span class="n">Observer</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="n">registry</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">notify</span><span class="p">()</span> <span class="p">{</span> <span class="k">foreach</span><span class="p">(</span><span class="n">Observer</span> <span class="n">x</span> <span class="k">in</span> <span class="n">registry</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span><span class="p">();</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Model</span> <span class="p">:</span> <span class="n">ObservedModel</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">Data</span> <span class="n">mydata</span><span class="p">;</span>
+  <span class="c1">// ...</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">update</span><span class="p">(...)</span> <span class="p">{</span> <span class="n">mydata</span> <span class="p">=</span> <span class="p">...;</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="kt">string</span> <span class="nf">getData</span><span class="p">()</span> <span class="p">{</span> <span class="p">...</span> <span class="k">return</span> <span class="n">mydata</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Control</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">Model</span> <span class="n">m</span><span class="p">;</span>
+  <span class="c1">// ...</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">handle</span><span class="p">(...)</span> <span class="p">{</span> <span class="n">m</span><span class="p">.</span><span class="n">update</span><span class="p">(...);</span>  <span class="n">m</span><span class="p">.</span><span class="n">notify</span><span class="p">();</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">InputViewForm</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">Button</span> <span class="n">button1</span><span class="p">;</span>
+  <span class="k">private</span> <span class="n">InputHandler</span> <span class="n">han</span><span class="p">;</span>
+  <span class="c1">// ...</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">button1_Click</span><span class="p">(...)</span> <span class="p">{</span> <span class="n">han</span><span class="p">(...);</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">OutputViewForm</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">Label</span> <span class="n">label1</span><span class="p">;</span>
+  <span class="k">private</span> <span class="n">Model</span> <span class="n">m</span><span class="p">;</span>
+  <span class="c1">// ...</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">repaint</span><span class="p">()</span> <span class="p">{</span> <span class="n">label1</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">m</span><span class="p">.</span><span class="n">getData</span><span class="p">();</span>  <span class="k">this</span><span class="p">.</span><span class="n">Refresh</span><span class="p">();</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="n">Model</span> <span class="n">model</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Model</span><span class="p">();</span>
+    <span class="n">Control</span> <span class="n">c1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Control</span><span class="p">(</span><span class="n">model</span><span class="p">);</span>
+    <span class="n">InputViewForm</span> <span class="n">f1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">InputViewForm</span><span class="p">(</span><span class="n">c1</span><span class="p">.</span><span class="n">handle</span><span class="p">);</span>
+    <span class="n">Control</span> <span class="n">c2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Control</span><span class="p">(</span><span class="n">model</span><span class="p">);</span>
+    <span class="n">InputViewForm</span> <span class="n">f2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">InputViewForm</span><span class="p">(</span><span class="n">c2</span><span class="p">.</span><span class="n">handle</span><span class="p">);</span>
+    <span class="n">OutputViewForm</span> <span class="n">o1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">OutputViewForm</span><span class="p">(</span><span class="n">model</span><span class="p">);</span>
+    <span class="n">model</span><span class="p">.</span><span class="n">register</span><span class="p">(</span><span class="n">o1</span><span class="p">.</span><span class="n">repaint</span><span class="p">);</span>
+    <span class="n">OutputViewForm</span> <span class="n">o2</span> <span class="p">=</span> <span class="k">new</span> <span class="n">OutputViewForm</span><span class="p">(</span><span class="n">model</span><span class="p">);</span>
+    <span class="n">model</span><span class="p">.</span><span class="n">register</span><span class="p">(</span><span class="n">o2</span><span class="p">.</span><span class="n">repaint</span><span class="p">);</span>
+    <span class="n">f1</span><span class="p">.</span><span class="n">Show</span><span class="p">();</span>  <span class="n">f2</span><span class="p">.</span><span class="n">Show</span><span class="p">();</span>  <span class="n">o1</span><span class="p">.</span><span class="n">Show</span><span class="p">();</span>  <span class="n">o2</span><span class="p">.</span><span class="n">Show</span><span class="p">();</span>
+    <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The subclass arrangement places the registry in a central place, at the model
+object, so that <em>multiple forms and controllers can correctly share the model</em>.
+Also, the observed model knows nothing about the class names of the forms that
+link to it &#8212; it is completely decoupled from the view assembly.</p>
+</div>
+</div>
+<div class="section" id="model-view-controller-topology">
+<h2>7.3. Model-View-Controller &#8220;topology&#8221;<a class="headerlink" href="#model-view-controller-topology" title="Permalink to this headline">¶</a></h2>
+<p>The key feature of MVC architecture is the &#8220;triad&#8221; or &#8220;triangle topology&#8221; of
+assembly:</p>
+<div class="highlight-python"><div class="highlight"><pre>      IN/OUT Views
+       |     \
+       |      \
+       |       \
+       V        V
+Controller ---&gt; Model
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>When there is an input event, the (input&#8217;s) view contacts the controller.</li>
+<li>The controller executes the correct protocol (algorithm) to update the model.</li>
+<li>The relevant output views are <em>signalled indirectly via delegate calls</em> to
+query the model for the results, which are displayed.</li>
+</ol>
+<p>The connection of output view to model, along with Step 3, are called the
+<em>Observer design pattern</em>.
+A design pattern is a coding scheme for doing some task correctly in an object
+language.
+In this case, the Observer design pattern gives a solution to the problem of
+updating multiple output views when a model has changed value.</p>
+<p>Once again, here are some principles of MVC design</p>
+<ul class="simple">
+<li>Controllers are written to control/enforce the proper use of models, so
+controllers are typically coupled to (depend on) the models they control.</li>
+<li>Output views are coupled to models, because the purpose of an output view is
+to display/pretty-print information embedded in a model.
+<em>No component should be coupled to an output view.</em></li>
+<li>Models should not be coupled to any other assembly.</li>
+<li>If they are coupled to any other component, an input view is coupled to the
+controller that does the computation requested by the input event.
+No component should be coupled to an input view.</li>
+</ul>
+<p>We will encounter more design patterns as we study more architectures.</p>
+</div>
+<div class="section" id="variations-of-mvc">
+<h2>7.4. Variations of MVC<a class="headerlink" href="#variations-of-mvc" title="Permalink to this headline">¶</a></h2>
+<p>The MVC architecture works great for systems with multiple input and output
+views/forms.
+There are two important alternatives:</p>
+<div class="section" id="model-view-presenter-one-view-does-input-and-simplistic-output">
+<h3>7.4.1. Model View Presenter: One View does input and simplistic output<a class="headerlink" href="#model-view-presenter-one-view-does-input-and-simplistic-output" title="Permalink to this headline">¶</a></h3>
+<p>For very simple reactive systems, where there is just one, simplistic view,
+we have this greatly simplified variant of MVC, called Model View Presenter.
+It has a linear topology and uses function call-return to do its work:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&amp;OutView           1. In&amp;OutView calls Presenter with input event.
+    |                2. Presenter computes answer, updates Model,
+    V                   and queries Model for new values of data.
+Presenter               Presenter returns the new data values as
+    |                   the answer to the call in Step 1.
+    V                3. In&amp;OutView displays the returned answer.
+  Model
+</pre></div>
+</div>
+<p>The architecture places a burden on the Presenter component, which
+both implements the system&#8217;s algorithm and knows exactly the data that must be
+displayed.
+You will find this architecture in some business systems, e.g.,
+an ATM connected to a bank or a calculator tool &#8212; the output view shows just
+a single number or a single string.</p>
+</div>
+<div class="section" id="model-view-binder-using-an-xml-html-based-view">
+<h3>7.4.2. Model View Binder: Using an XML/HTML-based View<a class="headerlink" href="#model-view-binder-using-an-xml-html-based-view" title="Permalink to this headline">¶</a></h3>
+<p>This architecture was developed by Microsoft (and called &#8220;Model View ViewModel&#8221;)
+to match their WFP and Silverlight system, but it resembles the layout used in
+many Enterprise Information Systems (EIS).
+It is a &#8220;web-browser-view plus model plus controller&#8221;:</p>
+<p>Say we have a general-purpose output view, essentially a web-browser, that
+can show output formatted in some XML-like language.
+(XML is a &#8220;bracket language&#8221;; HTML is one instance of XML).</p>
+<p>The controller not only signals the model to do updates, but it then fetches
+updated data from the model and formats it as an XML document.
+Then the output view fetches the XML document and displays it:</p>
+<div class="highlight-python"><div class="highlight"><pre>InView  OutView
+  |         |
+  V         V
+Binder - -&gt;delegate Observer
+  |
+  V
+Model
+</pre></div>
+</div>
+<p>The controller is called a &#8220;Binder&#8221;, because it does data bindings of the
+model&#8217;s data to names and layout in the XML document it builds:</p>
+<ol class="arabic simple">
+<li>The InView signals the Binder with an event.</li>
+<li>The Binder updates the Model and queries the model for the new values of data.</li>
+<li>The Binder organizes the new data into data bindings &#8212; a structure or
+&#8220;template&#8221; of how the data should be presented to the user.
+The template is coded as an XML document and held in the Binder.</li>
+<li>The Binder signals, say, by delegate call, that all Observers should retrieve
+the template for presentation.</li>
+<li>The Outview, which is registered as an Observer, retrieves the XML document
+and displays it.</li>
+</ol>
+<p>Like the Presenter component, the Binder has multiple responsibilities.
+Unlike the Presenter, the Binder organizes in a semantically important way how
+the data must be viewed.
+Note that the Binder is not coupled to the OutView, so that the Binder and the
+Model can be designed and tested independently of the views.</p>
+<p>When used for internet commerce, the InView and OutView are often merged
+together as a web browser or some XML/HTML-based viewer.
+The Binder is often a &#8220;proxy object&#8221; (we study this notion later) that was
+specially constructed by the Model and sent over the Web to the web browser to
+act as that browser&#8217;s personal Binder.
+The Binder contains the &#8220;business logic&#8221; for doing the commerce transactions.</p>
+<p><strong>Do not do this:</strong></p>
+<p>Perhaps the worst layout for a reactive system would be just one view/form that
+implements both input and output with this pattern of communication:</p>
+<div class="highlight-python"><div class="highlight"><pre>       In&amp;OutView             1. View contacts Controller
+       |        ^             2. Controller updates Model
+       V        |             3. Model sends updated info to View
+Controller --&gt; Model
+</pre></div>
+</div>
+<p>Beginners code reactive systems like this; there is only one subassembly of this
+&#8220;circular&#8221; system!</p>
+</div>
+</div>
+<div class="section" id="weak-and-strong-coupling">
+<h2>7.5. Weak and Strong Coupling<a class="headerlink" href="#weak-and-strong-coupling" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">C</span></tt> measures coupling.
+We say that a revised architecture is more <em>weakly coupled</em> than its predecessor
+if its <tt class="docutils literal"><span class="pre">C</span></tt> measure is higher.</p>
+<blockquote>
+<div>Weaker coupling means more independence of components and more
+sub-assemblies &#8212; more ways to disassemble, code, test, unplug, replug,
+reuse.</div></blockquote>
+<p>Weaker coupling is good.</p>
+<p>A system is strongly coupled if its components depend on many other components,
+meaning fewer subassemblies exist.
+Strong coupling is bad.</p>
+<p>The coupling measure, <tt class="docutils literal"><span class="pre">C(A)</span></tt>, of assembly <tt class="docutils literal"><span class="pre">A</span></tt> is not the final judge of
+<tt class="docutils literal"><span class="pre">A</span></tt>&#8216;s quality, but as a rough rule, <tt class="docutils literal"><span class="pre">C(A)</span></tt> should be at least 1.0 &#8212;
+otherwise, something is wrong if a component system cannot be untangled into as
+many sub-assemblies as there are pieces in the assembly.
+In such a case, there is no benefit from writing the assembly in pieces.
+(The underlying problem might be a lack of cohesion, which we study next.)</p>
+</div>
+<div class="section" id="distributed-control">
+<h2>7.6. Distributed Control<a class="headerlink" href="#distributed-control" title="Permalink to this headline">¶</a></h2>
+<p>A controller holds a system&#8217;s algorithm. An algorithm is a script of commands or
+a protocol for maintaining and using the system&#8217;s data structure(s).</p>
+<p>Say you have a reactive system that maintains two data structures
+(model/entity classes) <tt class="docutils literal"><span class="pre">A</span></tt> and <tt class="docutils literal"><span class="pre">B</span></tt>.
+The system has just one boundary class (view class) with one or more buttons.
+Sometimes, a button press triggers an update to data structure, <tt class="docutils literal"><span class="pre">A</span></tt>, and
+sometimes, a button press triggers an update to data structure, <tt class="docutils literal"><span class="pre">B</span></tt>.
+There are no relationships between <tt class="docutils literal"><span class="pre">A</span></tt> and <tt class="docutils literal"><span class="pre">B</span></tt>.</p>
+<p>A simple implementation of the system would use one controller that executes the
+<tt class="docutils literal"><span class="pre">A</span></tt>-update algorithm and the <tt class="docutils literal"><span class="pre">B</span></tt>-update algorithm:</p>
+<div class="highlight-python"><div class="highlight"><pre>                            +--&gt; A
+                           /
+View --&gt; ControllerForAandB
+                           \
+                            +--&gt; B
+</pre></div>
+</div>
+<p>This architecture, call it <tt class="docutils literal"><span class="pre">X1</span></tt>, is simple, but the controller is actually
+two algoriithms &#8212; one for <tt class="docutils literal"><span class="pre">A</span></tt> and one for <tt class="docutils literal"><span class="pre">B</span></tt> &#8212; unnaturally glued
+together; note that <tt class="docutils literal"><span class="pre">S(X1)</span> <span class="pre">=</span> <span class="pre">5</span></tt>, and <tt class="docutils literal"><span class="pre">C(X1)</span> <span class="pre">=</span> <span class="pre">1.25</span></tt>.</p>
+<p>Since <tt class="docutils literal"><span class="pre">A</span></tt> and <tt class="docutils literal"><span class="pre">B</span></tt> are unrelated, so should be their controllers:</p>
+<div class="highlight-python"><div class="highlight"><pre>     +--&gt; ControllerForA --&gt; A
+    /
+View
+    \
+     +--&gt; ControllerForB --&gt; B
+</pre></div>
+</div>
+<p>This architecture, call it <tt class="docutils literal"><span class="pre">X2</span></tt>, is better, because it exhibits distributed
+control &#8212; the update algorithms in the controllers are married to the entities
+(models), not the view.
+We have <tt class="docutils literal"><span class="pre">S(X2)</span> <span class="pre">=</span> <span class="pre">9</span></tt> and <tt class="docutils literal"><span class="pre">C(X2)</span> <span class="pre">=</span> <span class="pre">1.8</span></tt>. This is a reminder that:</p>
+<ol class="lowerroman simple">
+<li>a controller manages a data structure (and not a view), and</li>
+<li>distributed control creates weaker coupling.</li>
+</ol>
+<p>Distributed control is good.</p>
+<p>This small example should make us think about how large systems sometimes use
+algorithms that are naturally divided into pieces, depending on the data
+structures they use.
+This is not exactly a radical idea &#8212; the main reason for writing
+procedures/subroutines in a program is to divide up the algorithm into natural,
+understandable pieces.</p>
+<p>We consider the development of controllers in a future lecture.</p>
+</div>
+<div class="section" id="cohesion">
+<h2>7.7. Cohesion<a class="headerlink" href="#cohesion" title="Permalink to this headline">¶</a></h2>
+<p>The previous experiment with data structures <tt class="docutils literal"><span class="pre">A</span></tt> and <tt class="docutils literal"><span class="pre">B</span></tt> showed that
+something was &#8220;wrong&#8221; with a controller that held two unrelated protocols, one
+for <tt class="docutils literal"><span class="pre">A</span></tt> and one for <tt class="docutils literal"><span class="pre">B</span></tt>.
+&#8220;Unrelatedness&#8221; is bad for classes in object languages;
+each class should present exactly one concept, and all the members
+(fields and methods) in the class are about that one concept.</p>
+<p>A component is <em>cohesive</em> if it is &#8220;about&#8221; one concept.
+We can understand the notion by looking at coding style.
+This class is &#8220;about&#8221; the concept of a playing card:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">class</span> <span class="nc">Card</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="k">readonly</span> <span class="n">Count</span> <span class="n">count</span><span class="p">;</span>
+  <span class="k">public</span> <span class="k">readonly</span> <span class="n">Suit</span> <span class="n">suit</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">Card</span><span class="p">(</span><span class="n">Count</span> <span class="n">a</span><span class="p">,</span> <span class="n">Suit</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="n">count</span> <span class="p">=</span> <span class="n">a</span><span class="p">;</span>  <span class="n">suit</span> <span class="p">=</span> <span class="n">b</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="k">public</span> <span class="kt">int</span> <span class="nf">BJvalue</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">count</span> <span class="p">+</span> <span class="m">1</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="p">&gt;</span> <span class="m">10</span><span class="p">)</span> <span class="p">{</span> <span class="n">i</span> <span class="p">=</span> <span class="m">10</span><span class="p">;</span> <span class="p">}</span>   <span class="c1">// in Blackjack, face cards have value 10</span>
+    <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="k">override</span> <span class="kt">string</span> <span class="nf">ToString</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">count</span> <span class="p">+</span> <span class="s">&quot; of &quot;</span> <span class="p">+</span> <span class="n">suit</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In general, a cohesive class will manage one data structure, along with a few
+primitive variables related to the structure:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// This models one real-life entity:</span>
+<span class="k">class</span> <span class="nc">OneFormOfEntity</span> <span class="p">{</span>
+  <span class="c1">// there is a primary data structure that characterizes the entity:</span>
+  <span class="k">private</span> <span class="p">...</span> <span class="n">oneDataStructureThatHoldsTheEntitysKnowledge</span><span class="p">;</span>
+
+  <span class="c1">// additional fields might help maintain the data structure:</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">aPrimitiveVarThatIsCountingSomething</span><span class="p">;</span>
+
+  <span class="c1">// the constructor method initializes the fields:</span>
+  <span class="k">public</span> <span class="nf">OneFormOfEntity</span><span class="p">(</span><span class="n">valuesForInitializingTheEntity</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+
+  <span class="c1">// methods define abilities that the entity has</span>
+  <span class="c1">//   (i) to say and do things and (ii) to learn things.</span>
+  <span class="c1">// Each method uses most or all of the fields to do its work.</span>
+  <span class="k">public</span> <span class="n">SomeProperty</span> <span class="nf">DoSomethingLookupSomething</span><span class="p">(....)</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">LearnSomethingUpdateSomething</span><span class="p">(...)</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The class is about modelling one entity &#8212; one card player or one card or
+one spreadsheet or one text file or one widget.</p>
+<p>In contrast, a class that, say, defines both the structure of a playing card as
+well as the structure of a card deck has poor cohesion,
+because it is &#8220;about&#8221; two entities.</p>
+<p>A cohesive component has fields that are referenced by almost all of its
+methods.
+Here is the &#8220;litmus test&#8221; that you use: <em>a cohesive class cannot be rewritten
+into two separate classes without damaging (recoding) most of its methods</em>.</p>
+<div class="section" id="measuring-cohesion">
+<h3>7.7.1. Measuring Cohesion<a class="headerlink" href="#measuring-cohesion" title="Permalink to this headline">¶</a></h3>
+<p>If you like numbers, here is a formula for calculating a numerical score of
+cohesion:</p>
+<ul>
+<li><p class="first">Say that class <tt class="docutils literal"><span class="pre">D</span></tt> has <tt class="docutils literal"><span class="pre">F(D)</span></tt>-many fields and <tt class="docutils literal"><span class="pre">M(D)</span></tt>-many methods.
+Say that field <tt class="docutils literal"><span class="pre">f</span></tt><sub>i</sub> is referenced by <tt class="docutils literal"><span class="pre">m</span></tt><sub>i</sub>-many methods in
+<tt class="docutils literal"><span class="pre">D</span></tt>.
+Then, the cohesion of <tt class="docutils literal"><span class="pre">D</span></tt>, called <tt class="docutils literal"><span class="pre">H(D)</span></tt>, is related to the number of times
+each of <tt class="docutils literal"><span class="pre">D</span></tt>&#8216;s fields is referenced by <tt class="docutils literal"><span class="pre">D</span></tt>&#8216;s methods:</p>
+<p><tt class="docutils literal"><span class="pre">H(D)</span> <span class="pre">=</span>&nbsp; <span class="pre">(m1</span> <span class="pre">+</span> <span class="pre">m2</span> <span class="pre">+</span> <span class="pre">...</span> <span class="pre">+</span> <span class="pre">mM)</span> <span class="pre">/</span> <span class="pre">(F(D)</span> <span class="pre">*</span> <span class="pre">M(D))</span></tt></p>
+</li>
+</ul>
+<p><tt class="docutils literal"><span class="pre">H</span></tt> measures the percentage of fields required by each method.
+The maximal cohesion value is <tt class="docutils literal"><span class="pre">H(D)</span> <span class="pre">=</span> <span class="pre">1</span></tt> &#8212; every field is required by every
+method.
+For example, for this class:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">class</span> <span class="nc">Card</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="k">readonly</span> <span class="n">Count</span> <span class="n">count</span><span class="p">;</span>
+  <span class="k">public</span> <span class="k">readonly</span> <span class="n">Suit</span> <span class="n">suit</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">Card</span><span class="p">(</span><span class="n">Count</span> <span class="n">a</span><span class="p">,</span> <span class="n">Suit</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="n">count</span> <span class="p">=</span> <span class="n">a</span><span class="p">;</span>  <span class="n">suit</span> <span class="p">=</span> <span class="n">b</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="k">public</span> <span class="kt">int</span> <span class="nf">BJvalue</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">count</span> <span class="p">+</span> <span class="m">1</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="p">&gt;</span> <span class="m">10</span><span class="p">)</span> <span class="p">{</span> <span class="n">i</span> <span class="p">=</span> <span class="m">10</span><span class="p">;</span> <span class="p">}</span>   <span class="c1">// in Blackjack, face cards have value 10</span>
+    <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="k">override</span> <span class="kt">string</span> <span class="nf">ToString</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">count</span> <span class="p">+</span> <span class="s">&quot; of &quot;</span> <span class="p">+</span> <span class="n">suit</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">H(Card)</span> <span class="pre">=</span> <span class="pre">(3</span> <span class="pre">+</span> <span class="pre">2)/(2*3)</span></tt> which equals <tt class="docutils literal"><span class="pre">0.83</span></tt> (because count is referenced
+by 3 methods and <tt class="docutils literal"><span class="pre">suit</span></tt> is referenced by 2 methods).
+If you do some calculations, you will find that well-written, &#8220;cohesive&#8221; classes
+have <tt class="docutils literal"><span class="pre">H</span></tt>-values near 1, and non-cohesive classes (those that can be readily
+rewritten into two classes without recoding many methods) have <tt class="docutils literal"><span class="pre">H</span></tt>-values less
+than <tt class="docutils literal"><span class="pre">0.5</span></tt>.
+The net result is that using a cohesive component in a system means the system
+will have weak(er) coupling &#8212; the component does not cause a &#8220;cluster&#8221; of
+dependent components to form around it.</p>
+</div>
+</div>
+<div class="section" id="software-metrics">
+<h2>7.8. Software Metrics<a class="headerlink" href="#software-metrics" title="Permalink to this headline">¶</a></h2>
+<p>The definitions of <tt class="docutils literal"><span class="pre">C</span></tt> and <tt class="docutils literal"><span class="pre">H</span></tt> are my own invention, meant to give you a
+concrete way to measure coupling and cohesion.</p>
+<p>There is an area of experimental computing, called software metrics, that
+studies mathematical formulas for blueprints and code and applies the formulas
+to predict development times, maintenance costs, and &#8220;software complexity&#8221;.
+You can look at the Wikipedia page for examples.
+(There are entries about how people have tried to measure coupling and cohesion
+in real-world systems.)</p>
+<p>Visual Studio can compute code metrics values for your solution automatically
+(see MSDN&#8217;s
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/bb385910.aspx">Measuring Complexity and Maintainability of Managed Code</a>
+article).</p>
+<p>&#8212;</p>
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/Lecture06S.html">Lecture 6</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

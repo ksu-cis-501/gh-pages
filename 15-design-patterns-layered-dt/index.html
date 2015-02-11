@@ -1,0 +1,678 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>15. Design Patterns IV: Patterns for Layered Data Types &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">15. Design Patterns IV: Patterns for Layered Data Types</a><ul>
+<li><a class="reference internal" href="#composite-design-pattern">15.1. Composite Design Pattern</a><ul>
+<li><a class="reference internal" href="#processing-values-from-a-layered-data-type">15.1.1. Processing Values from a Layered Data Type</a><ul>
+<li><a class="reference internal" href="#explicit-recursion">Explicit recursion</a></li>
+<li><a class="reference internal" href="#implicit-recursion">Implicit recursion</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#more-examples-of-layered-types">15.1.2. More Examples of Layered Types</a><ul>
+<li><a class="reference internal" href="#game-board">Game board</a></li>
+<li><a class="reference internal" href="#spelling-tree">Spelling tree</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#interpreter-pattern">15.2. Interpreter pattern</a><ul>
+<li><a class="reference internal" href="#example-the-command-language-of-arithmetic">15.2.1. Example: The Command Language of Arithmetic</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="design-patterns-iv-patterns-for-layered-data-types">
+<span id="design-patterns-layered-dt"></span><h1>15. Design Patterns IV: Patterns for Layered Data Types<a class="headerlink" href="#design-patterns-iv-patterns-for-layered-data-types" title="Permalink to this headline">¶</a></h1>
+<p>If you are a C-programmer, your world consists of ints, pointers
+(storage addresses), and linear arrays.
+As a convenience, the C-compiler lets you define matrices and structs, but
+these are really just linear arrays with a complex layout.
+You must learn modeling tricks for all other types of data.</p>
+<p>If you are a script programmer (Javascript, Python, Ruby, ...), your world is
+that of ints, strings, tuples, lists (arrays that grow and shrink), and
+dictionaries (hash tables whose keys can be &#8220;nonmutable&#8221; data values).
+You must learn modeling tricks for all other types of data.</p>
+<p>If you are a Java/C# programmer, your world is C but with a class construction,
+which is nothing more than a struct that holds both variable declarations
+(fields) and methods.
+As a convenience, you are given libraries with complex names and methods that
+implement lists and dictionaries.
+You must learn modeling tricks for all other types of data.</p>
+<p>Real-life data rarely matches the data types given to you by your language.
+Real data tends to be grouped in &#8220;layers&#8221; or &#8220;levels&#8221; with possible &#8220;horizontal&#8221;
+or &#8220;cross-level&#8221; references (linkages).
+It is critical that a C#/Java programmer learn to model layered data types.
+There are two relevant design patterns.</p>
+<div class="section" id="composite-design-pattern">
+<h2>15.1. Composite Design Pattern<a class="headerlink" href="#composite-design-pattern" title="Permalink to this headline">¶</a></h2>
+<p>Here is an important example of a layered data type:
+your computer&#8217;s file system.
+A file system consists of a start, &#8220;root&#8221; folder.
+Inside the folder are &#8220;entries&#8221;: textfiles, binary files, links
+(shortcuts/pathnames) to entries, and more folders.
+The inner folders hold more of the same, more entries &#8212; your computer&#8217;s file
+system is a layered data type, where each entry defines a layer/level of data:</p>
+<blockquote>
+<div><p>A <em>File system</em> is a <em>Folder</em>, which is a form of <em>Entry</em>, where</p>
+<p>An <em>Entry</em> is either:</p>
+<ul class="simple">
+<li>a <em>Textfile</em>, which holds a sequence of chars</li>
+<li>a <em>Binaryfile</em>, which holds a sequence of ints</li>
+<li>a <em>Shortcut</em>, which is a handle or pathname to an Entry</li>
+<li>or a <em>Folder</em>, which holds a sequence of zero or more Entries</li>
+</ul>
+</div></blockquote>
+<p>We can write this composite definition (also known by mathematicians as
+an inductive definition) as a set of &#8220;data type equations&#8221;:</p>
+<pre>
+<strong id="grammar-token-Entry">Entry     </strong> ::=  <a class="reference internal" href="#grammar-token-Textfile"><tt class="xref docutils literal"><span class="pre">Textfile</span></tt></a> | <a class="reference internal" href="#grammar-token-Binaryfile"><tt class="xref docutils literal"><span class="pre">Binaryfile</span></tt></a> | <a class="reference internal" href="#grammar-token-Shortcut"><tt class="xref docutils literal"><span class="pre">Shortcut</span></tt></a> | <a class="reference internal" href="#grammar-token-Folder"><tt class="xref docutils literal"><span class="pre">Folder</span></tt></a>
+<strong id="grammar-token-Textfile">Textfile  </strong> ::=  List&lt;char&gt;
+<strong id="grammar-token-Binaryfile">Binaryfile</strong> ::=  List&lt;int&gt;
+<strong id="grammar-token-Shortcut">Shortcut  </strong> ::=  pointerTo(<a class="reference internal" href="#grammar-token-Entry"><tt class="xref docutils literal"><span class="pre">Entry</span></tt></a>)
+<strong id="grammar-token-Folder">Folder    </strong> ::=  Dictionary&lt;string, <a class="reference internal" href="#grammar-token-Entry"><tt class="xref docutils literal"><span class="pre">Entry</span></tt></a>&gt;
+               
+<strong id="grammar-token-FileSystem">FileSystem</strong> ::=  <a class="reference internal" href="#grammar-token-Folder"><tt class="xref docutils literal"><span class="pre">Folder</span></tt></a>
+</pre>
+<p>These equations define a data type in many functional programming languages
+(Standard ML, Haskell, OCAML, Scala&#8217;s pattern language), but we must manually
+model the composite definition in an object language.</p>
+<p>The <em>Composite Design Pattern</em> is the scheme we use to convert a layered data
+type definition into class-based code.
+Here is the class diagram that defines &#8220;type&#8221; <tt class="docutils literal"><span class="pre">Entry</span></tt>.
+We use an <em>abstract class</em> (incomplete class) to name <tt class="docutils literal"><span class="pre">Entry</span></tt>.</p>
+<img alt="../_images/comp1.png" src="../_images/comp1.png" />
+<p>Notice the relationship between the equations and the class diagram.
+Notice also the &#8220;backwards&#8221; arc from <tt class="docutils literal"><span class="pre">Folder</span></tt> to <tt class="docutils literal"><span class="pre">Entry</span></tt>, stating that
+&#8220;an Entry can be a Folder which itself holds Entries.&#8221;</p>
+<p>Here is code corresponding to the class diagram.
+The composite type&#8217;s name is coded as an abstract class (an &#8220;unfinished class&#8221;)
+that holds an Entry&#8217;s <tt class="docutils literal"><span class="pre">name</span></tt>.
+The rest of an entry is filled in by one of the options that extend/finish
+the abstract class:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// the base name of the composite type:</span>
+<span class="k">public</span> <span class="k">abstract</span> <span class="k">class</span> <span class="nc">Entry</span> <span class="p">{</span>
+  <span class="k">protected</span> <span class="kt">string</span> <span class="n">name</span><span class="p">;</span>  <span class="c1">// the entry&#39;s name; accessible to the subclass code</span>
+
+  <span class="c1">// get and set the value of name:</span>
+  <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span>
+    <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="n">name</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">set</span> <span class="p">{</span> <span class="n">name</span> <span class="p">=</span> <span class="k">value</span><span class="p">;</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// models a text file as a sequence (list) of strings</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">TextFile</span><span class="p">:</span> <span class="n">Entry</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">lines</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">TextFile</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">base</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="n">name</span><span class="p">;</span>  <span class="c1">// stores the name in the class Entry part of this object</span>
+    <span class="n">lines</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;();</span>  <span class="c1">// file is empty at the start</span>
+  <span class="p">}</span>
+
+  <span class="c1">// methods to add a line and to return all the lines of the file:</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">addLine</span><span class="p">(</span><span class="kt">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="n">lines</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">s</span><span class="p">);</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">Lines</span> <span class="p">{</span> <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="n">lines</span><span class="p">;</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// models a link (shortcut) to an Entry not in the present folder/level</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Shortcut</span><span class="p">:</span> <span class="n">Entry</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="k">readonly</span> <span class="n">Entry</span> <span class="n">link</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">Shortcut</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">,</span> <span class="n">Entry</span> <span class="n">link</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">base</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="n">name</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="n">link</span> <span class="p">=</span> <span class="n">link</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// models a folder as a directory of Entries, indexed by their names:</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Folder</span> <span class="p">:</span> <span class="n">Entry</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Entry</span><span class="p">&gt;</span> <span class="n">directory</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">Folder</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">base</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="n">name</span><span class="p">;</span>  <span class="c1">// save name in class Entry part of this object</span>
+    <span class="n">directory</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Entry</span><span class="p">&gt;();</span>  <span class="c1">// initially, folder is empty</span>
+  <span class="p">}</span>
+
+  <span class="c1">// returns the Entry with  name.  If name is bogus, returns null.</span>
+  <span class="k">public</span> <span class="n">Entry</span> <span class="nf">find</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Entry</span> <span class="n">ans</span> <span class="p">=</span> <span class="k">null</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">directory</span><span class="p">.</span><span class="n">ContainsKey</span><span class="p">(</span><span class="n">name</span><span class="p">))</span> <span class="p">{</span> <span class="n">ans</span> <span class="p">=</span> <span class="n">directory</span><span class="p">[</span><span class="n">name</span><span class="p">];</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="n">ans</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// adds a new Entry, e, to this folder</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">add</span><span class="p">(</span><span class="n">Entry</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(!</span><span class="n">directory</span><span class="p">.</span><span class="n">ContainsKey</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Name</span><span class="p">))</span> <span class="p">{</span>
+      <span class="n">directory</span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">Name</span><span class="p">]</span> <span class="p">=</span> <span class="n">e</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">// returns a list of all the Entry objects saved in this folder</span>
+  <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Entry</span><span class="p">&gt;</span> <span class="n">getListing</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">List</span><span class="p">&lt;</span><span class="n">Entry</span><span class="p">&gt;</span> <span class="n">ans</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Entry</span><span class="p">&gt;();</span>
+    <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">pair</span> <span class="k">in</span> <span class="n">directory</span><span class="p">)</span> <span class="p">{</span> <span class="n">ans</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">pair</span><span class="p">.</span><span class="n">Value</span><span class="p">);</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="n">ans</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Say that a file system consists of a <tt class="docutils literal"><span class="pre">Root</span></tt> folder that holds textfile,
+<tt class="docutils literal"><span class="pre">t.txt</span></tt>, and folders <tt class="docutils literal"><span class="pre">F</span></tt> and <tt class="docutils literal"><span class="pre">H</span></tt>.
+Folder <tt class="docutils literal"><span class="pre">F</span></tt> holds binary file, <tt class="docutils literal"><span class="pre">b.exe</span></tt>, and folder <tt class="docutils literal"><span class="pre">G</span></tt>, which itself holds
+folder <tt class="docutils literal"><span class="pre">K</span></tt> and textfile <tt class="docutils literal"><span class="pre">u.txt</span></tt>.
+Folder <tt class="docutils literal"><span class="pre">K</span></tt> is empty.
+Finally, folder <tt class="docutils literal"><span class="pre">H</span></tt> holds a shortcut (link) to textfile <tt class="docutils literal"><span class="pre">u.txt</span></tt>.
+The objects constructed from the above classes to implement the file system
+would look like this:</p>
+<img alt="../_images/compob.jpg" src="../_images/compob.jpg" />
+<div class="section" id="processing-values-from-a-layered-data-type">
+<h3>15.1.1. Processing Values from a Layered Data Type<a class="headerlink" href="#processing-values-from-a-layered-data-type" title="Permalink to this headline">¶</a></h3>
+<p>A compound object that is constructed from a composite data type is organized in
+levels or layers.
+In the file-system example, each <tt class="docutils literal"><span class="pre">Folder</span></tt> is a &#8220;level&#8221; and a nested <tt class="docutils literal"><span class="pre">Folder</span></tt>
+is an inner &#8220;level.&#8221;</p>
+<p>Say that we must print the names of all the entries in the file system &#8212;
+this is a standard traversal activity. There are two ways to do this.</p>
+<div class="section" id="explicit-recursion">
+<h4>Explicit recursion<a class="headerlink" href="#explicit-recursion" title="Permalink to this headline">¶</a></h4>
+<p>The classic solution is to define a single tree-traversal method that &#8220;opens up&#8221;
+the levels of the file-system object that it traverses, using explicit recursive
+calls to open the inner levels.
+The code below might be placed in <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Entry</span></tt>:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// returns a (long) string that lists the name of the current entry</span>
+<span class="c1">//   and the names of all the Entries within it, if any.</span>
+<span class="c1">// In the code, note that  &quot;this&quot;  refers to the object being analyzed.</span>
+<span class="k">public</span> <span class="kt">string</span> <span class="nf">contentsOf</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">string</span> <span class="n">ans</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">Name</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span> <span class="k">is</span> <span class="n">TextFile</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// was  this  object constructed from class TextFile?</span>
+    <span class="n">ans</span> <span class="p">=</span> <span class="n">ans</span> <span class="p">+</span> <span class="s">&quot; is a text file\r\n&quot;</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span> <span class="k">is</span> <span class="n">Shortcut</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ans</span> <span class="p">=</span> <span class="n">ans</span> <span class="p">+</span> <span class="s">&quot; is a shortcut\r\n&quot;</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span> <span class="k">is</span> <span class="n">Folder</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ans</span> <span class="p">=</span> <span class="n">ans</span> <span class="p">+</span> <span class="s">&quot; is a folder containing:\r\n&quot;</span><span class="p">;</span>
+    <span class="n">List</span><span class="p">&lt;</span><span class="n">Entry</span><span class="p">&gt;</span> <span class="n">contents</span> <span class="p">=</span> <span class="p">((</span><span class="n">Folder</span><span class="p">)</span><span class="k">this</span><span class="p">).</span><span class="n">getListing</span><span class="p">();</span> <span class="c1">// get all entries in the folder</span>
+    <span class="k">foreach</span> <span class="p">(</span><span class="n">Entry</span> <span class="n">item</span> <span class="k">in</span> <span class="n">contents</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// get contents of all the entries:</span>
+      <span class="n">ans</span> <span class="p">=</span> <span class="n">ans</span> <span class="p">+</span> <span class="n">item</span><span class="p">.</span><span class="n">contentsOf</span><span class="p">();</span>    <span class="c1">// RECURSIVE CALL IS HERE</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">ans</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>So, if the file-system object is <tt class="docutils literal"><span class="pre">fileSystem</span></tt>, the call,
+<tt class="docutils literal"><span class="pre">fileSystem.contents()</span></tt> will open up the levels of <tt class="docutils literal"><span class="pre">fileSystem</span></tt> and print
+all the names therein.</p>
+</div>
+<div class="section" id="implicit-recursion">
+<h4>Implicit recursion<a class="headerlink" href="#implicit-recursion" title="Permalink to this headline">¶</a></h4>
+<p>Method <tt class="docutils literal"><span class="pre">contentsOf</span></tt> seen above contains three different cases of <tt class="docutils literal"><span class="pre">Entry</span></tt> to
+analyze.
+But if we add more subclasses that extend abstract <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Entry</span></tt> (say, we add
+<tt class="docutils literal"><span class="pre">class</span> <span class="pre">BinaryFile</span> <span class="pre">:</span> <span class="pre">Entry</span></tt>), then we must patch the code for <tt class="docutils literal"><span class="pre">contentsOf</span></tt>.
+We might forget to do this!</p>
+<p>Here is a better style for coding <tt class="docutils literal"><span class="pre">contentsOf</span></tt> in the composite structure:
+We divide the cases and embed each case in its specific class of <tt class="docutils literal"><span class="pre">Entry</span></tt>,
+like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// the base name of the composite type:</span>
+<span class="k">public</span> <span class="k">abstract</span> <span class="k">class</span> <span class="nc">Entry</span> <span class="p">{</span>
+  <span class="k">protected</span> <span class="kt">string</span> <span class="n">name</span><span class="p">;</span>  <span class="c1">// the entry&#39;s name; accessible to the subclass code</span>
+
+  <span class="c1">// get and set the value of name:</span>
+  <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span>
+    <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="n">name</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">set</span> <span class="p">{</span> <span class="n">name</span> <span class="p">=</span> <span class="k">value</span><span class="p">;</span> <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">// IMPORTANT: The keyword, &quot;abstract&quot;, below states that code must be</span>
+  <span class="c1">// provided by the class that implements abstract class  Entry:</span>
+  <span class="c1">//    Returns a string that lists the name of the current entry</span>
+  <span class="c1">//    and the names of all the Entries within it, if any.</span>
+  <span class="k">public</span> <span class="k">abstract</span> <span class="kt">string</span> <span class="nf">contentsOf</span><span class="p">();</span>    <span class="c1">// SEE KEYWORD, &quot;abstract&quot;</span>
+<span class="p">}</span>
+
+<span class="c1">// models a text file as a sequence (list) of strings</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">TextFile</span><span class="p">:</span> <span class="n">Entry</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">lines</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">TextFile</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">base</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="n">name</span><span class="p">;</span>  <span class="c1">// stores the name in the class Entry part of this object</span>
+    <span class="n">lines</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;();</span>  <span class="c1">// file is empty at the start</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="kt">string</span> <span class="nf">contentsOf</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="n">name</span> <span class="p">+</span> <span class="s">&quot; is a text file\r\n&quot;</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// models a link (shortcut) to an Entry not in the present folder/level</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Shortcut</span><span class="p">:</span> <span class="n">Entry</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="k">readonly</span> <span class="n">Entry</span> <span class="n">link</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">Shortcut</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">,</span> <span class="n">Entry</span> <span class="n">link</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">base</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="n">name</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="n">link</span> <span class="p">=</span> <span class="n">link</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="kt">string</span> <span class="nf">contentsOf</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="n">name</span> <span class="p">+</span> <span class="s">&quot; is a shortcut\r\n&quot;</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// models a folder as a directory of Entries, indexed by their names:</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Folder</span> <span class="p">:</span> <span class="n">Entry</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Entry</span><span class="p">&gt;</span> <span class="n">directory</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">Folder</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">base</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="n">name</span><span class="p">;</span>  <span class="c1">// save name in class Entry part of this object</span>
+    <span class="n">directory</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="n">Entry</span><span class="p">&gt;();</span>  <span class="c1">// initially, folder is empty</span>
+  <span class="p">}</span>
+
+  <span class="c1">// returns a list of all the Entry objects saved in this folder</span>
+  <span class="k">public</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Entry</span><span class="p">&gt;</span> <span class="n">getListing</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">List</span><span class="p">&lt;</span><span class="n">Entry</span><span class="p">&gt;</span> <span class="n">ans</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Entry</span><span class="p">&gt;();</span>
+    <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">pair</span> <span class="k">in</span> <span class="n">directory</span><span class="p">)</span> <span class="p">{</span> <span class="n">ans</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">pair</span><span class="p">.</span><span class="n">Value</span><span class="p">);</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="n">ans</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="kt">string</span> <span class="nf">contentsOf</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">string</span> <span class="n">ans</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">name</span> <span class="p">+</span> <span class="s">&quot; is a folder containing:\r\n&quot;</span><span class="p">;</span>
+    <span class="n">List</span><span class="p">&lt;</span><span class="n">Entry</span><span class="p">&gt;</span> <span class="n">contents</span> <span class="p">=</span> <span class="p">((</span><span class="n">Folder</span><span class="p">)</span><span class="k">this</span><span class="p">).</span><span class="n">getListing</span><span class="p">();</span>
+    <span class="k">foreach</span> <span class="p">(</span><span class="n">Entry</span> <span class="n">item</span> <span class="k">in</span> <span class="n">contents</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">ans</span> <span class="p">=</span> <span class="n">ans</span> <span class="p">+</span> <span class="n">item</span><span class="p">.</span><span class="n">contentsOf</span><span class="p">();</span>  <span class="c1">// RECURSIVE CALL IS HERE</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">ans</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>IMPORTANT: the header line, <tt class="docutils literal"><span class="pre">public</span> <span class="pre">abstract</span> <span class="pre">string</span> <span class="pre">contentsOf()</span></tt>, in
+<tt class="docutils literal"><span class="pre">class</span> <span class="pre">Entry</span></tt> declares that each subclass must have an appropriate
+<tt class="docutils literal"><span class="pre">contentsOf</span></tt> method.
+When we call <tt class="docutils literal"><span class="pre">filesystem.contentsOf()</span></tt>, the code for <tt class="docutils literal"><span class="pre">contentsOf</span></tt> in
+<tt class="docutils literal"><span class="pre">class</span> <span class="pre">Folder</span></tt> is executed first, and it calls the appropriate <tt class="docutils literal"><span class="pre">contentsOf</span></tt>
+methods for the folder&#8217;s subentries.
+The execution now proceeds in the same order as with the explicit recursion.</p>
+</div>
+</div>
+<div class="section" id="more-examples-of-layered-types">
+<h3>15.1.2. More Examples of Layered Types<a class="headerlink" href="#more-examples-of-layered-types" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="game-board">
+<h4>Game board<a class="headerlink" href="#game-board" title="Permalink to this headline">¶</a></h4>
+<p>A Mario-Brother-style &#8220;adventure&#8221; game lets a player explore levels of
+a universe.
+The &#8220;game board&#8221; for an adventure game is usually a compound object from
+a layered data type.
+For example, an adventure game that explores &#8220;Areas&#8221; might use this type of
+game board:</p>
+<p>An <em>Area</em> is either:</p>
+<ul class="simple">
+<li>a <em>Room</em> that holds a <tt class="docutils literal"><span class="pre">Prize</span></tt>, a <tt class="docutils literal"><span class="pre">Bomb</span></tt>, and (a door to) another <tt class="docutils literal"><span class="pre">Area</span></tt>;</li>
+<li>a <em>Passageway</em> that holds one or more (doors to) other <tt class="docutils literal"><span class="pre">Area</span></tt> s;</li>
+<li><em>Nirvana</em>, which is the winning area;</li>
+<li>the <em>Black</em> Hole, which is the losing area.</li>
+</ul>
+<p>The corresponding composite design looks like this:</p>
+<img alt="../_images/comp2.png" src="../_images/comp2.png" />
+<p>Game boards are constructed to have data type, <tt class="docutils literal"><span class="pre">Area</span></tt>.
+If you look at the code and the object diagram for the file system example,
+you can visualize a layered game-board layout for an adventure game based on
+exploring <tt class="docutils literal"><span class="pre">Areas</span></tt>.</p>
+</div>
+<div class="section" id="spelling-tree">
+<h4>Spelling tree<a class="headerlink" href="#spelling-tree" title="Permalink to this headline">¶</a></h4>
+<p>Most word processors for cell phones have &#8220;word completion&#8221; software, that is,
+when you type the first few letters of a word, the software guesses what you are
+typing based on your previous typing behaviors and provides suggestions to you
+for completing your word.
+The software extracts its guesses from a layered data structure that it builds
+and maintains, a spelling tree.</p>
+<p>Here is a possible definition of a spelling tree for word completion:</p>
+<p>A <em>path</em> consists of a string of chars (the &#8220;word typed so far&#8221;),
+an int count of the number of times this path has been encountered as
+a completed word, and a collection of paths to suffixes of the word typed so far.
+This layered data type can be modelled with just one class, which holds handles
+to zero of more inner levels of its own class. Here is the code for
+<tt class="docutils literal"><span class="pre">class</span> <span class="pre">Path</span></tt>:</p>
+<div class="highlight-c#"><div class="highlight"><pre> <span class="c1">// models a partial/complete word, entered as a sequence (&quot;path&quot;) of chars</span>
+ <span class="k">public</span> <span class="k">class</span> <span class="nc">Path</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="kt">string</span> <span class="n">word</span><span class="p">;</span> <span class="c1">// the sequence of chars, e.g., &quot;cat&quot;</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">count</span><span class="p">;</span>   <span class="c1">// how many times this sequence has been used as a completed word</span>
+
+  <span class="k">private</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">char</span><span class="p">,</span> <span class="n">Path</span><span class="p">&gt;</span> <span class="n">suffixes</span><span class="p">;</span>  <span class="c1">// extensions of this word, e.g., &quot;cats&quot; (indexed by &#39;s&#39;) or &quot;cattle&quot; (indexed by &#39;t&#39;)</span>
+
+  <span class="k">public</span> <span class="nf">Path</span><span class="p">(</span><span class="kt">string</span> <span class="n">wordSoFar</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">word</span> <span class="p">=</span> <span class="n">wordSoFar</span><span class="p">;</span>  <span class="n">count</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+    <span class="n">suffixes</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">char</span><span class="p">,</span> <span class="n">Path</span><span class="p">&gt;();</span>
+  <span class="p">}</span>
+
+  <span class="c1">// &quot;get&quot; methods:</span>
+  <span class="k">public</span> <span class="kt">string</span> <span class="nf">getWord</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">word</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="kt">int</span> <span class="nf">getCount</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">count</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="c1">// notify this Path that its word is complete and used in the user&#39;s document</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">finishedWord</span><span class="p">()</span> <span class="p">{</span> <span class="n">count</span><span class="p">++;</span> <span class="p">}</span>
+
+  <span class="c1">// add another letter, c,  to the word being typed and return path of  word+c</span>
+  <span class="k">public</span> <span class="n">Path</span> <span class="nf">addLetter</span><span class="p">(</span><span class="kt">char</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Path</span> <span class="n">ans</span> <span class="p">=</span> <span class="k">null</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">suffixes</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="p">{</span>
+      <span class="n">ans</span> <span class="p">=</span> <span class="n">suffixes</span><span class="p">[</span><span class="n">c</span><span class="p">];</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">ans</span>  <span class="p">=</span> <span class="k">new</span> <span class="n">Path</span><span class="p">(</span><span class="n">word</span> <span class="p">+</span> <span class="n">c</span><span class="p">);</span>
+      <span class="n">suffixes</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="p">=</span> <span class="n">ans</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">ans</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// returns handle to path for this  word+c. If none exists, returns null</span>
+  <span class="k">public</span> <span class="n">Path</span> <span class="nf">findNextLetter</span><span class="p">(</span><span class="kt">char</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Path</span> <span class="n">ans</span> <span class="p">=</span> <span class="k">null</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">suffixes</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="p">{</span> <span class="n">ans</span> <span class="p">=</span> <span class="n">suffixes</span><span class="p">[</span><span class="n">c</span><span class="p">];</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="n">ans</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Here is how we add words to the spelling tree:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">Path</span> <span class="n">spellingTree</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Path</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+
+<span class="kt">string</span> <span class="n">inputText</span> <span class="p">=</span> <span class="s">&quot;cats cannot catch cold quickly&quot;</span><span class="p">;</span>
+<span class="kt">string</span><span class="p">[]</span> <span class="n">words</span> <span class="p">=</span> <span class="n">inputText</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="sc">&#39; &#39;</span><span class="p">);</span>  <span class="c1">// divide text into its 5 words</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="kt">string</span> <span class="n">w</span> <span class="k">in</span> <span class="n">words</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// add  w  to  spellingTree:</span>
+  <span class="n">Path</span> <span class="n">path</span> <span class="p">=</span> <span class="n">spellingTree</span><span class="p">;</span>
+  <span class="k">foreach</span><span class="p">(</span><span class="kt">char</span> <span class="n">c</span> <span class="k">in</span> <span class="n">w</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">path</span> <span class="p">=</span> <span class="n">path</span><span class="p">.</span><span class="n">addLetter</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">path</span><span class="p">.</span><span class="n">finishedWord</span><span class="p">();</span>  <span class="c1">// increment count for  w</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This method queries spellingTree for word counts, e.g.,
+<tt class="docutils literal"><span class="pre">spellingTree.countOf(&quot;cats&quot;)</span></tt>:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="kt">int</span> <span class="nf">countOf</span><span class="p">(</span><span class="kt">string</span> <span class="n">word</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Path</span> <span class="n">p</span> <span class="p">=</span> <span class="k">this</span><span class="p">;</span>  <span class="c1">// start counting at the root of this tree</span>
+  <span class="k">foreach</span> <span class="p">(</span><span class="kt">char</span> <span class="n">c</span> <span class="k">in</span> <span class="n">word</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// search tree for word, one char at a time:</span>
+    <span class="n">p</span> <span class="p">=</span> <span class="n">p</span><span class="p">.</span><span class="n">findNextLetter</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="m">0</span><span class="p">;</span> <span class="p">}</span>  <span class="c1">// word isn&#39;t found</span>
+  <span class="p">}</span>
+  <span class="c1">// else, we found  word  in the tree, so</span>
+  <span class="k">return</span> <span class="n">p</span><span class="p">.</span><span class="n">countOf</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="interpreter-pattern">
+<h2>15.2. Interpreter pattern<a class="headerlink" href="#interpreter-pattern" title="Permalink to this headline">¶</a></h2>
+<p>When we use a GUI to communicate with a software system, we are using a kind of
+&#8220;point and nudge&#8221; language, like humans use when they do not want to speak words
+to one another.</p>
+<p>More intelligent communication can be made with words than with
+&#8220;point and nudge&#8221;, and sophisticated software systems use word-based
+&#8220;command languages&#8221; for input.
+Examples of command languages are <tt class="docutils literal"><span class="pre">bash</span></tt>, for talking to an operating system;
+<tt class="docutils literal"><span class="pre">SQL</span> <span class="pre">DML</span></tt>, for asking queries to a database; and <tt class="docutils literal"><span class="pre">Javascript</span></tt>, for talking
+to a web browser.</p>
+<p>Languages based on words have internal phrase structure, which is naturally
+expressed by a composite data type.
+(E.g., &#8220;a sentence consists of a subject phrase and a predicate phrase, where
+the subject phrase has a noun and a modifier phrase and the predicate phrase
+has a verb, a modifier phrase, and optional direct-object and indirect-object
+phrases, ...&#8221;.)</p>
+<p>We saw in the previous section how a method uses self-calls (recursions) to open
+the inner levels of an object.
+This is again the case for language processing: an <em>interpreter</em> is a method
+that calculates the meaning/actions of a command by opening the command with
+recursive calls.</p>
+<p>Interpreters are so important to modern-day programming that the name,
+&#8220;interpreter design pattern&#8221;, was coined to emphasize this implementation
+technique.</p>
+<div class="section" id="example-the-command-language-of-arithmetic">
+<h3>15.2.1. Example: The Command Language of Arithmetic<a class="headerlink" href="#example-the-command-language-of-arithmetic" title="Permalink to this headline">¶</a></h3>
+<p>In the 1950s, Noam Chomsky realized that the syntax of a sentence can be
+represented by a tree, and the rules for building syntactically correct
+sentences can be written as an equational, inductive definition.
+Chomsky called the definition a <em>grammar</em>.
+(John Backus and Peter Naur independently discovered the same concept, and
+for this reason, a grammar is sometimes called
+<em>BNF (Backus-Naur form) notation</em>.)</p>
+<p>A grammar is a set of equations (<em>rules</em>), where each equation defines a set of
+phrases (strings of words).</p>
+<p>Say we wish to define precisely how to write arithmetic expressions, which
+consist of numerals composed with addition and subtraction operators.
+Here are the equations (rules) that define the syntax of arithmetic expressions:</p>
+<pre>
+<strong id="grammar-token-EXPRESSION">EXPRESSION</strong> ::=  <a class="reference internal" href="#grammar-token-NUMERAL"><tt class="xref docutils literal"><span class="pre">NUMERAL</span></tt></a> |  ( <a class="reference internal" href="#grammar-token-EXPRESSION"><tt class="xref docutils literal"><span class="pre">EXPRESSION</span></tt></a> <a class="reference internal" href="#grammar-token-OPERATOR"><tt class="xref docutils literal"><span class="pre">OPERATOR</span></tt></a> <a class="reference internal" href="#grammar-token-EXPRESSION"><tt class="xref docutils literal"><span class="pre">EXPRESSION</span></tt></a> )
+<strong id="grammar-token-OPERATOR">OPERATOR  </strong> ::=  + | -
+               
+<strong id="grammar-token-NUMERAL">NUMERAL   </strong> ::=  a sequence of digits from the set { 0, 1, 2, ..., 9 }
+</pre>
+<p>The words in upper-case letters (<em>nonterminals</em>) name phrase and word forms:
+an <tt class="docutils literal"><span class="pre">EXPRESSION</span></tt> phrase consists of <em>either</em> a <tt class="docutils literal"><span class="pre">NUMERAL</span></tt> word <em>or</em>
+a left paren followed by another (smaller) <tt class="docutils literal"><span class="pre">EXPRESSION</span></tt> phrase followed by
+an <tt class="docutils literal"><span class="pre">OPERATOR</span></tt> word followed by another (smaller) <tt class="docutils literal"><span class="pre">EXPRESSION</span></tt> phrase
+followed by a right paren. (The vertical bar means &#8220;or&#8221;.)</p>
+<p>If the third equation is too informal for you, we can replace it with these two:</p>
+<pre>
+<strong id="id1">NUMERAL</strong> ::=  <a class="reference internal" href="#grammar-token-DIGIT"><tt class="xref docutils literal"><span class="pre">DIGIT</span></tt></a> | <a class="reference internal" href="#grammar-token-DIGIT"><tt class="xref docutils literal"><span class="pre">DIGIT</span></tt></a> <a class="reference internal" href="#grammar-token-NUMERAL"><tt class="xref docutils literal"><span class="pre">NUMERAL</span></tt></a>
+<strong id="grammar-token-DIGIT">DIGIT  </strong> ::=   0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+</pre>
+<p>but usually the spelling of individual words is stated informally, like we did
+originally.
+Using the rules, we can verify that this sequence of symbols is a legal
+<tt class="docutils literal"><span class="pre">EXPRESSION</span></tt> phrase:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="mi">14</span> <span class="o">-</span> <span class="p">(</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Here is the explanation, stated in words:</p>
+<p><tt class="docutils literal"><span class="pre">14</span></tt> is a NUMERAL (as are <tt class="docutils literal"><span class="pre">3</span></tt> and <tt class="docutils literal"><span class="pre">2</span></tt>)
+all NUMERALs are legal EXPRESSION phrases, so <tt class="docutils literal"><span class="pre">14</span></tt> is an EXPRESSION phrase, as
+are <tt class="docutils literal"><span class="pre">3</span></tt> and <tt class="docutils literal"><span class="pre">2</span></tt>.
+Since <tt class="docutils literal"><span class="pre">3</span></tt> and <tt class="docutils literal"><span class="pre">2</span></tt> are EXPRESSION phrases, then so is <tt class="docutils literal"><span class="pre">(3</span> <span class="pre">+</span> <span class="pre">2)</span></tt> because
+<tt class="docutils literal"><span class="pre">+</span></tt> is an OPERATOR.
+<tt class="docutils literal"><span class="pre">(14</span> <span class="pre">-</span> <span class="pre">(3</span> <span class="pre">+</span> <span class="pre">2))</span></tt> is an EXPRESSION, because <tt class="docutils literal"><span class="pre">14</span></tt> and <tt class="docutils literal"><span class="pre">(3</span> <span class="pre">+</span> <span class="pre">2)</span></tt> are
+EXPRESSIONs, and <tt class="docutils literal"><span class="pre">-</span></tt> is an OPERATOR.
+There is a compact representation of an arithmetic sentence, as an
+<em>operator tree</em>.
+Here is the operator tree for <tt class="docutils literal"><span class="pre">(4</span> <span class="pre">-</span> <span class="pre">(3</span> <span class="pre">+</span> <span class="pre">2))</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre>   -
+ /   \
+4     +
+     / \
+    3   2
+</pre></div>
+</div>
+<p>An operator tree places the &#8220;operator&#8221; or &#8220;verb&#8221; at the top of each &#8220;phrase&#8221;
+(subtree).</p>
+<p>An operator tree for arithmetic has two forms, which we can define precisely
+with its own BNF rule, like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>TREE    ::=  NUMERAL   |     OP
+                            /  \
+                         TREE  TREE
+OP      ::=  +  |  -
+NUMERAL ::=  a string of digits
+</pre></div>
+</div>
+<p>That is, every operator tree is either just a single numeral or a tree holding
+an operator symbol and two subtrees.
+This is clearly a composite type whose code looks like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">abstract</span> <span class="k">class</span> <span class="nc">Expression</span> <span class="p">{</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">NumeralTree</span> <span class="p">:</span> <span class="n">Expression</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="k">readonly</span> <span class="kt">string</span> <span class="n">theNumeral</span><span class="p">;</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">ExpressionTree</span> <span class="p">:</span> <span class="n">Expression</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="k">readonly</span> <span class="kt">string</span> <span class="k">operator</span><span class="p">;</span>  <span class="c1">// should be &quot;+&quot; or &quot;-&quot;</span>
+  <span class="k">public</span> <span class="k">readonly</span> <span class="n">Expression</span> <span class="n">left</span><span class="p">;</span>
+  <span class="k">public</span> <span class="k">readonly</span> <span class="n">Expression</span> <span class="n">right</span><span class="p">;</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A parser reads a string like <tt class="docutils literal"><span class="pre">(14</span> <span class="pre">-</span> <span class="pre">(2</span> <span class="pre">+</span> <span class="pre">3))</span></tt> and generates this operator tree:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">Expression</span> <span class="n">tree</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ExpressionTree</span><span class="p">(</span><span class="s">&quot;-&quot;</span><span class="p">,</span>
+                                     <span class="k">new</span> <span class="nf">NumeralTree</span><span class="p">(</span><span class="s">&quot;14&quot;</span><span class="p">),</span>
+                                     <span class="k">new</span> <span class="nf">ExpressionTree</span><span class="p">(</span><span class="s">&quot;+&quot;</span><span class="p">,</span>
+                                                        <span class="k">new</span> <span class="nf">NumeralTree</span><span class="p">(</span><span class="s">&quot;2&quot;</span><span class="p">),</span>
+                                                        <span class="k">new</span> <span class="nf">NumeralTree</span><span class="p">(</span><span class="s">&quot;3&quot;</span><span class="p">)));</span>
+</pre></div>
+</div>
+<p>When a compiler or interpreter processes a computer program, it first builds
+the program&#8217;s operator tree.
+Then, it calculates the meaning &#8212; the semantics &#8212; of the tree.</p>
+<p>Here is the interpreter for the arithmetic language.
+It computes on the operator tree representation of the arithmetic program:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="kt">int</span> <span class="nf">interpretTree</span><span class="p">(</span><span class="n">Expression</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">meaning</span> <span class="p">=</span> <span class="p">-</span><span class="m">1</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">t</span> <span class="k">is</span> <span class="n">Numeral</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">meaning</span> <span class="p">=</span> <span class="n">Convert</span><span class="p">.</span><span class="n">ToInt32</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">theNumeral</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">t</span> <span class="k">is</span> <span class="n">ExpressionTree</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">leftmeaning</span> <span class="p">=</span> <span class="n">interpretTree</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">left</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">rightmeaning</span> <span class="p">=</span> <span class="n">interpretTree</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">right</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="k">operator</span> <span class="p">==</span> <span class="s">&quot;+&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">meaning</span> <span class="p">=</span> <span class="n">leftmeaning</span> <span class="p">+</span> <span class="n">rightmeaning</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="k">operator</span> <span class="p">==</span> <span class="s">&quot;-&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">meaning</span> <span class="p">=</span>  <span class="n">leftmeaning</span> <span class="p">+</span> <span class="n">rightmeaning</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">meaning</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><em>The function&#8217;s recursions match the recursions in the grammar rule/composite
+data type that defines the set of operator trees.</em>
+The recursion computes the numerical meanings of the subtrees and combines them
+to get the meaning of the complete tree.</p>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/DP4S.html">Lecture 14</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

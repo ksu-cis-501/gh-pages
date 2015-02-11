@@ -1,0 +1,1622 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1. Using C# with Visual Studio and Git/GitHub &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">1. Using C# with Visual Studio and Git/GitHub</a><ul>
+<li><a class="reference internal" href="#visual-studio-and-c">1.1. Visual Studio and C#</a><ul>
+<li><a class="reference internal" href="#accessing-visual-studio">1.1.1. Accessing Visual Studio</a></li>
+<li><a class="reference internal" href="#online-resources">1.1.2. Online Resources</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#git-github">1.2. Git/GitHub</a><ul>
+<li><a class="reference internal" href="#git-github-workflow">1.2.1. Git/GitHub Workflow</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creating-a-new-project">1.3. Creating A New Project</a><ul>
+<li><a class="reference internal" href="#basic-ide-operations">1.3.1. Basic IDE Operations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#console-application">1.4. Console application</a></li>
+<li><a class="reference internal" href="#windows-forms-application">1.5. Windows Forms application</a><ul>
+<li><a class="reference internal" href="#widgets">1.5.1. Widgets</a></li>
+<li><a class="reference internal" href="#widget-event-handling">1.5.2. Widget Event Handling</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-vs-debugger">1.6. Using VS Debugger</a></li>
+<li><a class="reference internal" href="#inserting-multiple-classes-in-a-namespace">1.7. Inserting Multiple Classes in A Namespace</a></li>
+<li><a class="reference internal" href="#building-and-linking-a-library-class">1.8. Building and Linking A Library Class</a></li>
+<li><a class="reference internal" href="#generating-gui-message-boxes-input-dialogs-and-passive-views">1.9. Generating GUI Message Boxes, Input Dialogs, and Passive Views</a><ul>
+<li><a class="reference internal" href="#input-dialog">1.9.1. Input Dialog</a></li>
+<li><a class="reference internal" href="#passive-output-forms">1.9.2. Passive Output Forms</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#multiple-guis-with-buttons">1.10. Multiple GUIs with Buttons</a></li>
+<li><a class="reference internal" href="#multiple-gui-threads">1.11. Multiple GUI Threads</a><ul>
+<li><a class="reference internal" href="#using-lock-on-an-object-shared-by-multiple-threads">1.11.1. Using <tt class="docutils literal"><span class="pre">lock</span></tt> on An Object Shared by Multiple Threads</a></li>
+<li><a class="reference internal" href="#multiple-threads-of-execution">1.11.2. Multiple Threads of Execution</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#compiling-a-project-into-binary">1.12. Compiling A Project into Binary</a></li>
+<li><a class="reference internal" href="#unit-testing">1.13. Unit Testing</a><ul>
+<li><a class="reference internal" href="#code-coverage">1.13.1. Code Coverage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app-testing">1.14. App Testing</a></li>
+<li><a class="reference internal" href="#useful-c-concepts">1.15. Useful C# Concepts</a><ul>
+<li><a class="reference internal" href="#lists-dynamic-arrays">1.15.1. Lists (Dynamic Arrays)</a></li>
+<li><a class="reference internal" href="#enumerations">1.15.2. Enumerations</a></li>
+<li><a class="reference internal" href="#dictionaries">1.15.3. Dictionaries</a></li>
+<li><a class="reference internal" href="#delegates">1.15.4. Delegates</a></li>
+<li><a class="reference internal" href="#textfile-i-o-and-string-manipulation">1.15.5. Textfile I/O and String Manipulation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-uml-class-notation">1.16. Using UML Class Notation</a><ul>
+<li><a class="reference internal" href="#using-visual-studio">1.16.1. Using Visual Studio</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="using-c-with-visual-studio-and-git-github">
+<span id="notes"></span><h1>1. Using C# with Visual Studio and Git/GitHub<a class="headerlink" href="#using-c-with-visual-studio-and-git-github" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="visual-studio-and-c">
+<h2>1.1. Visual Studio and C#<a class="headerlink" href="#visual-studio-and-c" title="Permalink to this headline">¶</a></h2>
+<p>Visual Studio (&#8220;VS&#8221;) helps you construct a C# project that you can test and
+later compile into an <strong>.exe</strong> or <strong>.dll</strong> file.
+In this course, we will use Visual Studio 2013 Ultimate edition.</p>
+<div class="section" id="accessing-visual-studio">
+<span id="tooling-vs"></span><h3>1.1.1. Accessing Visual Studio<a class="headerlink" href="#accessing-visual-studio" title="Permalink to this headline">¶</a></h3>
+<p>As a K-State CIS student, you can download and install Visual Studio 2013 Ultimate
+for free through to Microsoft Dreamspark store; please contact the CIS system
+administration (e.g., via <a class="reference external" href="mailto:help&#37;&#52;&#48;cis&#46;ksu&#46;edu">help<span>&#64;</span>cis<span>&#46;</span>ksu<span>&#46;</span>edu</a>) if you do not have a Microsoft
+Dreamspark store account.</p>
+<p>Alternatively, you can access Visual Studio 2013 Ultimate via remote desktop to
+<tt class="docutils literal"><span class="pre">remote.win.cis.ksu.edu</span></tt>. You need to use a remote desktop software specific
+to your OS (e.g.,
+<a class="reference external" href="http://apps.microsoft.com/windows/en-us/app/remote-desktop/051f560e-5e9b-4dad-8b2e-fa5e0b05a480">win</a>,
+<a class="reference external" href="http://rdesktop.sourceforge.net">linux</a>,
+<a class="reference external" href="https://itunes.apple.com/us/app/microsoft-remote-desktop/id715768417">mac</a>).</p>
+<p>Note that if you are accessing <tt class="docutils literal"><span class="pre">remote.win.cis.ksu.edu</span></tt> from off-campus,
+you will need to use K-State VPN software
+(<a class="reference external" href="http://www.k-state.edu/its/security/vpn/">http://www.k-state.edu/its/security/vpn/</a>) before connecting to it.</p>
+</div>
+<div class="section" id="online-resources">
+<h3>1.1.2. Online Resources<a class="headerlink" href="#online-resources" title="Permalink to this headline">¶</a></h3>
+<p>Use the web site <a class="reference external" href="http://www.dotnetperls.com">http://www.dotnetperls.com</a> as your &#8220;reference text&#8221; when you use
+Visual Studio to develop C# programs.
+It is an easy-to-consume, example-driven introduction to the useful parts of
+C#.</p>
+<p>Microsoft Developer Network (MSDN, <a class="reference external" href="http://msdn.microsoft.com">http://msdn.microsoft.com</a>) also has a lot of
+information regarding C# and Visual Studio (e.g., see MSDN&#8217;s
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/a72418yk.aspx">Getting Started with Visual C#</a>
+article,
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/ms173063.aspx">Using the Visual C# Development Environment</a>
+article, or
+you can use the search box to look
+for other information on a specific topic).
+Note that there are two GUI frameworks for C#/.Net:
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/dd30h2yb(v=vs.110).aspx">Windows Form</a> and
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/vstudio/ms754130.aspx">Windows Presentation Foundation (WPF)</a>.
+For simplicity, we will use Windows Forms in this course.</p>
+</div>
+</div>
+<div class="section" id="git-github">
+<h2>1.2. Git/GitHub<a class="headerlink" href="#git-github" title="Permalink to this headline">¶</a></h2>
+<p>To survive any large software project, you must manage backups, variations, and
+extensions of your system.
+If you work in a team, you must integrate all team members&#8217; work in a coherent
+way.</p>
+<p>It is best to use a professional version control tool to do this.</p>
+<p>Michael Ernst at the Univ. of Washington has written a nice
+<a class="reference external" href="http://homes.cs.washington.edu/~mernst/advice/version-control.html">introductory article</a>
+about version control and a few popular tools.</p>
+<p>We will be using the <a class="reference external" href="http://www.git-scm.com">Git</a> distributed version
+control system (see the
+<a class="reference external" href="http://www.git-scm.com/doc">Documentation</a> section for reference) and
+<a class="reference external" href="https://github.com">GitHub</a> (see <a class="reference external" href="https://help.github.com">GitHub Help</a>
+pages for reference) to access some of the course materials.</p>
+<p>Thus, you will need to have a GitHub account
+(see <a class="reference external" href="https://help.github.com/articles/signing-up-for-a-new-github-account">https://help.github.com/articles/signing-up-for-a-new-github-account</a>).
+You need to tell the instructor your GitHub username; the instructor will then
+create a dedicated private repository for you to submit course exercises and
+assignments.</p>
+<p>We will be using
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/hh850437.aspx">Visual Studio Git integration</a>
+with a very simple and specific Git workflow (see below);
+in-class exercise and assignment submissions will be done by simply
+committing/pushing your work to your private repository.</p>
+<div class="section" id="git-github-workflow">
+<h3>1.2.1. Git/GitHub Workflow<a class="headerlink" href="#git-github-workflow" title="Permalink to this headline">¶</a></h3>
+<p>As mentioned above, we will give you a private repository at GitHub to store
+your coursework.
+For each exercise and assignment, we will provide a starting zip file (containing
+Visual Studio Solutions, exercise/assignment description in HTML/Markdown, etc.).
+The simple workflow is then to have you download and uncompress zip file to your
+Git local repository, work on the exercise/assignment, and commit/push your
+changes (as often as you want). At the specified deadline for the
+exercise/assignment, we will clone your private repository and grade your work.</p>
+<p>Here is the simple workflow when working on an exercise or assignment:</p>
+<ol class="arabic">
+<li><p class="first">Clone your GitHub private repository (do this only once per machine).</p>
+<p>Do this in Visual Studio:</p>
+<ol class="loweralpha">
+<li><p class="first">select the &#8220;Connect to Team Foundation Server...&#8221; menu item
+under the &#8220;TEAM&#8221; menu.
+It will open the &#8220;Team Explorer&#8221; view.</p>
+</li>
+<li><p class="first">Click on the &#8220;Connect To Team Projects&#8221; button</p>
+<img alt="../_images/connect-button.png" src="../_images/connect-button.png" />
+</li>
+<li><p class="first">Select &#8220;Clone&#8221;, and enter <cite>https://github.com/ksu-cis-501/&lt;username&gt;-coursework.git</cite>,
+where <cite>&lt;username&gt;</cite> is your GitHub username.
+If you prefer, you can adjust the directory for your local Git repository
+in the next texbox.</p>
+</li>
+<li><p class="first">Click on the &#8220;Clone&#8221; button.
+You will be prompted to enter your GitHub credential.
+After cloning, your local Git repository (and its location) will be
+listed.</p>
+</li>
+<li><p class="first">Select the listed local Git repository, and it should change the view to
+display the following:</p>
+<img alt="../_images/local-repo.png" src="../_images/local-repo.png" />
+</li>
+</ol>
+</li>
+<li><p class="first">Do a Git pull, by selecting &#8220;Unsynced Commits&#8221; and then &#8220;Pull&#8221;.</p>
+</li>
+<li><p class="first">Download and uncompress the starting zip file for the exercise/assignment,
+and move the uncompressed content so it is located under your local Git
+repository directory.</p>
+</li>
+<li><p class="first">Work on the exercise/assignment and commit &amp; push your changes as often as
+you want.</p>
+<p>To commit and push:</p>
+<ol class="loweralpha simple">
+<li>select &#8220;Changes&#8221; under &#8220;Project&#8221; in &#8220;Team Explorer&#8221; (see the Step 1e):</li>
+<li>under &#8220;Untracked Files&#8221;, select &#8220;Add All&#8221;.</li>
+<li>Enter a commit message that describe your changes.</li>
+<li>Select &#8220;Commit and Push&#8221; from the drop-down combo box/button.</li>
+</ol>
+</li>
+</ol>
+<p><strong>Important: make sure to commit and push your changes before ending your
+programming session.</strong></p>
+</div>
+</div>
+<div class="section" id="creating-a-new-project">
+<h2>1.3. Creating A New Project<a class="headerlink" href="#creating-a-new-project" title="Permalink to this headline">¶</a></h2>
+<p>Open VS and click on &#8220;New Project&#8221;.
+A new window appears.
+The three useful choices are:</p>
+<ul class="simple">
+<li>&#8220;Windows Forms App&#8221; (generates a default GUI)</li>
+<li>&#8220;Class Library&#8221; (for a standalone library class (.dll file))</li>
+<li>&#8220;Console App&#8221; (for a DOS-window-based app)</li>
+</ul>
+<p>Remember to fill in the name of your new project on the bottom.
+Rod Howell&#8217;s style is &#8220;RodHowell.CIS300.MyProjectName&#8221;.
+Technical note: actually, VS creates a &#8220;solution&#8221; that holds a &#8220;project&#8221;
+(a project is a C# package).
+It is possible to add a second project to the same solution:
+You do this by right-clicking on the solution name in the Solution Explorer
+window then then select ADD then NEW PROJECT.
+If you look at the folder structure that is created, you will find a folder
+holding the &#8220;solution&#8221; which holds two folders that are &#8220;projects&#8221; (C# packages).
+Be careful if you do this trick.</p>
+<div class="section" id="basic-ide-operations">
+<h3>1.3.1. Basic IDE Operations<a class="headerlink" href="#basic-ide-operations" title="Permalink to this headline">¶</a></h3>
+<p>Click on green arrow to run app.
+Use the &#8220;View&#8221; menu to make visible key subwindows such as
+Toolbox, Solution Explorer, and Properties.</p>
+</div>
+</div>
+<div class="section" id="console-application">
+<h2>1.4. Console application<a class="headerlink" href="#console-application" title="Permalink to this headline">¶</a></h2>
+<p>If you construct a new project that is a console application,
+you will receive a class that contains a <tt class="docutils literal"><span class="pre">Main</span></tt> method.
+From this point, you can code vanilla C#, say, like the examples in
+David Schmidt&#8217;s <a class="reference external" href="http://people.cis.ksu.edu/~schmidt/200s08/">CIS200 notes from 2008</a>.
+(Scroll to the bottom of the page for the relevant links.)</p>
+</div>
+<div class="section" id="windows-forms-application">
+<h2>1.5. Windows Forms application<a class="headerlink" href="#windows-forms-application" title="Permalink to this headline">¶</a></h2>
+<p>If you construct a new project that is a forms application,
+you will receive a class, <tt class="docutils literal"><span class="pre">Form1.cs</span></tt> that holds a C# form widget.
+You drag and drop widgets into it.
+Note that the default file names are &#8220;Form1.cs&#8221; and &#8220;Program1.cs&#8221;.
+You can change these.
+To do it, within Solution Explorer, right click on file name and use menu to
+change it, e.g., &#8220;Form1.cs&#8221; to &#8220;View.cs&#8221; or &#8220;uxForm.cs&#8221;.</p>
+<p>If you are building a Forms App, click on the &#8220;Design&#8221; tab of &#8220;Form1.cs&#8221; to see
+the GUI layout.
+You can see the code by right-clicking on &#8220;Form1.cs&#8221; in the Solution Explorer
+window and selecting &#8220;View Code&#8221;, or you can double click on the GUI itself to
+see its code.</p>
+<p>For more information, see MSDN&#8217;s
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/dd492171.aspx">Visual C# Tutorials</a>
+article.</p>
+<div class="section" id="widgets">
+<h3>1.5.1. Widgets<a class="headerlink" href="#widgets" title="Permalink to this headline">¶</a></h3>
+<p>You can change size of a widget by dragging its borders.
+You can change its title by changing its &#8220;Text&#8221; value in the Properties window.
+There are a lot of properties for a widget (e.g., Size, Anchor);
+see the list of widgets and key properties below.</p>
+<p>You add widgets to a GUI with the Toolbox.
+For example, go to Toolbox, select Toolstrip and then click on the GUI to drop
+the widget.</p>
+<p>You can change the Properties of the toolstrip.
+(Click on the widget to activate its properties in the Properties window.)
+Each widget has a name, a font, a color, an anchor.
+(You can Anchor a button so that it does not float in the layout in its parent
+widget is resized.)</p>
+<p>IMPORTANT: to change the var name of the widget in the source code, change the
+&#8220;(Name)&#8221; entry in its Properties list. Eg., Change &#8220;toolstrip1&#8221; to &#8220;uxToolStrip&#8221;.</p>
+<p>Here are some widgets and key properties:</p>
+<ul class="simple">
+<li>Label: displays lines of text.
+(Actually, it displays one string, but if there are &#8220;n&#8221; characters in the
+string, it displays as multiple lines.)</li>
+<li>Button: A button can be &#8220;Enabled&#8221; (or &#8220;Disabled&#8221; &#8212; see its Properties).</li>
+<li>Textbox (a place to type or display text): You can enable user typing into the
+box or not via &#8220;ReadOnly&#8221;.</li>
+<li>Listbox (a place to show a list of textlines, which can be selected.
+See Selection mode to see how a user can select the lines.</li>
+<li>Toolstrip: a bar that holds widgets like buttons and menus.
+You click on a toolstip to add widgets to it, eg, a button.
+Use Properties to change the button&#8217;s &#8220;(Name)&#8221; and its &#8220;Display style&#8221;
+(say, from &#8220;image&#8221; to text&#8221;).</li>
+</ul>
+<p>Each widget has a name, a font, a color, an anchor.
+You can Anchor a button so that it does not float in the layout in its parent
+widget is resized.
+In Toolbox, in Common Components, you can find tools like Web Browser, that you
+can select and insert. See www.dotnetperls for examples of other useful widgets.</p>
+<p>It is also possible to add to Common Components a widget that someone else
+(or you) has written.
+Assume this widget is packaged as a .dll file.
+We won&#8217;t do much of that here, but check back to your CIS300 notes to see how
+Dr. Howell did this.</p>
+</div>
+<div class="section" id="widget-event-handling">
+<h3>1.5.2. Widget Event Handling<a class="headerlink" href="#widget-event-handling" title="Permalink to this headline">¶</a></h3>
+<p>To add &#8220;the usual&#8221; event handler to a widget,
+double click on the widget in the GUI display.
+This generates an event-handler template in your class Form,
+and you insert type the handler code. For example, for a button named, <tt class="docutils literal"><span class="pre">uxHome</span></tt>,</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">private</span> <span class="k">void</span> <span class="nf">uxHome_Click</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">uxBrowser</span><span class="p">.</span><span class="n">GoHome</span><span class="p">();</span>   <span class="c1">// the code I added</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This handles the button click by calling method <tt class="docutils literal"><span class="pre">GoHome</span></tt> in object <tt class="docutils literal"><span class="pre">uxBrowser</span></tt>.</p>
+<p>IMPORTANT: there is a huge list of events associated with a widget.
+To see them, click on the widget and in the Properties window, click on the
+lightning bolt (&#8220;events&#8221;) to see all the events to which event handlers can be
+associated.
+You click on an event, and VS will generate the appropriate template for its handler.</p>
+<p>You should read Rod Howell&#8217;s first few GUI-based assignments in CIS300 to get
+tips for using VS to build widgets.</p>
+</div>
+</div>
+<div class="section" id="using-vs-debugger">
+<h2>1.6. Using VS Debugger<a class="headerlink" href="#using-vs-debugger" title="Permalink to this headline">¶</a></h2>
+<p>To run an app, just press the green ▶ button on VS.
+But you can stop the program in the middle of execution and look at the values
+of its variables by using the debugger.
+Here&#8217;s how:</p>
+<p>Set breakpoints: easiest way is to click to the left of the line where you want
+to step: click on the left vertical grey bar; a red blob will appear.
+Or, use cursor to select a line where you want to stop.
+Use DEBUG menu item and select TOGGLE BREAKPOINT.
+This marks the line (you will see a blob at the left of the line).</p>
+<p>Now, use DEBUG, START DEBUGGING.
+The program will run and stop at the selected breakpoint.
+In the window at the bottom, you should see the values of the variables that are
+visible at the program point, and you will see the stack of unfinished method calls.
+(If you don&#8217;t see this stuff, select DEBUG, WINDOWS, LOCAL and also CALLSTACK
+and also AUTOS.)
+Click the green button to continue to the next breakpoint.
+(You can insert multiple breakpoints, of course.
+You can remove a breakpoint by clicking on its blob or by selecting it with the
+cursor and then use DEBUG, TOGGLE BREAKPOINT.)</p>
+<p>You can also single-step (run-and-stop, one line at a time) using the &#8220;STEP INTO&#8221;
+menu item in DEBUG.
+Note the short-cut key for doing multiple steps.
+Step-into will enter called methods, too.</p>
+<p>You can single-step but not enter called methods by selecting &#8220;STEP OVER&#8221;.</p>
+<p>You can exit the currently active method and execute to the method&#8217;s call point
+by clicking &#8220;STEP OUT&#8221;.</p>
+<p>About the debug windows: in addition to LOCALS and CALL STACK and AUTOS, you use
+WATCH to enter vars or exprs whose values you wish to query at each breakpoint.
+You can use the IMMEDIATE window as an expression interpreter that uses the
+current context at the current breakpoint.</p>
+<p>For more information, see MSDN&#8217;s
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/awtaffxb.aspx">Debugging Managed Code</a>
+article.</p>
+</div>
+<div class="section" id="inserting-multiple-classes-in-a-namespace">
+<h2>1.7. Inserting Multiple Classes in A Namespace<a class="headerlink" href="#inserting-multiple-classes-in-a-namespace" title="Permalink to this headline">¶</a></h2>
+<p>You can always type multiple classes in one and the same file, but this
+is not recommended.</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">Hello2</span> <span class="p">{</span>
+
+  <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">new</span> <span class="nf">F</span><span class="p">().</span><span class="n">f</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">class</span> <span class="nc">F</span> <span class="p">{</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">Console</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;Please type your name: &quot;</span><span class="p">);</span>
+      <span class="kt">string</span> <span class="n">input</span> <span class="p">=</span> <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>It is usually better to have the extra class in another file but still listed as
+part of the same namespace. You do this:</p>
+<ol class="arabic">
+<li><p class="first">Use the PROJECT menu, select ADD CLASS (or ADD COMPONENT, then ADD CLASS).
+This generates</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">Hello2</span> <span class="p">{</span>
+
+  <span class="k">class</span> <span class="nc">Class2</span> <span class="p">{</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>that you fill in.
+(Remember, to rename <tt class="docutils literal"><span class="pre">Class2</span></tt>, just right-click on it in the Solutions
+window.)</p>
+</li>
+<li><p class="first">Now you can use it in the other files of your project.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="building-and-linking-a-library-class">
+<h2>1.8. Building and Linking A Library Class<a class="headerlink" href="#building-and-linking-a-library-class" title="Permalink to this headline">¶</a></h2>
+<p>You create a stand-alone library class or classes by making a New Project that
+is a &#8220;Class Library&#8221;.
+The class in the previous example might be done like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">FUtility</span> <span class="p">{</span>
+
+  <span class="k">public</span> <span class="k">class</span> <span class="nc">F</span> <span class="p">{</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">Console</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;hello &quot;</span><span class="p">);</span>
+      <span class="kt">string</span> <span class="n">input</span> <span class="p">=</span> <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Once it is finished, use the BUILD SOLUTION menu item, listed under menu BUILD
+(or DEBUG).</p>
+<p>To use your new class library in another program, do these steps:
+First, write the project that uses it:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">FUtility</span><span class="p">;</span>   <span class="c1">//  IMPORTANT: add this line!</span>
+
+<span class="k">namespace</span> <span class="nn">ConsoleApplication1</span> <span class="p">{</span>
+
+  <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">F</span> <span class="n">ob</span> <span class="p">=</span> <span class="k">new</span> <span class="n">F</span><span class="p">();</span>  <span class="n">ob</span><span class="p">.</span><span class="n">f</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Notice the line, <tt class="docutils literal"><span class="pre">using</span> <span class="pre">FUtility</span></tt>.
+Next, in the PROJECT menu, choose ADD REFERENCE, and use the browser window to
+locate and select the class, labelled as a <tt class="docutils literal"><span class="pre">.dll</span></tt> file, e.g., <tt class="docutils literal"><span class="pre">HelloClass.dll</span></tt>.
+This links the external class to the project.</p>
+<p>Note: you can also link to the class by right clicking on the &#8220;References&#8221; item
+in the Solution Explorer window.</p>
+<p>Important: if the <tt class="docutils literal"><span class="pre">dll</span></tt> should not be edited by you, then link
+(add reference to) the <tt class="docutils literal"><span class="pre">dll</span></tt> file in the bin subfolder and not the &#8220;project&#8221;
+that generated the <tt class="docutils literal"><span class="pre">dll</span></tt> file.
+The latter step loads the source code into VS and lets you alter it!</p>
+</div>
+<div class="section" id="generating-gui-message-boxes-input-dialogs-and-passive-views">
+<h2>1.9. Generating GUI Message Boxes, Input Dialogs, and Passive Views<a class="headerlink" href="#generating-gui-message-boxes-input-dialogs-and-passive-views" title="Permalink to this headline">¶</a></h2>
+<p>C# has a built-in message box (dialog).
+Here is a link about how to construct them:
+<a class="reference external" href="http://www.dotnetperls.com/messagebox-show">http://www.dotnetperls.com/messagebox-show</a></p>
+<p>Here&#8217;s an example:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">DialogResult</span> <span class="n">result</span> <span class="p">=</span> <span class="n">MessageBox</span><span class="p">.</span><span class="n">Show</span><span class="p">(</span><span class="s">&quot;Continue?&quot;</span><span class="p">,</span> <span class="s">&quot;Question&quot;</span><span class="p">,</span> <span class="n">MessageBoxButtons</span><span class="p">.</span><span class="n">YesNo</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="p">==</span> <span class="n">DialogResult</span><span class="p">.</span><span class="n">Yes</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">MessageBox</span><span class="p">.</span><span class="n">Show</span><span class="p">(</span><span class="s">&quot;You answered yes.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">MessageBox</span><span class="p">.</span><span class="n">Show</span><span class="p">(</span><span class="s">&quot;Click to exit.&quot;</span><span class="p">,</span> <span class="s">&quot;The End&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="input-dialog">
+<h3>1.9.1. Input Dialog<a class="headerlink" href="#input-dialog" title="Permalink to this headline">¶</a></h3>
+<p>C# does not have an input dialog box, but you can make one from a form:</p>
+<ol class="arabic">
+<li><p class="first">use VS to select PROJECT, ADD FORM (or ADD NEW ITEM then WINDOWS FORM).
+This adds a new form to your project.
+Use VS to add a textbox and a button to the new form.
+IMPORTANT: <em>in the button&#8217;s properties, set its DialogResult to OK.</em>
+(This makes the dialog finish when you click the button!)</p>
+</li>
+<li><p class="first">Add an event handler for the button click, and add a method that later
+returns the text typed in the textbox:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">MyDialog</span> <span class="p">:</span> <span class="n">Form</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="kt">string</span> <span class="n">x</span><span class="p">;</span>  <span class="c1">// saves info typed in the text box</span>
+
+  <span class="k">public</span> <span class="nf">MyDialog</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">InitializeComponent</span><span class="p">();</span>
+  <span class="p">}</span>
+  <span class="c1">// ...</span>
+
+  <span class="k">private</span> <span class="k">void</span> <span class="nf">button1_Click</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>  <span class="p">{</span>
+      <span class="n">x</span> <span class="p">=</span> <span class="n">textBox1</span><span class="p">.</span><span class="n">Text</span><span class="p">;</span>
+      <span class="c1">// Dispose();  // forces termination.</span>
+  <span class="p">}</span>
+
+  <span class="c1">// call this later to obtain the text typed in the dialog:</span>
+  <span class="k">public</span> <span class="kt">string</span> <span class="nf">getText</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">x</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Whenever you need to use the dialog in the program, do this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">MyDialog</span> <span class="n">dialog</span> <span class="p">=</span> <span class="k">new</span> <span class="n">MyDialog</span><span class="p">();</span>
+<span class="n">DialogResult</span> <span class="n">r</span> <span class="p">=</span> <span class="n">dialog</span><span class="p">.</span><span class="n">ShowDialog</span><span class="p">();</span>  <span class="c1">// pauses execution till dialog finishes</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="p">==</span> <span class="n">DialogResult</span><span class="p">.</span><span class="n">OK</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// then extract text</span>
+  <span class="kt">string</span> <span class="n">t</span> <span class="p">=</span> <span class="n">dialog</span><span class="p">.</span><span class="n">getText</span><span class="p">();</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="passive-output-forms">
+<h3>1.9.2. Passive Output Forms<a class="headerlink" href="#passive-output-forms" title="Permalink to this headline">¶</a></h3>
+<p>You can easily make a VS Form application so that its Form is &#8220;passive&#8221;,
+that is, it merely displays output data like a command window
+(and does not have buttons or text fields for input).
+This makes it easy to convert a console application into a Forms application.</p>
+<p>First, create a new form and name it <tt class="docutils literal"><span class="pre">PassiveForm</span></tt>.
+Next, insert a label, call it <tt class="docutils literal"><span class="pre">label1</span></tt>, into <tt class="docutils literal"><span class="pre">PassiveForm</span></tt>.
+The label will be your &#8220;command window.&#8221;
+Next, add this method to class <tt class="docutils literal"><span class="pre">PassiveForm</span></tt>:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">void</span> <span class="nf">WriteLine</span><span class="p">(</span><span class="kt">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">label1</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">label1</span><span class="p">.</span><span class="n">Text</span> <span class="p">+</span> <span class="s">&quot;\n&quot;</span> <span class="p">+</span> <span class="n">s</span><span class="p">;</span>
+  <span class="n">Refresh</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Notice that the built-in method, <tt class="docutils literal"><span class="pre">Refresh</span></tt>, is called to redraw the updated
+form.
+You call <tt class="docutils literal"><span class="pre">WriteLine</span></tt> each time you want to generate a new line of output.</p>
+<p>Also, if you plan to construct multiple instances of <tt class="docutils literal"><span class="pre">PassiveForm</span></tt>
+(maybe one form for each player in a game), then you must position each new
+instance so it does not overlap the others.
+Use static variables and <tt class="docutils literal"><span class="pre">PassiveForm</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">Location</span></tt> field like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">PassiveForm</span> <span class="p">:</span> <span class="n">Form</span> <span class="p">{</span>
+  <span class="c1">// coordinates for upper left corner of the visible passive form:</span>
+  <span class="k">static</span> <span class="kt">int</span> <span class="n">xPosition</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+  <span class="k">static</span> <span class="kt">int</span> <span class="n">yPosition</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">PassiveForm</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">InitializeComponent</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="k">private</span> <span class="k">void</span> <span class="nf">PassiveForm_Load</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// set location of where to display the new passive form:</span>
+    <span class="k">this</span><span class="p">.</span><span class="n">Location</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Point</span><span class="p">(</span><span class="n">xPosition</span><span class="p">,</span><span class="n">yPosition</span><span class="p">);</span>
+    <span class="c1">// update position coordinates for the next time a passive form is created:</span>
+    <span class="n">xPosition</span> <span class="p">=</span> <span class="n">xPosition</span> <span class="p">+</span> <span class="k">this</span><span class="p">.</span><span class="n">Width</span><span class="p">;</span>
+    <span class="n">yPosition</span> <span class="p">=</span> <span class="n">yPosition</span> <span class="p">+</span> <span class="m">50</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// adds a new line of text, s,  to the output:</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">WriteLine</span><span class="p">(</span><span class="kt">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">label1</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">label1</span><span class="p">.</span><span class="n">Text</span> <span class="p">+</span> <span class="s">&quot;\n&quot;</span> <span class="p">+</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">Refresh</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Now, change the <tt class="docutils literal"><span class="pre">Main</span></tt> method in the Forms application to look like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">Application</span><span class="p">.</span><span class="n">EnableVisualStyles</span><span class="p">();</span>
+  <span class="n">Application</span><span class="p">.</span><span class="n">SetCompatibleTextRenderingDefault</span><span class="p">(</span><span class="k">false</span><span class="p">);</span>
+  <span class="c1">//Application.Run(new PassiveForm());  // DON&#39;T GIVE CONTROL TO THE FORM !</span>
+
+  <span class="c1">// PLACE CODE HERE THAT CONSTRUCTS YOUR SYSTEM AND RUNS IT:</span>
+  <span class="c1">// As needed, here or elsewhere, construct passive form objects and use them:</span>
+  <span class="n">PassiveForm</span> <span class="n">f</span> <span class="p">=</span> <span class="k">new</span> <span class="n">PassiveForm</span><span class="p">();</span>
+  <span class="n">f</span><span class="p">.</span><span class="n">Show</span><span class="p">();</span>
+  <span class="c1">// ...</span>
+  <span class="n">f</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+  <span class="c1">// ...</span>
+
+  <span class="n">MessageBox</span><span class="p">.</span><span class="n">Show</span><span class="p">(</span><span class="s">&quot;Click to exit.&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You can generate as many passive forms as you want &#8212; they are merely objects
+that happen to have a visual presentation on your display.
+Here is an example, where there is a &#8220;main&#8221;, &#8220;active&#8221; GUI, <tt class="docutils literal"><span class="pre">Form1</span></tt>,
+and two passive forms:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">Application</span><span class="p">.</span><span class="n">EnableVisualStyles</span><span class="p">();</span>
+  <span class="n">Application</span><span class="p">.</span><span class="n">SetCompatibleTextRenderingDefault</span><span class="p">(</span><span class="k">false</span><span class="p">);</span>
+
+  <span class="n">PassiveForm</span> <span class="n">f</span> <span class="p">=</span> <span class="k">new</span> <span class="n">PassiveForm</span><span class="p">();</span> <span class="n">f</span><span class="p">.</span><span class="n">Show</span><span class="p">();</span>
+  <span class="n">PassiveForm</span> <span class="n">g</span> <span class="p">=</span> <span class="k">new</span> <span class="n">PassiveForm</span><span class="p">();</span> <span class="n">g</span><span class="p">.</span><span class="n">Show</span><span class="p">();</span>
+  <span class="c1">// ...</span>
+  <span class="n">f</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+  <span class="c1">// ...</span>
+  <span class="n">g</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;hi&quot;</span><span class="p">);</span>
+  <span class="c1">// ...</span>
+
+  <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">(</span><span class="k">new</span> <span class="n">Form1</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">));</span>  <span class="c1">// this would construct the &quot;active&quot;</span>
+                                     <span class="c1">//  Form1 and give control to it.</span>
+  <span class="c1">// Notice that we altered Form1&#39;s constructor to receive the handles to</span>
+  <span class="c1">// the passive forms so that it can write to them as desired.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="multiple-guis-with-buttons">
+<h2>1.10. Multiple GUIs with Buttons<a class="headerlink" href="#multiple-guis-with-buttons" title="Permalink to this headline">¶</a></h2>
+<p>Say that you want to have two or more Forms that each have buttons that trigger
+computation when pressed. Here is how you change the <tt class="docutils literal"><span class="pre">Main</span></tt> method to do this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">Application</span><span class="p">.</span><span class="n">EnableVisualStyles</span><span class="p">();</span>
+  <span class="n">Application</span><span class="p">.</span><span class="n">SetCompatibleTextRenderingDefault</span><span class="p">(</span><span class="k">false</span><span class="p">);</span>
+  <span class="c1">// Say that Form1 has some buttons on it.</span>
+  <span class="c1">// We can construct two of it, and the the buttons on both forms</span>
+  <span class="c1">// are alive:</span>
+  <span class="n">Form1</span> <span class="n">f</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Form1</span><span class="p">();</span> <span class="n">f</span><span class="p">.</span><span class="n">Show</span><span class="p">();</span>  <span class="c1">// remember to  Show  the form</span>
+  <span class="n">Form1</span> <span class="n">g</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Form1</span><span class="p">();</span> <span class="n">g</span><span class="p">.</span><span class="n">Show</span><span class="p">();</span>
+  <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>  <span class="c1">// there is no need for an argument to  Run!</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Now, even if you &#8220;kill&#8221; both of the above forms by pressing their X-buttons in
+the upper right corner of the forms, the program is &#8220;stuck&#8221; in its <tt class="docutils literal"><span class="pre">Run</span></tt>
+method, which is listening for events for all zero remaining forms.
+(Use <tt class="docutils literal"><span class="pre">Application.Exit()</span></tt> when you want to force all forms in the entire
+program to stop.)</p>
+<p>It is also OK for a Forms App to start a &#8220;main form&#8221;, which itself constructs
+more forms.
+All the buttons on all the forms will be active.</p>
+</div>
+<div class="section" id="multiple-gui-threads">
+<span id="id1"></span><h2>1.11. Multiple GUI Threads<a class="headerlink" href="#multiple-gui-threads" title="Permalink to this headline">¶</a></h2>
+<p>Real-life systems are often running on multiple processors.
+We can learn about this form of behavior by creating one C# program that
+&#8220;splits&#8221; into multiple &#8220;threads&#8221; of execution. (In principle, each thread runs
+on its own processor.)</p>
+<p>Here is our starter example: Say we want one application to generate two forms,
+each with its own thread of execution. Here&#8217;s how to rewrite <tt class="docutils literal"><span class="pre">Program.cs</span></tt>:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Windows.Forms</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Threading</span><span class="p">;</span>  <span class="c1">//  ADD ME</span>
+
+<span class="k">namespace</span> <span class="nn">TestWindow</span> <span class="p">{</span>
+
+  <span class="k">static</span> <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+<span class="na">     [STAThread]</span>
+     <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+       <span class="n">Application</span><span class="p">.</span><span class="n">EnableVisualStyles</span><span class="p">();</span>
+       <span class="n">Application</span><span class="p">.</span><span class="n">SetCompatibleTextRenderingDefault</span><span class="p">(</span><span class="k">false</span><span class="p">);</span>
+
+       <span class="k">new</span> <span class="nf">Thread</span><span class="p">(</span><span class="n">Driver1</span><span class="p">).</span><span class="n">Start</span><span class="p">();</span>   <span class="c1">// ADD ME</span>
+       <span class="k">new</span> <span class="nf">Thread</span><span class="p">(</span><span class="n">Driver2</span><span class="p">).</span><span class="n">Start</span><span class="p">();</span>   <span class="c1">// ADD ME</span>
+       <span class="n">MessageBox</span><span class="p">.</span><span class="n">Show</span><span class="p">(</span><span class="s">&quot;Forms started in their own threads&quot;</span><span class="p">);</span>
+
+       <span class="c1">//Application.Run(new Form1());   // no need for this</span>
+     <span class="p">}</span>
+
+     <span class="c1">// ADD THESE PROCEDURES:</span>
+     <span class="k">static</span> <span class="k">void</span> <span class="nf">Driver1</span><span class="p">()</span>
+     <span class="p">{</span> <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">(</span><span class="k">new</span> <span class="n">Form1</span><span class="p">());</span> <span class="p">}</span>
+     <span class="k">static</span> <span class="k">void</span> <span class="nf">Driver2</span><span class="p">()</span> <span class="p">{</span>
+     <span class="p">{</span> <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">(</span><span class="k">new</span> <span class="n">Form2</span><span class="p">());</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The code generates two threads of execution (activation stacks,
+instruction counters); then it finishes the main thread and shows the message
+box.</p>
+<div class="section" id="using-lock-on-an-object-shared-by-multiple-threads">
+<span id="using-lock"></span><h3>1.11.1. Using <tt class="docutils literal"><span class="pre">lock</span></tt> on An Object Shared by Multiple Threads<a class="headerlink" href="#using-lock-on-an-object-shared-by-multiple-threads" title="Permalink to this headline">¶</a></h3>
+<p>First off, threads can be dangerous.
+Say that two threads of execution wish to share an object
+(example: a database shared by two view objects).
+Access to the shared object must be controlled so that only one thread executes
+the object&#8217;s code at a time.
+C# has a primitive critical-section operation, called <tt class="docutils literal"><span class="pre">lock</span></tt>,
+which uses an object&#8217;s handle as a kind of semaphore.
+Here is an example of a clock object that is shared by three threads of
+execution. (You place a &#8220;lock&#8221; around the body of each method to the shared
+object):</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// ...</span>
+<span class="k">namespace</span> <span class="nn">Test</span> <span class="p">{</span>
+
+  <span class="c1">// objects constructed from this entity (model) class are shareable:</span>
+  <span class="k">public</span> <span class="k">class</span> <span class="nc">Clock</span> <span class="p">{</span>      <span class="c1">// note the uses of  lock(this)  !!!</span>
+
+    <span class="k">private</span> <span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">tick</span><span class="p">()</span>
+    <span class="p">{</span> <span class="k">lock</span> <span class="p">(</span><span class="k">this</span><span class="p">)</span> <span class="p">{</span> <span class="n">i</span> <span class="p">=</span> <span class="n">i</span> <span class="p">+</span> <span class="m">1</span><span class="p">;</span> <span class="p">}</span> <span class="p">}</span>
+
+    <span class="k">public</span> <span class="kt">int</span> <span class="nf">getTime</span><span class="p">()</span>
+    <span class="p">{</span> <span class="k">lock</span> <span class="p">(</span><span class="k">this</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">i</span><span class="p">;</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="k">using</span> <span class="nn">System.Threading</span><span class="p">;</span>  <span class="c1">// needed for multiple threads</span>
+
+<span class="k">namespace</span> <span class="nn">Test</span> <span class="p">{</span>
+
+  <span class="k">static</span> <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+<span class="na">    [STAThread]</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">Clock</span> <span class="n">c</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Clock</span><span class="p">();</span>
+      <span class="n">Application</span><span class="p">.</span><span class="n">EnableVisualStyles</span><span class="p">();</span>
+      <span class="n">Application</span><span class="p">.</span><span class="n">SetCompatibleTextRenderingDefault</span><span class="p">(</span><span class="k">false</span><span class="p">);</span>
+      <span class="k">new</span> <span class="nf">Thread</span><span class="p">(</span><span class="n">Driver</span><span class="p">).</span><span class="n">Start</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>    <span class="c1">// note that  c  is the arg!</span>
+      <span class="k">new</span> <span class="nf">Thread</span><span class="p">(</span><span class="n">Driver2</span><span class="p">).</span><span class="n">Start</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>   <span class="c1">// same here</span>
+      <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">(</span><span class="k">new</span> <span class="n">Form1</span><span class="p">(</span><span class="n">c</span><span class="p">));</span>  <span class="c1">// same here</span>
+    <span class="p">}</span>
+
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Driver</span><span class="p">(</span><span class="n">Object</span> <span class="n">c</span><span class="p">)</span>  <span class="c1">// you can pass an object to a new thread</span>
+    <span class="p">{</span>   <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">(</span><span class="k">new</span> <span class="n">Form2</span><span class="p">((</span><span class="n">Clock</span><span class="p">)</span><span class="n">c</span><span class="p">));</span> <span class="p">}</span>
+
+    <span class="c1">// runs yet another thread, a controller which ticks the clock each second:</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Driver2</span><span class="p">(</span><span class="kt">object</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">Clock</span> <span class="n">c</span> <span class="p">=</span> <span class="p">(</span><span class="n">Clock</span><span class="p">)</span><span class="n">x</span><span class="p">;</span>
+      <span class="k">while</span> <span class="p">(</span><span class="k">true</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Thread</span><span class="p">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">1000</span><span class="p">);</span>  <span class="c1">// sleep 1 second</span>
+        <span class="n">c</span><span class="p">.</span><span class="n">tick</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// ...</span>
+<span class="k">namespace</span> <span class="nn">Test</span> <span class="p">{</span>
+
+  <span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">Form1</span> <span class="p">:</span> <span class="n">Form</span> <span class="p">{</span>
+    <span class="k">private</span> <span class="n">Clock</span> <span class="n">d</span><span class="p">;</span>
+    <span class="k">public</span> <span class="nf">Form1</span><span class="p">(</span><span class="n">Clock</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">d</span> <span class="p">=</span> <span class="n">c</span><span class="p">;</span>
+      <span class="n">InitializeComponent</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="c1">// Say that  Form1  has a button:</span>
+    <span class="k">private</span> <span class="k">void</span> <span class="nf">button1_Click</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+    <span class="p">{</span> <span class="n">d</span><span class="p">.</span><span class="n">tick</span><span class="p">();</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// ...</span>
+<span class="k">namespace</span> <span class="nn">Test</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">Form2</span> <span class="p">:</span> <span class="n">Form</span> <span class="p">{</span>
+    <span class="k">private</span> <span class="n">Clock</span> <span class="n">d</span><span class="p">;</span>
+    <span class="k">public</span> <span class="nf">Form2</span><span class="p">(</span><span class="n">Clock</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">d</span> <span class="p">=</span> <span class="n">c</span><span class="p">;</span>
+      <span class="n">InitializeComponent</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="c1">// Say that  Form2  has a button and a label:</span>
+    <span class="k">private</span> <span class="k">void</span> <span class="nf">button2_Click</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">t</span> <span class="p">=</span> <span class="n">d</span><span class="p">.</span><span class="n">getTime</span><span class="p">();</span>
+      <span class="n">label2</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">t</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span> <span class="n">Refresh</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="multiple-threads-of-execution">
+<h3>1.11.2. Multiple Threads of Execution<a class="headerlink" href="#multiple-threads-of-execution" title="Permalink to this headline">¶</a></h3>
+<p>Here are some references:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://msdn.microsoft.com/en-us/library/c5kehkcz%28v=vs.71%29.aspx">http://msdn.microsoft.com/en-us/library/c5kehkcz%28v=vs.71%29.aspx</a></li>
+<li><a class="reference external" href="http://www.albahari.com/threading/part2.aspx">http://www.albahari.com/threading/part2.aspx</a></li>
+<li><a class="reference external" href="http://www.c-sharpcorner.com/UploadFile/1d42da/thread-locking-in-C-Sharp/">http://www.c-sharpcorner.com/UploadFile/1d42da/thread-locking-in-C-Sharp/</a></li>
+</ul>
+<p>All of them encourage you to use a &#8220;thread delegate&#8221; construction when
+generating a new thread, e.g.:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Threading</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ThreadTest</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">runme</span><span class="p">()</span> <span class="p">{</span> <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;runme called&quot;</span><span class="p">);</span> <span class="p">}</span>
+
+  <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ThreadTest</span> <span class="n">b</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ThreadTest</span><span class="p">();</span>
+    <span class="n">Thread</span> <span class="n">t</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Thread</span><span class="p">(</span><span class="k">new</span> <span class="n">ThreadStart</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">runme</span><span class="p">));</span>
+    <span class="n">t</span><span class="p">.</span><span class="n">Start</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>I don&#8217;t know if this is safer than the naive version of threads that I already
+showed you.</p>
+</div>
+</div>
+<div class="section" id="compiling-a-project-into-binary">
+<h2>1.12. Compiling A Project into Binary<a class="headerlink" href="#compiling-a-project-into-binary" title="Permalink to this headline">¶</a></h2>
+<p>Use the BUILD SOLUTION menu item (listed under either BUILD or DEBUG) to do this.
+<em>Always do this when finishing a new Class Library (dll) project.</em></p>
+<p>The C# compiler can be used standalone, from a command window,
+to compile and test programs and library components.
+The details can be found in David Schmidt&#8217;s
+<a class="reference external" href="http://people.cis.ksu.edu/~schmidt/200s08/">CIS200 notes from 2008</a> &#8212;
+see the last four links on that page.</p>
+<p>If you want a GUI for your C# program, then you are stuck using VS;
+it&#8217;s too much work to build a GUI by hand in C#.
+In contrast, other languages (e.g., Python) make GUI-building not so hard.
+(See the previous link.)</p>
+</div>
+<div class="section" id="unit-testing">
+<span id="id2"></span><h2>1.13. Unit Testing<a class="headerlink" href="#unit-testing" title="Permalink to this headline">¶</a></h2>
+<p>The components (classes) of a system should be tested individually
+(or in an order where the class to be tested depends only on classes that are
+already tested). This is called unit testing.</p>
+<p>To unit-test a class, you can write code to construct it and call all its
+methods.
+The tests should make full use of the methods, fields, and their interactions.
+Place the tests in static methods and call them from <strong>Main</strong>.
+Here&#8217;s an example:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">class</span> <span class="nc">Clock</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">t</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">tick</span><span class="p">()</span> <span class="p">{</span> <span class="n">t</span> <span class="p">=</span> <span class="n">t</span> <span class="p">+</span> <span class="m">1</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="k">public</span> <span class="kt">int</span> <span class="nf">getTime</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">t</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Here is a unit test:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// place unit tests here:</span>
+  <span class="n">testClock</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">testClock</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">Clock</span> <span class="n">c</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Clock</span><span class="p">();</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;=</span> <span class="m">20</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">getTime</span><span class="p">());</span>
+    <span class="n">c</span><span class="p">.</span><span class="n">tick</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Now, if class <tt class="docutils literal"><span class="pre">Clock</span></tt> is already part of a Console Application,
+we revise the <tt class="docutils literal"><span class="pre">Main</span></tt> procedure to test it.
+But <tt class="docutils literal"><span class="pre">Clock</span></tt> might be coded in a Class Library (<tt class="docutils literal"><span class="pre">.dll</span></tt>)
+or a Form Application, which cannot be started by <tt class="docutils literal"><span class="pre">Main</span></tt>.
+In Java, we can insert <tt class="docutils literal"><span class="pre">Main</span></tt> into class <tt class="docutils literal"><span class="pre">Clock</span></tt> and execute <tt class="docutils literal"><span class="pre">Clock</span></tt>
+as an application! But C# won&#8217;t let us do this trick.
+So, we must generate a new project to hold <tt class="docutils literal"><span class="pre">Main</span></tt>.</p>
+<p>A better way to do unit testing is to leverage VS testing framework.
+To do this, you need to create a <tt class="docutils literal"><span class="pre">Unit</span> <span class="pre">Test</span> <span class="pre">Project</span></tt> as follows:</p>
+<ol class="arabic">
+<li><p class="first">Right-click on your solution in the <tt class="docutils literal"><span class="pre">Solution</span> <span class="pre">Explorer</span></tt>, select
+<tt class="docutils literal"><span class="pre">Add</span></tt> and then <tt class="docutils literal"><span class="pre">New</span> <span class="pre">Project...</span></tt>.
+It opens the <tt class="docutils literal"><span class="pre">Add</span> <span class="pre">New</span> <span class="pre">Project</span></tt> dialog window.</p>
+</li>
+<li><p class="first">Under <tt class="docutils literal"><span class="pre">Visual</span> <span class="pre">C#</span></tt>, select <tt class="docutils literal"><span class="pre">Test</span></tt> and <tt class="docutils literal"><span class="pre">Unit</span> <span class="pre">Test</span> <span class="pre">Project</span></tt>, and then
+name your project, e.g., <tt class="docutils literal"><span class="pre">ClockUnitTest</span></tt>.</p>
+</li>
+<li><p class="first">It should generate a test file:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.VisualStudio.TestTools.UnitTesting</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">ClockUnitTest</span> <span class="p">{</span>
+
+<span class="na">  [TestClass]</span>
+  <span class="k">public</span> <span class="k">class</span> <span class="nc">UnitTest1</span> <span class="p">{</span>
+
+<span class="na">    [TestMethod]</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">TestMethod1</span><span class="p">()</span> <span class="p">{</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">The <tt class="docutils literal"><span class="pre">[TestClass]</span></tt> attribute indicates that the class is part of the unit
+test suite of the project. Similarly, <tt class="docutils literal"><span class="pre">[TestMethod]</span></tt> indicates the method
+is a test method. You can have multiple test classes and test methods.</p>
+</li>
+<li><p class="first">Add a reference to the project containing <tt class="docutils literal"><span class="pre">Clock</span></tt> by right-clicking the
+test project and selecting <tt class="docutils literal"><span class="pre">Add</span></tt> and <tt class="docutils literal"><span class="pre">Reference...</span></tt>. It opens the
+<tt class="docutils literal"><span class="pre">Reference</span> <span class="pre">Manager</span></tt> dialog window. Select the project containing <tt class="docutils literal"><span class="pre">Clock</span></tt>
+under <tt class="docutils literal"><span class="pre">Solution</span></tt> and <tt class="docutils literal"><span class="pre">Projects</span></tt>, then click <tt class="docutils literal"><span class="pre">OK</span></tt>.</p>
+</li>
+<li><p class="first">Modify the test method to insert the test code, for example:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="na">[TestMethod]</span>
+<span class="k">public</span> <span class="k">void</span> <span class="nf">TestMethod1</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">Clock</span> <span class="n">c</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Clock</span><span class="p">();</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;=</span> <span class="m">20</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">getTime</span><span class="p">());</span>
+    <span class="n">c</span><span class="p">.</span><span class="n">tick</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">To run or debug your tests, open the <tt class="docutils literal"><span class="pre">TEST</span></tt> menu and then either select
+<tt class="docutils literal"><span class="pre">Run</span></tt> or <tt class="docutils literal"><span class="pre">Debug</span></tt>, then <tt class="docutils literal"><span class="pre">All</span> <span class="pre">Tests</span></tt>. It opens <tt class="docutils literal"><span class="pre">Test</span> <span class="pre">Explorer</span></tt> that
+contains the status of each test methods (passing or failing).</p>
+</li>
+</ol>
+<p>For more information, see MSDN&#8217;s
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/dd264975.aspx">Verifying Code by Using Unit Tests</a>
+article.</p>
+<div class="section" id="code-coverage">
+<h3>1.13.1. Code Coverage<a class="headerlink" href="#code-coverage" title="Permalink to this headline">¶</a></h3>
+<p>It is considered best practice if your test suite exercises all
+(non-test) code in your solution.
+Visual Studio has a code coverage analysis tool that can tell you if you are
+missing exercising certain parts of your code.
+You can run the code coverage analysis by selecting <tt class="docutils literal"><span class="pre">Analyze</span> <span class="pre">Code</span> <span class="pre">Coverage</span></tt>
+and <tt class="docutils literal"><span class="pre">All</span> <span class="pre">Tests</span></tt> under the <tt class="docutils literal"><span class="pre">TEST</span></tt> menu.</p>
+<p>For more information, see MSDN&#8217;s
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/dd537628.aspx">Using Code Coverage to Determine How Much Code is being Tested</a>
+article.</p>
+</div>
+</div>
+<div class="section" id="app-testing">
+<span id="id3"></span><h2>1.14. App Testing<a class="headerlink" href="#app-testing" title="Permalink to this headline">¶</a></h2>
+<p>One can use Visual Studio test framework to test console app.
+This is done by redirecting <tt class="docutils literal"><span class="pre">Console.Out</span></tt> and <tt class="docutils literal"><span class="pre">Console.In</span></tt> to custom
+<tt class="docutils literal"><span class="pre">TextWriter</span></tt> (e.g., <tt class="docutils literal"><span class="pre">StringWriter</span></tt>) and <tt class="docutils literal"><span class="pre">TextReader</span></tt>
+(e.g., <tt class="docutils literal"><span class="pre">StringReader</span></tt>), respectively.</p>
+<p>Below is an example to illustrate how one can test a console app.</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Threading.Tasks</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">PrimeTool</span>
+<span class="p">{</span>
+    <span class="c1">// A simple prime tester console app</span>
+    <span class="c1">// (make sure the Program class visibility is public)</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">Program</span>
+    <span class="p">{</span>
+        <span class="c1">// (make sure the main method visibility is public)</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">bool</span> <span class="n">exit</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+
+            <span class="k">while</span> <span class="p">(!</span><span class="n">exit</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="kt">int</span> <span class="n">n</span> <span class="p">=</span> <span class="n">ReadPositiveInt</span><span class="p">(</span><span class="s">&quot;Enter a number:&quot;</span><span class="p">);</span>
+                <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">();</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">IsPrime</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+                <span class="p">{</span>
+                    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">n</span> <span class="p">+</span> <span class="s">&quot; is a prime!&quot;</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="k">else</span>
+                <span class="p">{</span>
+                    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">n</span> <span class="p">+</span> <span class="s">&quot; is not a prime!&quot;</span><span class="p">);</span>
+                <span class="p">}</span>
+
+
+                <span class="n">Console</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;Do you want to exit (enter y to exit)? &quot;</span><span class="p">);</span>
+                <span class="n">exit</span> <span class="p">=</span> <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">()</span> <span class="p">==</span> <span class="s">&quot;y&quot;</span><span class="p">;</span>
+                <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">();</span>
+            <span class="p">}</span>
+
+            <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="c1">// reads a positive int from user input</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="kt">int</span> <span class="nf">ReadPositiveInt</span><span class="p">(</span><span class="kt">string</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">n</span> <span class="p">=</span> <span class="p">-</span><span class="m">1</span><span class="p">;</span>
+            <span class="k">while</span> <span class="p">(</span><span class="n">n</span> <span class="p">&lt;</span> <span class="m">0</span><span class="p">)</span> <span class="c1">// repeat until positive int input</span>
+            <span class="p">{</span>
+                <span class="n">Console</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">msg</span> <span class="p">+</span> <span class="s">&quot; &quot;</span><span class="p">);</span>
+                <span class="n">n</span> <span class="p">=</span> <span class="n">Int32</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">());</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">n</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="c1">// from http://www.dotnetperls.com/prime</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="kt">bool</span> <span class="nf">IsPrime</span><span class="p">(</span><span class="kt">int</span> <span class="n">candidate</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="c1">// Test whether the parameter is a prime number.</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">candidate</span> <span class="p">&amp;</span> <span class="m">1</span><span class="p">)</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">candidate</span> <span class="p">==</span> <span class="m">2</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">else</span>
+                <span class="p">{</span>
+                    <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="c1">// Note:</span>
+            <span class="c1">// ... This version was changed to test the square.</span>
+            <span class="c1">// ... Original version tested against the square root.</span>
+            <span class="c1">// ... Also we exclude 1 at the end.</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">3</span><span class="p">;</span> <span class="p">(</span><span class="n">i</span> <span class="p">*</span> <span class="n">i</span><span class="p">)</span> <span class="p">&lt;=</span> <span class="n">candidate</span><span class="p">;</span> <span class="n">i</span> <span class="p">+=</span> <span class="m">2</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">if</span> <span class="p">((</span><span class="n">candidate</span> <span class="p">%</span> <span class="n">i</span><span class="p">)</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">candidate</span> <span class="p">!=</span> <span class="m">1</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.IO</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.VisualStudio.TestTools.UnitTesting</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">PrimeToolTest</span>
+<span class="p">{</span>
+<span class="na">    [TestClass]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">PrimeToolTest</span>
+    <span class="p">{</span>
+        <span class="c1">// test IsPrime(2) directly</span>
+<span class="na">        [TestMethod]</span>
+        <span class="k">public</span> <span class="k">void</span> <span class="nf">Num2Prime</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">Assert</span><span class="p">.</span><span class="n">IsTrue</span><span class="p">(</span><span class="n">PrimeTool</span><span class="p">.</span><span class="n">Program</span><span class="p">.</span><span class="n">IsPrime</span><span class="p">(</span><span class="m">2</span><span class="p">));</span>
+        <span class="p">}</span>
+
+        <span class="c1">// test prime tool console app on 2 using a script without expected output</span>
+<span class="na">        [TestMethod]</span>
+        <span class="k">public</span> <span class="k">void</span> <span class="nf">ConsoleNum2Prime</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="c1">// @&quot;&quot; is a multi-line string</span>
+            <span class="c1">// the first line is &quot;2&quot; which will be entered for the number to test</span>
+            <span class="c1">// the second line is &quot;y&quot; which will be entered for exiting the app</span>
+            <span class="n">test</span><span class="p">(</span><span class="s">@&quot;2</span>
+<span class="s">y</span>
+<span class="s">&quot;</span><span class="p">,</span> <span class="k">null</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="c1">// test prime tool console app on 3 using a script with expected output</span>
+        <span class="c1">// that it is a prime</span>
+        <span class="c1">// (be careful with white-space for the expected output)</span>
+<span class="na">        [TestMethod]</span>
+        <span class="k">public</span> <span class="k">void</span> <span class="nf">ConsoleNum3Prime</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">test</span><span class="p">(</span><span class="s">@&quot;3</span>
+<span class="s">y&quot;</span><span class="p">,</span>
+                 <span class="s">@&quot;Enter a number:</span>
+<span class="s">3 is a prime!</span>
+<span class="s">Do you want to exit (enter y to exit)?</span>
+<span class="s">&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="c1">// test prime tool console app on 4 and 55 using a script with expected output</span>
+        <span class="c1">// that it is not a prime</span>
+<span class="na">        [TestMethod]</span>
+        <span class="k">public</span> <span class="k">void</span> <span class="nf">ConsoleNum4And55NotPrime</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">test</span><span class="p">(</span><span class="s">@&quot;4</span>
+<span class="s">n</span>
+<span class="s">55</span>
+<span class="s">y</span>
+<span class="s">&quot;</span><span class="p">,</span>
+                 <span class="s">@&quot;Enter a number:</span>
+<span class="s">4 is not a prime!</span>
+<span class="s">Do you want to exit (enter y to exit)?</span>
+<span class="s">Enter a number:</span>
+<span class="s">55 is not a prime!</span>
+<span class="s">Do you want to exit (enter y to exit)?</span>
+<span class="s">&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="c1">// test utility method to run the prime tool app with</span>
+        <span class="c1">// a string script as input</span>
+        <span class="k">void</span> <span class="nf">test</span><span class="p">(</span><span class="kt">string</span> <span class="n">script</span><span class="p">,</span> <span class="kt">string</span> <span class="n">expectedOutput</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="c1">// save default Console.Out and Console.In</span>
+            <span class="n">TextWriter</span> <span class="n">cout</span> <span class="p">=</span> <span class="n">Console</span><span class="p">.</span><span class="n">Out</span><span class="p">;</span>
+            <span class="n">TextReader</span> <span class="n">cin</span> <span class="p">=</span> <span class="n">Console</span><span class="p">.</span><span class="n">In</span><span class="p">;</span>
+
+            <span class="c1">// redirect Console.Out to a StringWriter (buffer)</span>
+            <span class="n">StringWriter</span> <span class="n">sw</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StringWriter</span><span class="p">();</span>
+            <span class="n">Console</span><span class="p">.</span><span class="n">SetOut</span><span class="p">(</span><span class="n">sw</span><span class="p">);</span>
+
+            <span class="c1">// set script as the app Console.In</span>
+            <span class="n">StringReader</span> <span class="n">sr</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StringReader</span><span class="p">(</span><span class="n">script</span><span class="p">);</span>
+            <span class="n">Console</span><span class="p">.</span><span class="n">SetIn</span><span class="p">(</span><span class="n">sr</span><span class="p">);</span>
+
+            <span class="c1">// call the console app</span>
+            <span class="n">PrimeTool</span><span class="p">.</span><span class="n">Program</span><span class="p">.</span><span class="n">Main</span><span class="p">(</span><span class="k">new</span> <span class="kt">string</span><span class="p">[</span><span class="m">0</span><span class="p">]);</span>
+
+            <span class="c1">// restore default Console.Out and Console.In</span>
+            <span class="n">Console</span><span class="p">.</span><span class="n">SetOut</span><span class="p">(</span><span class="n">cout</span><span class="p">);</span>
+            <span class="n">Console</span><span class="p">.</span><span class="n">SetIn</span><span class="p">(</span><span class="n">cin</span><span class="p">);</span>
+
+            <span class="c1">// close resources</span>
+            <span class="n">sw</span><span class="p">.</span><span class="n">Close</span><span class="p">();</span>
+            <span class="n">sr</span><span class="p">.</span><span class="n">Close</span><span class="p">();</span>
+
+            <span class="c1">// get the actual ouput</span>
+            <span class="c1">// if the expected output is null,</span>
+            <span class="c1">//    then the test simply prints out the actual output (for debugging)</span>
+            <span class="c1">// otherwise, it asserts that the expected output is equal to the actual ouput</span>
+            <span class="kt">string</span> <span class="n">actualOutput</span> <span class="p">=</span> <span class="n">sw</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">expectedOutput</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">Console</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">actualOutput</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">else</span>
+            <span class="p">{</span>
+                <span class="n">Assert</span><span class="p">.</span><span class="n">AreEqual</span><span class="p">(</span><span class="n">expectedOutput</span><span class="p">,</span> <span class="n">actualOutput</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Visual Studio also supports UI testing by recording user input events (see MSDN&#8217;s
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/dd286726.aspx">Verifying Code by Using UI Automation</a>
+article).</p>
+</div>
+<div class="section" id="useful-c-concepts">
+<h2>1.15. Useful C# Concepts<a class="headerlink" href="#useful-c-concepts" title="Permalink to this headline">¶</a></h2>
+<p>You will find additional helpful material at <a class="reference external" href="http://www.dotnetperls.com">http://www.dotnetperls.com</a>.</p>
+<p>Below are three data structures that are hugely useful in practice.</p>
+<div class="section" id="lists-dynamic-arrays">
+<h3>1.15.1. Lists (Dynamic Arrays)<a class="headerlink" href="#lists-dynamic-arrays" title="Permalink to this headline">¶</a></h3>
+<p>Most of the time, the arrays you use will need to grow and shrink.
+That is, you want a list, not an array.
+Lists are implemented in C# by a library class, List.
+Here are two links for reference:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://msdn.microsoft.com/en-us/library/6sh2ey19.aspx">http://msdn.microsoft.com/en-us/library/6sh2ey19.aspx</a></li>
+<li><a class="reference external" href="http://www.dotnetperls.com/list">http://www.dotnetperls.com/list</a></li>
+</ul>
+<p>Here are the basic ideas:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+  <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">List</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;</span> <span class="n">list</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;();</span>
+    <span class="n">list</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="m">2</span><span class="p">);</span>
+    <span class="n">list</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
+    <span class="n">list</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="m">7</span><span class="p">);</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">list</span><span class="p">.</span><span class="n">Count</span><span class="p">);</span>  <span class="c1">// prints 3</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">list</span><span class="p">[</span><span class="m">2</span><span class="p">]);</span>  <span class="c1">// OK to index like an array</span>
+
+    <span class="k">foreach</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="k">in</span> <span class="n">list</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Can add elements at any position and can remove them:</span>
+    <span class="n">list</span><span class="p">.</span><span class="n">Insert</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">2</span><span class="p">);</span>  <span class="c1">// places the  2  at index 0 and shifts the rest</span>
+    <span class="n">list</span><span class="p">.</span><span class="n">RemoveAt</span><span class="p">(</span><span class="n">list</span><span class="p">.</span><span class="n">Count</span> <span class="p">-</span> <span class="m">1</span><span class="p">);</span> <span class="c1">// removed rightmost element</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There are also operations for finding elements, slicing, etc.;
+see the first reference listed just above.</p>
+<p>C# lists work well with the ListBox widget;
+see <a class="reference external" href="http://www.dotnetperls.com/listbox">http://www.dotnetperls.com/listbox</a></p>
+</div>
+<div class="section" id="enumerations">
+<h3>1.15.2. Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline">¶</a></h3>
+<p>When you want a data type that is a set of named values, e.g.,
+the days of the week, or the suits of a deck of cards,
+you can define it with an enumeration type, which is a macro for a static class.
+Here is a decent reference:</p>
+<p><a class="reference external" href="http://www.dotnetperls.com/enum">http://www.dotnetperls.com/enum</a></p>
+<p>The example shows what you need to know:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+  <span class="k">enum</span> <span class="n">Suit</span> <span class="p">{</span><span class="n">Spades</span><span class="p">,</span> <span class="n">Hearts</span><span class="p">,</span> <span class="n">Diamonds</span><span class="p">,</span> <span class="n">Clubs</span><span class="p">};</span>
+
+  <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Suit</span> <span class="n">mycard</span> <span class="p">=</span> <span class="n">Suit</span><span class="p">.</span><span class="n">Hearts</span><span class="p">;</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">mycard</span><span class="p">);</span>       <span class="c1">// prints  Hearts</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">mycard</span><span class="p">);</span>  <span class="c1">// prints 1</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">mycard</span> <span class="p">==</span> <span class="n">Suit</span><span class="p">.</span><span class="n">Hearts</span><span class="p">)</span> <span class="p">{</span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;ok&quot;</span><span class="p">);}</span>
+
+    <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">suit</span> <span class="k">in</span> <span class="n">Enum</span><span class="p">.</span><span class="n">GetValues</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">Suit</span><span class="p">)))</span>
+    <span class="p">{</span> <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">suit</span><span class="p">);</span> <span class="p">};</span>
+
+    <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dictionaries">
+<h3>1.15.3. Dictionaries<a class="headerlink" href="#dictionaries" title="Permalink to this headline">¶</a></h3>
+<p>A dictionary is the your secret weapon for quick table building.
+(Think of a dictionary as a hash table that is indexed like an array.)
+Thankfully, dictionaries are &#8220;almost built-into&#8221; C#. Try these:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// a dictionary mapping string keys to int values:</span>
+
+  <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">int</span><span class="p">&gt;</span> <span class="n">d</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">int</span><span class="p">&gt;();</span>
+
+  <span class="n">d</span><span class="p">[</span><span class="s">&quot;flea&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="m">1000</span><span class="p">;</span>
+  <span class="n">d</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;cat&quot;</span><span class="p">,</span> <span class="m">3</span><span class="p">);</span>
+  <span class="n">d</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;dog&quot;</span><span class="p">,</span> <span class="m">1</span><span class="p">);</span>
+  <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&quot;cat&quot;</span><span class="p">]);</span>
+  <span class="n">d</span><span class="p">[</span><span class="s">&quot;cat&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">d</span><span class="p">[</span><span class="s">&quot;cat&quot;</span><span class="p">]</span> <span class="p">-</span> <span class="m">1</span><span class="p">;;</span>
+  <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&quot;cat&quot;</span><span class="p">]);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">ContainsKey</span><span class="p">(</span><span class="s">&quot;cat&quot;</span><span class="p">))</span> <span class="p">{</span> <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&quot;cat&quot;</span><span class="p">]);</span> <span class="p">}</span>
+
+  <span class="c1">// how to traverse a dictionary:</span>
+  <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">pair</span> <span class="k">in</span> <span class="n">d</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;{0}, {1}&quot;</span><span class="p">,</span> <span class="n">pair</span><span class="p">.</span><span class="n">Key</span><span class="p">,</span> <span class="n">pair</span><span class="p">.</span><span class="n">Value</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Store the keys in a List:</span>
+  <span class="n">List</span> <span class="n">list</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">Keys</span><span class="p">);</span>
+  <span class="c1">// Loop through list:</span>
+  <span class="k">foreach</span> <span class="p">(</span><span class="kt">string</span> <span class="n">k</span> <span class="k">in</span> <span class="n">list</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;{0}, {1}&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>
+  <span class="p">}</span>
+
+  <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="delegates">
+<span id="id4"></span><h3>1.15.4. Delegates<a class="headerlink" href="#delegates" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes a method must call another method without knowing its name.
+Here is an example, a queue object that holds a list of tasks that must be
+completed once some signal occurs.
+The names of the tasks don&#8217;t matter &#8212; what matters is that each task is called.
+The code uses the C# <em>delegate</em> type and looks like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// defines a datatype,  Task,  which is the type of methods</span>
+<span class="c1">//   that take zero arguments and return no answer:</span>
+<span class="k">delegate</span> <span class="k">void</span> <span class="nf">Task</span><span class="p">();</span>
+
+<span class="k">class</span> <span class="nc">TaskQueue</span> <span class="p">{</span>  <span class="c1">// holds a list of tasks to do</span>
+  <span class="k">private</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Task</span><span class="p">&gt;</span> <span class="n">queue</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">TaskQueue</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">queue</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">Task</span><span class="p">&gt;();</span>  <span class="c1">// empty list</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">addTask</span><span class="p">(</span><span class="n">Task</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span> <span class="n">queue</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">t</span><span class="p">);</span> <span class="p">}</span>
+
+  <span class="c1">// executes all queued tasks (methods) when signalled:</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">signal</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">foreach</span><span class="p">(</span><span class="n">Task</span> <span class="n">t</span> <span class="k">in</span> <span class="n">queue</span><span class="p">)</span> <span class="p">{</span> <span class="n">t</span><span class="p">();</span> <span class="p">}</span>  <span class="c1">// execute all the tasks</span>
+    <span class="n">queue</span><span class="p">.</span><span class="n">Clear</span><span class="p">();</span>   <span class="c1">// empty  queue  all at once</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The system can use a TaskQueue like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">TaskQueue</span> <span class="n">q</span> <span class="p">=</span> <span class="k">new</span> <span class="n">TaskQueue</span><span class="p">();</span>
+<span class="n">Clock</span> <span class="n">c</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Clock</span><span class="p">();</span>
+<span class="n">Clock</span> <span class="n">d</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Clock</span><span class="p">();</span>
+<span class="n">q</span><span class="p">.</span><span class="n">addTask</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">tick</span><span class="p">);</span>
+<span class="n">q</span><span class="p">.</span><span class="n">addTask</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">tick</span><span class="p">);</span>
+<span class="n">q</span><span class="p">.</span><span class="n">addTask</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">tick</span><span class="p">);</span>
+<span class="c1">// ... later ... :</span>
+<span class="n">q</span><span class="p">.</span><span class="n">signal</span><span class="p">();</span>  <span class="c1">// executes the queued ticks</span>
+</pre></div>
+</div>
+<p>where:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">class</span> <span class="nc">Clock</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">t</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">tick</span><span class="p">()</span> <span class="p">{</span> <span class="n">t</span> <span class="p">=</span> <span class="n">t</span> <span class="p">+</span> <span class="m">1</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="kt">int</span> <span class="nf">getTime</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">t</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This technique is standard to operating-systems coding.
+It can also be used to save multiple event-handlers that are called when
+a single event is signalled:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">delegate</span> <span class="k">void</span> <span class="nf">ButtonClickHandler</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">);</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Controller</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">ButtonClickHandler</span><span class="p">&gt;</span> <span class="n">handlers</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">ButtonClickHandler</span><span class="p">&gt;();</span>
+
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">register</span><span class="p">(</span><span class="n">ButtonClickHandler</span> <span class="n">h</span><span class="p">)</span> <span class="p">{</span> <span class="n">handlers</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="n">h</span><span class="p">);</span> <span class="p">}</span>
+
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">signal</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">foreach</span> <span class="p">(</span><span class="n">ButtonClickHandler</span> <span class="n">h</span> <span class="k">in</span> <span class="n">handlers</span><span class="p">)</span> <span class="p">{</span> <span class="n">h</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">);</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Say we have a Form with a button, <em>button1</em>. We construct:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">Controller</span> <span class="n">c</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Controller</span><span class="p">();</span>
+</pre></div>
+</div>
+<p><em>and we tell Visual Studio to call ``c.signal`` when ``button1`` is clicked.</em>
+Then, when the button is pressed, <tt class="docutils literal"><span class="pre">c.signal(..,..)</span></tt> executes and itself
+executes all methods saved in <tt class="docutils literal"><span class="pre">c</span></tt>&#8216;s <tt class="docutils literal"><span class="pre">handlers</span></tt> list.</p>
+</div>
+<div class="section" id="textfile-i-o-and-string-manipulation">
+<h3>1.15.5. Textfile I/O and String Manipulation<a class="headerlink" href="#textfile-i-o-and-string-manipulation" title="Permalink to this headline">¶</a></h3>
+<p>A disk file is found with its path, which is usually written as a string, e.g,
+<tt class="docutils literal"><span class="pre">C:\Users\Me\Documents\file.txt</span></tt>.
+You can also use a &#8220;relative path&#8221;, e.g., <tt class="docutils literal"><span class="pre">file.txt</span></tt>, which means find
+<tt class="docutils literal"><span class="pre">file.txt</span></tt> in the same folder where the program&#8217;s exe code lives.
+Another example: <tt class="docutils literal"><span class="pre">..\..\..\file.txt</span></tt> which means find the file 3 folder-levels
+higher than where the program&#8217;s exe code lives.
+This is an OK path for data files for your VS Solution,
+because it is located at the top-level folder of the Solution.
+(Try the examples below with VS to see what I mean.)</p>
+<p>Here are some examples that read and write text files:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// Write a string array to a file:</span>
+<span class="kt">string</span><span class="p">[]</span> <span class="n">stringArray</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">string</span><span class="p">[]</span> <span class="p">{</span><span class="s">&quot;cat&quot;</span><span class="p">,</span><span class="s">&quot;dog&quot;</span><span class="p">,</span><span class="s">&quot;arrow&quot;</span><span class="p">};</span>
+<span class="n">File</span><span class="p">.</span><span class="n">WriteAllLines</span><span class="p">(</span><span class="s">&quot;..\\..\\..\\file0.txt&quot;</span><span class="p">,</span> <span class="n">stringArray</span><span class="p">);</span>
+
+<span class="c1">// Write a long string to a file (note the  \r\n  to end each line):</span>
+<span class="n">File</span><span class="p">.</span><span class="n">WriteAllText</span><span class="p">(</span><span class="s">&quot;..\\..\\..\\file1.txt&quot;</span><span class="p">,</span> <span class="s">&quot;a \&quot;cat\&quot;\r\na dog\r\n&quot;</span><span class="p">);</span>
+
+<span class="c1">// Read a text file into one long string:</span>
+<span class="kt">string</span> <span class="n">contents</span> <span class="p">=</span> <span class="n">File</span><span class="p">.</span><span class="n">ReadAllText</span><span class="p">(</span><span class="s">&quot;..\\..\\..\\file0.txt&quot;</span><span class="p">);</span>
+
+<span class="c1">// Read lines of a text file into a string array:</span>
+<span class="kt">string</span><span class="p">[]</span> <span class="n">lines</span> <span class="p">=</span> <span class="n">File</span><span class="p">.</span><span class="n">ReadAllLines</span><span class="p">(</span><span class="s">&quot;..\\..\\..\\file0.txt&quot;</span><span class="p">);</span>
+
+<span class="c1">// Read file&#39;s lines one by one:</span>
+<span class="n">StreamReader</span> <span class="n">reader</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StreamReader</span><span class="p">(</span><span class="s">&quot;..\\..\\..\\file1.txt&quot;</span><span class="p">));</span>
+<span class="kt">string</span> <span class="n">line</span> <span class="p">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+<span class="k">while</span> <span class="p">((</span><span class="n">line</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
+  <span class="n">line</span> <span class="p">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="n">reader</span><span class="p">.</span><span class="n">Close</span><span class="p">();</span>  <span class="n">reader</span><span class="p">.</span><span class="n">Dispose</span><span class="p">();</span>
+
+<span class="c1">// A more terse way of doing the previous loop:</span>
+<span class="n">StreamReader</span> <span class="n">reader</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StreamReader</span><span class="p">(</span><span class="s">&quot;..\\..\\..\\file1.txt&quot;</span><span class="p">));</span>
+<span class="kt">string</span> <span class="n">line</span><span class="p">;</span>
+<span class="k">while</span> <span class="p">((</span><span class="n">line</span> <span class="p">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">())</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">reader</span><span class="p">.</span><span class="n">Close</span><span class="p">();</span>  <span class="n">reader</span><span class="p">.</span><span class="n">Dispose</span><span class="p">();</span>
+
+<span class="c1">// Write file&#39;s lines one by one:</span>
+<span class="n">StreamWriter</span> <span class="n">writer</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StreamWriter</span><span class="p">(</span><span class="s">&quot;..\\..\\..\\file2.txt&quot;</span><span class="p">));</span>
+<span class="k">foreach</span><span class="p">(</span><span class="kt">string</span> <span class="n">line</span> <span class="k">in</span> <span class="n">lines</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">writer</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">writer</span><span class="p">.</span><span class="n">Close</span><span class="p">();</span>  <span class="n">writer</span><span class="p">.</span><span class="n">Dispose</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Here are examples for disassembling a string into its parts:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="kt">string</span> <span class="n">s</span> <span class="p">=</span> <span class="s">&quot; &lt;folder \&quot;A.B.C\&quot;&gt;  &quot;</span><span class="p">;</span>  <span class="c1">// string is   &lt;folder &quot;A.B.C&quot;&gt;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;&lt;folder&quot;</span><span class="p">))</span> <span class="p">{</span>   <span class="c1">// ask if substring is found in  s</span>
+  <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;folder&quot;</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">start</span> <span class="p">=</span> <span class="n">s</span><span class="p">.</span><span class="n">IndexOf</span><span class="p">(</span><span class="sc">&#39;\&quot;&#39;</span><span class="p">);</span>          <span class="c1">// find  &quot;  starting from index 0 in  s</span>
+  <span class="kt">int</span> <span class="n">end</span> <span class="p">=</span> <span class="n">s</span><span class="p">.</span><span class="n">IndexOf</span><span class="p">(</span><span class="sc">&#39;\&quot;&#39;</span><span class="p">,</span> <span class="n">start</span><span class="p">+</span><span class="m">1</span><span class="p">);</span>   <span class="c1">// find  &quot;  starting from index  start+1</span>
+  <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">start</span> <span class="p">+</span> <span class="s">&quot; &quot;</span> <span class="p">+</span> <span class="n">end</span><span class="p">);</span> <span class="c1">// writes  9 15</span>
+
+  <span class="c1">// extract substring:   Substring(startIndex, LengthToExtract) :</span>
+  <span class="kt">string</span> <span class="n">path</span> <span class="p">=</span> <span class="n">s</span><span class="p">.</span><span class="n">Substring</span><span class="p">(</span><span class="n">start</span> <span class="p">+</span> <span class="m">1</span><span class="p">,</span> <span class="p">(</span><span class="n">end</span> <span class="p">-</span> <span class="n">start</span><span class="p">)</span> <span class="p">-</span> <span class="m">1</span><span class="p">);</span>
+  <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>  <span class="c1">// writes  A.B.C</span>
+
+  <span class="c1">// split a string into pieces, where  &#39;.&#39;  is the separator char:</span>
+  <span class="kt">string</span><span class="p">[]</span> <span class="n">names</span> <span class="p">=</span> <span class="n">path</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">&#39;.&#39;</span><span class="p">);</span>
+  <span class="k">foreach</span> <span class="p">(</span><span class="kt">string</span> <span class="n">n</span> <span class="k">in</span> <span class="n">names</span><span class="p">)</span> <span class="p">{</span> <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">n</span><span class="p">);</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Here are references that might help:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.csharp-station.com/HowTo/ReadWriteTextFile.aspx">http://www.csharp-station.com/HowTo/ReadWriteTextFile.aspx</a></li>
+<li><a class="reference external" href="http://www.dotnetperls.com/file">http://www.dotnetperls.com/file</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="using-uml-class-notation">
+<span id="uml-notation"></span><h2>1.16. Using UML Class Notation<a class="headerlink" href="#using-uml-class-notation" title="Permalink to this headline">¶</a></h2>
+<p>Before you do much work with VS or any editor,
+you should draw a blueprint of the system you will build.
+Use the class-diagram language from UML to draft your components.</p>
+<p>There is a reasonable introduction to the class-diagram language at
+<a class="reference external" href="http://www.cs.sjsu.edu/~pearce/modules/lectures/uml/class/index.htm">http://www.cs.sjsu.edu/~pearce/modules/lectures/uml/class/index.htm</a>.</p>
+<p>Here is a link with some useful tips:
+<a class="reference external" href="http://www.csci.csusb.edu/dick/cs201/uml.html">http://www.csci.csusb.edu/dick/cs201/uml.html</a>.</p>
+<p>The complete notation is overwhelming. We will use these parts:</p>
+<ol class="arabic simple">
+<li>components: class (name in normal font), abstract class (italic font),
+interface (italic font, green background)</li>
+<li>fields and methods (typed inside the component): public (+), private (-),
+abstract (italicized) or static (underlined).</li>
+<li>associations: these will be solid lines and dotted lines, as explained below.
+We annotate an end of a line with two (optional items):
+above the line, a (field) name, and beneath the line, a multiplicity.
+Sometimes a line has a kind of arrowhead.
+See below for examples.</li>
+</ol>
+<p>We will use these forms of associations (but there are many more!):</p>
+<ul>
+<li><p class="first">Dependency (coupling, or <strong>association/dependency</strong> in Visual Studio):
+&#8220;A refers to B&#8221;, or &#8220;A needs B to compile correctly&#8221;.
+Say we write a <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Form1</span></tt>, and it depends on a <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Clock</span></tt>, which
+we also coded.
+(Perhaps, when its button is pressed, the <tt class="docutils literal"><span class="pre">Form1</span></tt> asks <tt class="docutils literal"><span class="pre">Clock</span></tt> for
+the time.)
+The coding might be this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">class</span> <span class="nc">Clock</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">time</span><span class="p">;</span>
+  <span class="k">public</span> <span class="kt">int</span> <span class="nf">getTime</span><span class="p">()</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Form1</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">Button</span> <span class="n">button1</span><span class="p">;</span>  <span class="k">private</span> <span class="n">Label</span> <span class="n">label1</span><span class="p">;</span>
+  <span class="k">private</span> <span class="n">Clock</span> <span class="n">cl</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">Form1</span><span class="p">(</span><span class="n">Clock</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span> <span class="n">cl</span> <span class="p">=</span> <span class="n">c</span><span class="p">;</span> <span class="p">...</span> <span class="p">}</span>
+  <span class="c1">// ...</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">onClick</span><span class="p">()</span> <span class="p">{</span> <span class="p">...</span> <span class="n">cl</span><span class="p">.</span><span class="n">getTime</span><span class="p">()</span> <span class="p">...}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A class diagram summarizes the design of what we coded. It looks like this:</p>
+<img alt="../_images/class-diagram-form1-clock-1.png" src="../_images/class-diagram-form1-clock-1.png" />
+<p>Within <tt class="docutils literal"><span class="pre">Form1</span></tt>, the handle to the <tt class="docutils literal"><span class="pre">Clock</span></tt> is named by the private field
+var, <tt class="docutils literal"><span class="pre">cl</span></tt>.
+(The tiny <tt class="docutils literal"><span class="pre">-</span></tt> sign means <strong>private</strong>.)
+<tt class="docutils literal"><span class="pre">Form1</span></tt> has a reference to exactly one clock, and for this reason,
+the arrow to <tt class="docutils literal"><span class="pre">Clock</span></tt> is labeled by a <tt class="docutils literal"><span class="pre">1</span></tt> at the head,
+called a multiplicity (&#8220;how-many-multiples&#8221;); <tt class="docutils literal"><span class="pre">*</span></tt> means zero or more.
+that is, we allow <tt class="docutils literal"><span class="pre">Clock</span></tt> to be referred by multiple <tt class="docutils literal"><span class="pre">Form1</span></tt> objects or
+none.
+Notice that <tt class="docutils literal"><span class="pre">Form1</span></tt> did not create the Clock, it does not own it;
+if <tt class="docutils literal"><span class="pre">Form1</span></tt> dies, <tt class="docutils literal"><span class="pre">Clock</span></tt> remains. &#8220;Form1 refers to the Clock.&#8221;</p>
+<p>There is a small variation on the above diagram, where the private fieldname,
+<tt class="docutils literal"><span class="pre">cl</span></tt>, is moved to the arrow as a label, like this:</p>
+<img alt="../_images/class-diagram-form1-clock-2.png" src="../_images/class-diagram-form1-clock-2.png" />
+<p>As stated previously, a private variable is labeled by a minus sign, <tt class="docutils literal"><span class="pre">-</span></tt>.
+You will see labelled arrows used a lot in practice &#8212; remember that the
+label is actually a fieldname!</p>
+<p>Notice that <tt class="docutils literal"><span class="pre">Form1</span></tt> also holds fields <tt class="docutils literal"><span class="pre">button1:</span> <span class="pre">Button</span></tt> and
+<tt class="docutils literal"><span class="pre">label1:</span> <span class="pre">Label</span></tt>.
+Now, <tt class="docutils literal"><span class="pre">Button</span></tt> and <tt class="docutils literal"><span class="pre">Label</span></tt> are classes, too, and if we truly wanted,
+we could draw class boxes for them.
+But since we did not write those classes, and since we do not need to show how
+class <tt class="docutils literal"><span class="pre">Button</span></tt> or <tt class="docutils literal"><span class="pre">Label</span></tt> connect to other classes, we just leave the
+<tt class="docutils literal"><span class="pre">Button</span></tt> and <tt class="docutils literal"><span class="pre">Label</span></tt> inside <tt class="docutils literal"><span class="pre">Form1</span></tt>.</p>
+<p>IMPORTANT: Say that <tt class="docutils literal"><span class="pre">Form1</span></tt> does not remember the reference to <tt class="docutils literal"><span class="pre">Clock</span></tt>
+within its own field.
+(Maybe it gets the handle to <tt class="docutils literal"><span class="pre">Clock</span></tt> through a parameter to a method call,
+e.g. <tt class="docutils literal"><span class="pre">onClick(c:</span> <span class="pre">Clock)</span></tt> is used in the diagram below).
+Clearly, <tt class="docutils literal"><span class="pre">Form1</span></tt> still needs <tt class="docutils literal"><span class="pre">Clock</span></tt> to compile.
+We use a dashed arrow, like this:</p>
+<img alt="../_images/class-diagram-form1-clock-3.png" src="../_images/class-diagram-form1-clock-3.png" />
+<p>The fieldname is gone.</p>
+</li>
+<li><p class="first">Composition: &#8220;A owns B&#8221; or &#8220;B is part of A&#8221; or &#8220;if A dies, so does B&#8221;.
+This is a stronger form of dependency and can occur when A constructs B or
+when B was constructed and given to A to own.
+Say that a customer might own an account in a bank&#8217;s data base:</p>
+<img alt="../_images/class-diagram-bank-1.png" src="../_images/class-diagram-bank-1.png" />
+<p>The diamond should be <em>solid black</em>.
+Here is the same relationship, but the fieldnames are placed as labels
+on the arrow:</p>
+<img alt="../_images/class-diagram-bank-2.png" src="../_images/class-diagram-bank-2.png" />
+<p>You can draw it as you wish.</p>
+<p>The multiplicities can be 1, 2, ..., n..m (n upto m), * (zero or more).
+To indicate that the fieldname label is an array/collection, put it in braces:</p>
+<img alt="../_images/class-diagram-bank-3.png" src="../_images/class-diagram-bank-3.png" />
+<p>The code for the above design might look like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">class</span> <span class="nc">Account</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">balance</span><span class="p">;</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">idnumber</span><span class="p">;</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Customer</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="kt">string</span> <span class="n">name</span><span class="p">;</span>  <span class="k">private</span> <span class="kt">string</span> <span class="n">address</span><span class="p">;</span>
+  <span class="k">private</span> <span class="n">Account</span><span class="p">[]</span> <span class="n">accts</span><span class="p">;</span>
+  <span class="c1">// ...</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">deposit</span><span class="p">(</span><span class="kt">int</span> <span class="n">acct_id</span><span class="p">,</span> <span class="kt">int</span> <span class="n">amount</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Aggregation: There is also a &#8220;white diamond&#8221; that is used when there is an
+array (aggregate) field but there is only dependency and not ownership.
+For example, a &#8220;hand&#8221; object holds handles to some card objects,
+but the &#8220;hand&#8221; doesn&#8217;t own the cards.
+(Maybe a &#8220;card deck&#8221; object owns the cards):</p>
+<img alt="../_images/class-diagram-cards.png" src="../_images/class-diagram-cards.png" />
+</li>
+<li><p class="first">Subclass (&#8220;generalization&#8221;): use a big &#8220;white&#8221; arrowhead with a solid line:</p>
+<img alt="../_images/class-diagram-boss-worker-1.png" src="../_images/class-diagram-boss-worker-1.png" />
+<p>Here, both <tt class="docutils literal"><span class="pre">Boss</span></tt> and <tt class="docutils literal"><span class="pre">Worker</span></tt> are subclasses of class <tt class="docutils literal"><span class="pre">Person</span></tt>.</p>
+</li>
+<li><p class="first">Implement an interface (&#8220;realization&#8221;): use a big &#8220;white&#8221; arrowhead with
+a dashed line, say when <tt class="docutils literal"><span class="pre">Person</span></tt> is an interface, not a class:</p>
+<img alt="../_images/class-diagram-boss-worker-2.png" src="../_images/class-diagram-boss-worker-2.png" />
+</li>
+<li><p class="first">Static methods and variables are underlined, and code snippets and related
+information can be attached as comments:</p>
+<img alt="../_images/class-diagram-program.png" src="../_images/class-diagram-program.png" />
+</li>
+</ul>
+<p>When we construct &#8220;use-case realizations&#8221;, we will use Collaboration Diagrams,
+which show the objects constructed from class diagrams and the order in which
+they call one another.</p>
+<div class="section" id="using-visual-studio">
+<h3>1.16.1. Using Visual Studio<a class="headerlink" href="#using-visual-studio" title="Permalink to this headline">¶</a></h3>
+<p>Visual Studio 2013 Ultimate supports creating and editing UML diagrams.
+Here is a good reference:</p>
+<p><a class="reference external" href="http://msdn.microsoft.com/en-us/library/dd409445.aspx">http://msdn.microsoft.com/en-us/library/dd409445.aspx</a></p>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/VSnotesS.html">Lecture 0</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

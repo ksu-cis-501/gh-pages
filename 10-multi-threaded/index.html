@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>10. Multi-threaded Execution &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">10. Multi-threaded Execution</a><ul>
+<li><a class="reference internal" href="#threads">10.1. Threads</a></li>
+<li><a class="reference internal" href="#race-conditions">10.2. Race Conditions</a></li>
+<li><a class="reference internal" href="#locks">10.3. Locks</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="multi-threaded-execution">
+<span id="multi-threaded"></span><h1>10. Multi-threaded Execution<a class="headerlink" href="#multi-threaded-execution" title="Permalink to this headline">¶</a></h1>
+<p>A program&#8217;s activation stack (&#8220;call stack&#8221;) remembers the progress of execution.
+The program, its instruction counter, and the activation stack are a thread of
+execution.
+The norm is that there is one thread of execution (and so, one activation stack).</p>
+<p>When you use Visual Studio to create a Form with active buttons, the <tt class="docutils literal"><span class="pre">Main</span></tt>
+method looks like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">Application</span><span class="p">.</span><span class="n">EnableVisualStyles</span><span class="p">();</span>
+  <span class="n">Application</span><span class="p">.</span><span class="n">SetCompatibleTextRenderingDefault</span><span class="p">(</span><span class="k">false</span><span class="p">);</span>
+  <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">(</span><span class="k">new</span> <span class="n">Form1</span><span class="p">());</span>
+  <span class="n">MessageBox</span><span class="p">.</span><span class="n">Show</span><span class="p">(</span><span class="s">&quot;Form1 has been terminated&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">Application.Run(new</span> <span class="pre">Form1())</span></tt> command activates the Form object so that
+the thread of execution (and the call stack) execute <tt class="docutils literal"><span class="pre">Form1</span></tt>&#8216;s events
+(button presses).
+If <tt class="docutils literal"><span class="pre">Form1</span></tt> terminates, only then does control return to <tt class="docutils literal"><span class="pre">Main</span></tt> and the
+message box appears.</p>
+<div class="section" id="threads">
+<h2>10.1. Threads<a class="headerlink" href="#threads" title="Permalink to this headline">¶</a></h2>
+<p>We can modify a program so that there are multiple threads of execution &#8212;
+multiple call stacks.
+When we execute such a program, called a multi-threaded program, the computer&#8217;s
+processor divides its time between the threads.</p>
+<p>The note on <a class="reference internal" href="../01-tooling/index.html#multiple-gui-threads"><em>Multiple GUI Threads</em></a> show how to do this.
+Here is an example, where two distinct forms, each with its own buttons and work
+to do, are activated in one application:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Windows.Forms</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Threading</span><span class="p">;</span>  <span class="c1">//  ADD ME</span>
+
+<span class="k">namespace</span> <span class="nn">TestThreading</span> <span class="p">{</span>
+  <span class="k">static</span> <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+<span class="na">    [STAThread]</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">Application</span><span class="p">.</span><span class="n">EnableVisualStyles</span><span class="p">();</span>
+      <span class="n">Application</span><span class="p">.</span><span class="n">SetCompatibleTextRenderingDefault</span><span class="p">(</span><span class="k">false</span><span class="p">);</span>
+
+      <span class="k">new</span> <span class="nf">Thread</span><span class="p">(</span><span class="n">Driver1</span><span class="p">).</span><span class="n">Start</span><span class="p">();</span>   <span class="c1">// ADD ME</span>
+      <span class="k">new</span> <span class="nf">Thread</span><span class="p">(</span><span class="n">Driver2</span><span class="p">).</span><span class="n">Start</span><span class="p">();</span>   <span class="c1">// ADD ME</span>
+      <span class="n">MessageBox</span><span class="p">.</span><span class="n">Show</span><span class="p">(</span><span class="s">&quot;Forms started in their own threads&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ADD THESE PROCEDURES:</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Driver1</span><span class="p">()</span> <span class="p">{</span> <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">(</span><span class="k">new</span> <span class="n">Form1</span><span class="p">());</span> <span class="p">}</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Driver2</span><span class="p">()</span> <span class="p">{</span> <span class="n">Application</span><span class="p">.</span><span class="n">Run</span><span class="p">(</span><span class="k">new</span> <span class="n">Form2</span><span class="p">());</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In C#, one constructs and starts a thread object, which holds commands that
+execute with their own call stack &#8212; each thread gets its own call stack.
+Note that if <tt class="docutils literal"><span class="pre">Form1</span></tt> terminates and <tt class="docutils literal"><span class="pre">Main</span></tt> finishes, then <tt class="docutils literal"><span class="pre">RunForm2</span></tt> keeps
+executing because it has its own call stack.</p>
+</div>
+<div class="section" id="race-conditions">
+<h2>10.2. Race Conditions<a class="headerlink" href="#race-conditions" title="Permalink to this headline">¶</a></h2>
+<p>It is dangerous when two threads share an object in the Heap, because the
+computer&#8217;s processor can choose to pause a thread at any moment and execute
+another thread.
+Such a &#8220;processor time out&#8221; might occur at the worst possible moment.
+Here is an example, where two threads are both seizing tokens held in a
+shared object:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">namespace</span> <span class="nn">Race</span> <span class="p">{</span>
+
+  <span class="c1">// constructs an object that holds 100 &quot;tokens&quot; to give away:</span>
+  <span class="k">class</span> <span class="nc">Token</span> <span class="p">{</span>
+    <span class="k">private</span> <span class="kt">int</span> <span class="n">tokens</span> <span class="p">=</span> <span class="m">100</span><span class="p">;</span>
+
+    <span class="c1">// returns one token if available</span>
+    <span class="k">public</span> <span class="kt">bool</span> <span class="nf">getToken</span><span class="p">()</span> <span class="p">{</span>
+      <span class="kt">bool</span> <span class="n">outcome</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">tokens</span> <span class="p">&gt;</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">tokens</span> <span class="p">=</span> <span class="n">tokens</span> <span class="p">-</span> <span class="m">1</span><span class="p">;</span>
+        <span class="n">outcome</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="n">outcome</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">// a race between two threads to seize the most tokens</span>
+  <span class="k">class</span> <span class="nc">Program</span> <span class="p">{</span>
+    <span class="k">static</span> <span class="n">Token</span> <span class="n">x</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Token</span><span class="p">();</span>  <span class="c1">// x  holds 100 tokens to give away</span>
+
+    <span class="c1">// starts two threads, each of which grabs tokens:</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">new</span> <span class="nf">Thread</span><span class="p">(</span><span class="n">Run1</span><span class="p">).</span><span class="n">Start</span><span class="p">();</span>  <span class="c1">// start thread 1</span>
+      <span class="k">new</span> <span class="nf">Thread</span><span class="p">(</span><span class="n">Run2</span><span class="p">).</span><span class="n">Start</span><span class="p">();</span>  <span class="c1">// start thread 2</span>
+      <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;both threads initialized&quot;</span><span class="p">);</span>
+      <span class="n">Console</span><span class="p">.</span><span class="n">ReadLine</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Run1</span><span class="p">()</span> <span class="p">{</span> <span class="n">loop</span><span class="p">(</span><span class="m">1</span><span class="p">);</span> <span class="p">}</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">Run2</span><span class="p">()</span> <span class="p">{</span> <span class="n">loop</span><span class="p">(</span><span class="m">2</span><span class="p">);</span> <span class="p">}</span>
+
+    <span class="c1">// procedure that repeatedly seizes tokens and then prints result.</span>
+    <span class="c1">// param: id - the index number of the thread that called the proc.</span>
+    <span class="k">static</span> <span class="k">void</span> <span class="nf">loop</span><span class="p">(</span><span class="kt">int</span> <span class="n">id</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">success</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+      <span class="n">Random</span> <span class="n">rand</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Random</span><span class="p">();</span>
+      <span class="k">while</span> <span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">getToken</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">success</span> <span class="p">=</span> <span class="n">success</span> <span class="p">+</span> <span class="m">1</span><span class="p">;</span>
+        <span class="n">Thread</span><span class="p">.</span><span class="n">Sleep</span><span class="p">(</span><span class="n">rand</span><span class="p">.</span><span class="n">Next</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">8</span><span class="p">));</span>   <span class="c1">// pause for 0..7 milliseconds</span>
+      <span class="p">}</span>
+      <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;thread {0} has {1} tokens&quot;</span><span class="p">,</span> <span class="n">id</span><span class="p">,</span> <span class="n">success</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If you repeatedly execute this application, you will find that the two threads
+occasionally seize more than 100 tokens.
+Why? Well, the processor is pausing and restarting threads at what appear to be
+arbitrary times, and a thread might well be paused at point <tt class="docutils literal"><span class="pre">(*)</span></tt> or <tt class="docutils literal"><span class="pre">(**)</span></tt>
+in <tt class="docutils literal"><span class="pre">getToken</span></tt>:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="n">tokens</span> <span class="p">&gt;</span> <span class="m">0</span> <span class="p">)</span> <span class="p">{</span> <span class="c1">// (*)</span>
+  <span class="n">tokens</span> <span class="p">=</span> <span class="cm">/* (**) */</span> <span class="n">tokens</span> <span class="p">-</span> <span class="m">1</span><span class="p">;</span>
+  <span class="n">outcome</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A pause at <tt class="docutils literal"><span class="pre">(*)</span></tt> means that the paused thread is ready to seize a token, but
+now another thread can call <tt class="docutils literal"><span class="pre">getToken</span></tt> and seize for itself the token intended
+for the paused thread.
+A pause at <tt class="docutils literal"><span class="pre">(**)</span></tt>, in the middle of the assignment, means that the paused
+thread will reawaken and set variable tokens to an old, out-of-date value
+(since other threads will have called getToken while the paused thread was
+asleep).
+(Recall the semantics of an assignment: <tt class="docutils literal"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">E</span></tt>:</p>
+<ol class="arabic simple">
+<li><tt class="docutils literal"><span class="pre">L</span></tt> is evaluated to a location number;</li>
+<li><tt class="docutils literal"><span class="pre">E</span></tt> is evaluated to a storable value;</li>
+<li>the value is deposited in the cell at the location.</li>
+</ol>
+<p>Point <tt class="docutils literal"><span class="pre">(**)</span></tt> above marks the break between Steps 2 and 3.)</p>
+<p>This situation is called a <em>race condition</em> and is virtually guaranteed to
+happen in practice.
+No data structure can be shared like this, without protection.</p>
+</div>
+<div class="section" id="locks">
+<h2>10.3. Locks<a class="headerlink" href="#locks" title="Permalink to this headline">¶</a></h2>
+<p>A modern computer language provides a construct to ensure <em>mutual exclusion</em> of
+threads that share an object.
+That is, the mutual-exclusion construct will allow at most once thread to
+execute code on the object, and other threads are not allowed to execute the
+code until the one thread that has started eventually finishes
+(even if the thread is paused for a while).</p>
+<p>The best mutual-exclusion construct I know is called a <em>monitor</em>.
+(Others are called <em>semaphores</em>, <em>critical regions</em>, and <em>conditional critical
+regions</em>.)
+C# implements a <tt class="docutils literal"><span class="pre">lock</span></tt> construction, which ensures mutual exclusion to an
+object if you use it correctly.
+Here is how we insert a lock into the previous example:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="kt">bool</span> <span class="nf">getToken</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">lock</span><span class="p">(</span><span class="k">this</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// enforce mutual exclusion on *this* object</span>
+               <span class="c1">//   for this method body</span>
+    <span class="kt">bool</span> <span class="n">outcome</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">tokens</span> <span class="p">&gt;</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">tokens</span> <span class="p">=</span> <span class="n">tokens</span> <span class="p">-</span> <span class="m">1</span><span class="p">;</span>
+      <span class="n">outcome</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">outcome</span><span class="p">;</span>
+  <span class="p">}</span>  <span class="c1">// end lock</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You place <tt class="docutils literal"><span class="pre">lock(this){...}</span></tt> around the code for every public method in the
+class to ensure that at most one thread at a time will execute any of the public
+methods in the object.
+(The <tt class="docutils literal"><span class="pre">this</span></tt> is the handle to the object being locked and acts as the &#8220;key&#8221; to
+lock and unlock.)</p>
+<p>See the note on <a class="reference internal" href="../01-tooling/index.html#using-lock"><em>Using lock on An Object Shared by Multiple Threads</em></a> for other examples.
+Mutual exclusion and multi-threading are important, and some of your later
+courses will revisit the topics.</p>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/Lecture09S.html">Lecture 9</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

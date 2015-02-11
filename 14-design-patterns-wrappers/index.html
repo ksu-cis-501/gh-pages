@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>14. Design Patterns III: Forms of Wrappers &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">14. Design Patterns III: Forms of Wrappers</a><ul>
+<li><a class="reference internal" href="#adaptor">14.1. Adaptor</a></li>
+<li><a class="reference internal" href="#decorator">14.2. Decorator</a><ul>
+<li><a class="reference internal" href="#how-a-decorator-differs-from-a-subclass">14.2.1. How a Decorator Differs from a Subclass</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#observers-and-wrappers">14.3. Observers and Wrappers</a></li>
+<li><a class="reference internal" href="#facade">14.4. Facade</a></li>
+<li><a class="reference internal" href="#summary">14.5. Summary</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="design-patterns-iii-forms-of-wrappers">
+<span id="design-patterns-wrappers"></span><h1>14. Design Patterns III: Forms of Wrappers<a class="headerlink" href="#design-patterns-iii-forms-of-wrappers" title="Permalink to this headline">¶</a></h1>
+<p>A <em>wrapper</em> is a class that holds a field whose value is a handle to another
+object, the &#8220;wrapped object&#8221;.
+Users call the wrapper&#8217;s methods to contact the wrapped object.
+Usually, the names of the wrapper&#8217;s methods are the same as those of the wrapped
+object&#8217;s.
+We now study several variants of wrappers.</p>
+<div class="section" id="adaptor">
+<h2>14.1. Adaptor<a class="headerlink" href="#adaptor" title="Permalink to this headline">¶</a></h2>
+<p>Software systems are often assembled from components from different libraries,
+from different sources, and even from components written in different languages.
+For these reasons, the components might not fit together exactly.</p>
+<p>For example, you have two components you want to use in your flight control
+system &#8212; one computes distances in Metric (meters), but the other uses
+Imperial (feet).
+(This is not exactly a made-up example &#8212; see
+<a class="reference external" href="http://en.wikipedia.org/wiki/Mars_Climate_Orbiter">the story of the Mars Climate Orbiter</a>
+that crashed because of this incompatibility.)</p>
+<p>You do not (and maybe you cannot) rewrite either component &#8212; so you place an
+<em>adapter</em> in the middle:</p>
+<img alt="../_images/adapt1.png" src="../_images/adapt1.png" />
+<p>The <tt class="docutils literal"><span class="pre">ClientToUtilityAdaptor</span></tt> uses the same public methods as the
+<tt class="docutils literal"><span class="pre">MetricUtility</span></tt> but has added code that converts between Imperial and Metric.</p>
+<p>People say that the adapter is a &#8220;wrapper&#8221; around <tt class="docutils literal"><span class="pre">MetricUtility</span></tt>, because
+the handle to the <tt class="docutils literal"><span class="pre">MetricUtility</span></tt> object is saved in a field in the adaptor.</p>
+<p>Adapters can adapt protocols, too.
+In the example below, the <tt class="docutils literal"><span class="pre">App</span></tt> is coded to <tt class="docutils literal"><span class="pre">readNext()</span></tt> from some resource.
+But the coding is naive and neglects to ask permission to use the resource and
+to release it at the end of use.
+We do not (or cannot) rewrite <tt class="docutils literal"><span class="pre">App</span></tt>, so we use the <tt class="docutils literal"><span class="pre">AppToResourceApdater</span></tt> to
+compute the missing protocol steps:</p>
+<img alt="../_images/adapt2.png" src="../_images/adapt2.png" />
+<p>It is common to insert a new interface between the <tt class="docutils literal"><span class="pre">App</span></tt> and its adaptor,
+just in case the <tt class="docutils literal"><span class="pre">App</span></tt> is used in the future with yet another incompatible
+component:</p>
+<img alt="../_images/adapt3.png" src="../_images/adapt3.png" />
+</div>
+<div class="section" id="decorator">
+<h2>14.2. Decorator<a class="headerlink" href="#decorator" title="Permalink to this headline">¶</a></h2>
+<p>A decorator is a wrapper that adds new methods or fields to an existing class,
+while allowing existing methods to remain available.
+It is an alternative to the subclass construction. (See the subsection below.)</p>
+<p>The standard example where decoration is used (see the <em>Design Patterns</em> book or
+the <a class="reference external" href="http://en.wikipedia.org/wiki/Decorator_pattern">Wikipedia page</a>)
+is in a GUI framework, where there is a bare <tt class="docutils literal"><span class="pre">TextBox</span></tt> widget that we might
+wish to &#8220;decorate&#8221; with some or all of a vertical scroll bar,
+a horizontal scroll bar, or a border.</p>
+<p>It is a mess to try to define <tt class="docutils literal"><span class="pre">class</span> <span class="pre">TextBox</span></tt> and then define all possible
+subclass combinations of the three decorations.
+It is better to have a &#8220;kit&#8221; of decorations that can be assembled as
+&#8220;wrappers that wrap up wrappers&#8221;:</p>
+<img alt="../_images/dec1.png" src="../_images/dec1.png" />
+<p>The classes are laid out so that you can start with a plain <tt class="docutils literal"><span class="pre">TextBox</span></tt> and then
+wrap it in some of all of the decorator classes, in whatever order you wish,
+e.g.,</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">ITextBox</span> <span class="n">mytextbox</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Bordered</span><span class="p">(</span><span class="k">new</span> <span class="n">VerticalScrolled</span><span class="p">(</span><span class="k">new</span> <span class="n">TextBox</span><span class="p">()));</span>
+</pre></div>
+</div>
+<p>A decorator works well whenever there are mix-and-match features that you want
+to &#8220;patch&#8221; onto a class, when you make an object from it.</p>
+<p>For example, maybe you want to attach a logging feature to some bank-account
+objects, where each transaction is recorded in a log.
+It makes no sense to embed the log in the bank account, especially if not
+all accounts will be logged or the logging is a temporary feature.
+We can define a decorator:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">interface</span> <span class="n">IAccount</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="nf">getBalance</span><span class="p">();</span>
+  <span class="k">void</span> <span class="nf">deposit</span><span class="p">(</span><span class="kt">int</span> <span class="n">amt</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="nf">withdraw</span><span class="p">(</span><span class="kt">int</span> <span class="n">amt</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">BankAccount</span> <span class="p">:</span> <span class="n">IAccount</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="kt">int</span> <span class="n">balance</span><span class="p">;</span>
+  <span class="k">public</span> <span class="nf">BankAccount</span><span class="p">(</span><span class="kt">int</span> <span class="n">start</span><span class="p">)</span> <span class="p">{</span> <span class="n">balance</span> <span class="p">=</span> <span class="n">start</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="kt">int</span> <span class="nf">getBalance</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">balance</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">deposit</span><span class="p">(</span><span class="kt">int</span> <span class="n">amt</span><span class="p">)</span> <span class="p">{</span> <span class="n">balance</span> <span class="p">=</span> <span class="n">balance</span> <span class="p">+</span> <span class="n">amt</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">withdraw</span><span class="p">(</span><span class="kt">int</span> <span class="n">amt</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">bool</span> <span class="n">ans</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">amt</span> <span class="p">&lt;=</span> <span class="n">balance</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">balance</span> <span class="p">=</span> <span class="n">balance</span> <span class="p">-</span> <span class="n">amt</span><span class="p">;</span>  <span class="n">ans</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">ans</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">LogDecorator</span> <span class="p">:</span> <span class="n">IAccount</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="n">IAccount</span> <span class="n">b</span><span class="p">;</span>   <span class="c1">// the wrapped account object</span>
+  <span class="k">private</span> <span class="kt">string</span> <span class="n">log</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
+  <span class="k">public</span> <span class="nf">Logged</span><span class="p">(</span><span class="n">IAccount</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">this</span><span class="p">.</span><span class="n">b</span> <span class="p">=</span> <span class="n">b</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="kt">int</span> <span class="nf">getBalance</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">b</span><span class="p">.</span><span class="n">getBalance</span><span class="p">();</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="k">void</span> <span class="nf">deposit</span><span class="p">(</span><span class="kt">int</span> <span class="n">amt</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">log</span> <span class="p">=</span> <span class="n">log</span> <span class="p">+</span> <span class="s">&quot; deposit &quot;</span> <span class="p">+</span> <span class="n">amt</span><span class="p">.</span><span class="n">ToString</span><span class="p">;</span>
+    <span class="n">b</span><span class="p">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amt</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">public</span> <span class="kt">bool</span> <span class="nf">withdraw</span><span class="p">(</span><span class="kt">int</span> <span class="n">amt</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">log</span> <span class="p">=</span> <span class="n">log</span> <span class="p">+</span> <span class="s">&quot; withdraw &quot;</span> <span class="p">+</span> <span class="n">amt</span><span class="p">.</span><span class="n">ToString</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">b</span><span class="p">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amt</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Then,</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">IAcccount</span> <span class="n">a</span> <span class="p">=</span> <span class="k">new</span> <span class="n">LogDecorator</span><span class="p">(</span><span class="k">new</span> <span class="n">Account</span><span class="p">(</span><span class="m">0</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>constructs the bank account decorated with the logging feature.</p>
+<div class="section" id="how-a-decorator-differs-from-a-subclass">
+<h3>14.2.1. How a Decorator Differs from a Subclass<a class="headerlink" href="#how-a-decorator-differs-from-a-subclass" title="Permalink to this headline">¶</a></h3>
+<p>New features can also be added to a class by defining a subclass.
+Let us redo the logging feature with a subclass:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">class</span> <span class="nc">LogAccount</span><span class="p">:</span> <span class="n">BankAccount</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="kt">string</span> <span class="n">log</span> <span class="p">=</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
+  <span class="k">public</span> <span class="nf">LogAccount</span><span class="p">(</span><span class="kt">int</span> <span class="n">start</span><span class="p">)</span> <span class="p">{</span> <span class="k">base</span><span class="p">(</span><span class="n">start</span><span class="p">);</span> <span class="p">}</span>
+  <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">deposit</span><span class="p">(</span><span class="kt">int</span> <span class="n">amt</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">log</span> <span class="p">=</span> <span class="n">log</span> <span class="p">+</span> <span class="s">&quot; deposit &quot;</span> <span class="p">+</span> <span class="n">amt</span><span class="p">.</span><span class="n">ToString</span><span class="p">;</span>
+    <span class="k">base</span><span class="p">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amt</span><span class="p">);</span>   <span class="c1">// &quot;base&quot; means the superclass, here  BankAccount</span>
+  <span class="p">}</span>
+  <span class="k">public</span> <span class="k">override</span> <span class="kt">bool</span> <span class="nf">withdraw</span><span class="p">(</span><span class="kt">int</span> <span class="n">amt</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">log</span> <span class="p">=</span> <span class="n">log</span> <span class="p">+</span> <span class="s">&quot; withdraw &quot;</span> <span class="p">+</span> <span class="n">amt</span><span class="p">.</span><span class="n">ToString</span><span class="p">;</span>
+    <span class="k">base</span><span class="p">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amt</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Then,</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="n">LogAccount</span> <span class="n">a</span> <span class="p">=</span> <span class="k">new</span> <span class="n">LogAccount</span><span class="p">(</span><span class="m">0</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The advantage to the subclass is that we do not have to recode <tt class="docutils literal"><span class="pre">getBalance</span></tt> in
+<tt class="docutils literal"><span class="pre">LogAccount</span></tt> &#8212; the call &#8220;passes through&#8221; to the superclass.
+The disadvantage is that <tt class="docutils literal"><span class="pre">LogAccount</span></tt> is fixed to extend only <tt class="docutils literal"><span class="pre">BankAccount</span></tt>.
+If we want logging for other variations of <tt class="docutils literal"><span class="pre">BankAccount</span></tt>, we must
+copy-and-paste the code for <tt class="docutils literal"><span class="pre">LogAccount</span></tt> into more subclasses.
+Also, we cannot mix-and-match the logging feature with other features,
+because the subclass definition has &#8220;locked&#8221; the logging feature onto a &#8220;bare&#8221;
+bank account.</p>
+<p>It is easy to make errors using subclasses.
+For example, if we had mistakenly coded <tt class="docutils literal"><span class="pre">deposit</span></tt> like this:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">deposit</span><span class="p">(</span><span class="kt">int</span> <span class="n">amt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">log</span> <span class="p">=</span> <span class="n">log</span> <span class="p">+</span> <span class="s">&quot; deposit &quot;</span> <span class="p">+</span> <span class="n">amt</span><span class="p">.</span><span class="n">ToString</span><span class="p">;</span>
+  <span class="n">deposit</span><span class="p">(</span><span class="n">amt</span><span class="p">);</span>   <span class="c1">// this is also the same as,  this.deposit(amt);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>the call to <tt class="docutils literal"><span class="pre">deposit</span></tt> would restart itself forever, never calling <tt class="docutils literal"><span class="pre">deposit</span></tt>
+in <tt class="docutils literal"><span class="pre">BankAccount</span></tt>!</p>
+</div>
+</div>
+<div class="section" id="observers-and-wrappers">
+<h2>14.3. Observers and Wrappers<a class="headerlink" href="#observers-and-wrappers" title="Permalink to this headline">¶</a></h2>
+<p>In an earlier lecture, we saw several variations of the Model-View-Controller
+software architecture, which is useful for single-user systems where there are
+multiple forms (Views) that insert and display data in an internal database
+(the Model).</p>
+<p>The key idea was, to improve coupling, a list of delegates &#8212; a &#8220;registry&#8221; &#8212;
+holds the methods to call when there is a Model update.
+The called methods contact the output-view forms that must repaint to show the
+updated Model&#8217;s information.</p>
+<p>The output-view forms are <em>observers</em> of the Model.
+The benefit of using a registry of observers is that the Model never needs to
+know the names or even the classes of the forms that are observing it.
+Also, new observers can be added to the registry while the system is running,
+and observers can be removed while the system is running.
+The Model is completely unaffected.</p>
+<p>In the earlier lecture, we saw how the researchers at Xerox PARC developed
+the Observer Design Pattern, where the Model is attached to an abstract class
+that holds the registry of observer methods.</p>
+<p>But yet another way to implement the registry of observers is with a wrapper
+class that &#8220;wraps&#8221; around the model, like this:</p>
+<img alt="../_images/adaptobs.png" src="../_images/adaptobs.png" />
+<p>The small advantage to this design is that whenever there is an update to the
+<tt class="docutils literal"><span class="pre">Model</span></tt>, the <tt class="docutils literal"><span class="pre">ObservedModel</span></tt> receives the call, does the update, and calls
+all the observers (as they should be!) &#8212; there is no need for an explict call,
+say, by a controller, to a <tt class="docutils literal"><span class="pre">notify()</span></tt> method.
+Wrappers work well for embedding operations that &#8220;should be done automatically&#8221;.
+(On the negative side, notice that the wrapper <tt class="docutils literal"><span class="pre">ObservedModel</span></tt> must have
+the same-named methods as <tt class="docutils literal"><span class="pre">Model</span></tt> so that it implements interface <tt class="docutils literal"><span class="pre">IModel</span></tt>.)</p>
+</div>
+<div class="section" id="facade">
+<h2>14.4. Facade<a class="headerlink" href="#facade" title="Permalink to this headline">¶</a></h2>
+<p>When you extract and use components from a library, you must write code to
+connect them and use them.
+The resulting assembly might be a mess because there is no clear &#8220;entry point&#8221;
+into the assembly.
+When you write an entry class that has methods for using the assembly,
+you have designed a <em>facade</em>.</p>
+<p>A facade is a kind of &#8220;wrapper around an entire assembly&#8221;, giving you useful
+methods for working with the assembly.</p>
+<p>In his CIS501 notes, Dr. Mizuno gives a good example of a facade:
+There is some web-client assembly (the &#8220;Driver&#8221;, seen below) that must connect
+and login to a database and then use some html-page-making software to embed
+the database info into a web page for display.
+The controller for the web client will be a complicated mess, calling methods
+from the database and the page-making software.
+It would be better to write an entry class, a <em>facade</em>, <tt class="docutils literal"><span class="pre">class</span> <span class="pre">PageMaker</span></tt>,
+that holds an &#8220;entry method&#8221;, <tt class="docutils literal"><span class="pre">makeWelcomePage</span></tt>, that does the complicated
+login and html-page building:</p>
+<img alt="../_images/facade1.jpg" src="../_images/facade1.jpg" />
+<p>Here is Dr. Mizuno&#8217;s explanation:</p>
+<img alt="../_images/facade2.jpg" src="../_images/facade2.jpg" />
+</div>
+<div class="section" id="summary">
+<h2>14.5. Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>A <em>wrapper</em> is a class that holds a field whose value is a handle to
+another object, the &#8220;wrapped object&#8221;.
+Users call the wrapper&#8217;s methods to contact the wrapped object.</p>
+<p>Here are some important variants:</p>
+<ol class="arabic">
+<li><p class="first">An <em>adapter</em> is a wrapper that lets a client object connect to (call methods)
+of another, wrappred object, even though the names and arguments of
+the client&#8217;s method calls do not exactly match the names and parameters of
+the wrapped object&#8217;s methods.
+The adapter holds conversion code that converts/translates the client&#8217;s calls
+into correct calls of the wrapped objet.</p>
+</li>
+<li><p class="first">A <em>decorator</em> is a wrapper that adds new methods or fields to
+an existing class, while allowing existing methods to remain available.
+A decorator works well whenever there are mix-and-match features that
+you want to &#8220;patch&#8221; onto a class when you make an object from it.</p>
+<p>A decorator can be used to hold a registry (list) of &#8220;observers&#8221; of
+a data structure.
+The data structure is wrapped by the decorator.
+When the data structure is updated, all the observers in the registry are
+called.
+This is the <em>observer design pattern</em>.</p>
+</li>
+<li><p class="first">A <em>facade</em> is an &#8220;entry class&#8221; into an assembly of classes that are meant to
+work together.
+The facade defines methods that clients call to activate the assembly and
+make it do useful work.</p>
+</li>
+</ol>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/DP3S.html">Lecture 13</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>

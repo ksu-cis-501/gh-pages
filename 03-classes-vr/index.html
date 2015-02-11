@@ -1,0 +1,390 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3. Classes Model Virtual Reality &mdash; CIS 501: Software Architecture and Design, Fall 2014</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.1.0/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/cis501.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="CIS 501: Software Architecture and Design, Fall 2014" href="../index.html" />
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          Home</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
+            
+                <li><a href="../syllabus.html">Syllabus</a></li>
+                <li><a href="../schedule.html">Schedule</a></li>
+                <li><a href="../notes.html">Notes</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">3. Classes Model Virtual Reality</a><ul>
+<li><a class="reference internal" href="#attributes-abilities-and-responsibilities">3.1. Attributes, Abilities, and Responsibilities</a><ul>
+<li><a class="reference internal" href="#identifying-entities-attributes-abilities-and-responsibilities">3.1.1. Identifying Entities, Attributes, Abilities, and Responsibilities</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#class">3.2. Class</a></li>
+<li><a class="reference internal" href="#unit-testing">3.3. Unit Testing</a><ul>
+<li><a class="reference internal" href="#unit-testing-in-visual-studio">3.3.1. Unit Testing in Visual Studio</a></li>
+<li><a class="reference internal" href="#code-coverage">3.3.2. Code Coverage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <br/>
+<font color="darkgray">
+<big><big><b><p>Course Notes &#8212; CIS 501: Software Architecture and Design, Fall 2014</p>
+</b></big></big>
+</font><div class="section" id="classes-model-virtual-reality">
+<span id="classes-vr"></span><h1>3. Classes Model Virtual Reality<a class="headerlink" href="#classes-model-virtual-reality" title="Permalink to this headline">¶</a></h1>
+<p>Here is a slightly provocative statement:
+<em>A software scientist builds a virtual reality &#8212;
+an electronic version of real-life&#8221; &#8212; in a computer</em>.</p>
+<p>For example, a spreadsheet program is a virtual sheet of grid paper that
+includes a helper &#8220;minion&#8221; who adds up the rows and columns each time a human
+enters a number into the grid.
+A computerized game (card game, Dungeons and Dragons, etc.) is a virtual reality
+of terrain and individuals, some of which are controlled by humans,
+some of which are not.
+A database program is a virtual filing cabinet whose file folders are linked
+together with complex virtual strings and clips.</p>
+<p>Now, if you want to build a virtual reality inside a computer, you must ask what
+the entities will be.
+You design their blueprints, and you activate them &#8212; bring them to life,
+as many as you want.</p>
+<p><em>Classes</em> are used in object-oriented languages to define the
+&#8220;blueprints&#8221;/&#8221;genetic codes&#8221; and from them we construct <em>objects</em>.</p>
+<div class="section" id="attributes-abilities-and-responsibilities">
+<h2>3.1. Attributes, Abilities, and Responsibilities<a class="headerlink" href="#attributes-abilities-and-responsibilities" title="Permalink to this headline">¶</a></h2>
+<p>A real-life dog is an entity that has attributes (gender, breed, height, weight,
+maybe a name) and abilities (can bark, can bite, can eat, can run,
+can fetch newspaper, can wag tail).
+A &#8220;responsibility&#8221; is an activity that an entity must do; a dog might have the
+responsibility to bark when there is an intruder.
+Even real-life entities that we consider inanimate have attributes and
+abilities: A car is inanimate, has lots of attributes, and has the ability to
+propel a human to Chicago or New York.
+(A car is unlikely to have responsibilities, however.)
+When we computerize dogs and cars, their attributes, abilities, and
+responsibilities will be coded in class definitions as
+<em>fields</em>, <em>methods</em>, and <em>commands</em>.</p>
+<p>Now consider a card game: In a card game, a &#8220;card&#8221; is an entity with attribute
+suit (spades, hearts, diamonds, clubs) and attribute count
+(2, 3, 4, ..., king, ace).
+A card has few abilities &#8212; maybe it can &#8220;tell&#8221; you its suit and count, and
+it has no responsibilities.
+A &#8220;card deck&#8221; is an entity that holds cards inside it, can &#8220;shuffle itself&#8221; and
+can yield (&#8220;deal&#8221;) cards, one at a time. A deck has no responsibilities.</p>
+<p>But a card game has other entities, who do have resposibilities:
+the dealer (who owns the card deck, who deals from it, and who enforces the
+rules of the game) and the players (each one owns a &#8220;hand&#8221; of cards and plays
+the game).
+We code these entities as class definitions.</p>
+<div class="section" id="identifying-entities-attributes-abilities-and-responsibilities">
+<h3>3.1.1. Identifying Entities, Attributes, Abilities, and Responsibilities<a class="headerlink" href="#identifying-entities-attributes-abilities-and-responsibilities" title="Permalink to this headline">¶</a></h3>
+<p>Virtual reality is fascinating because what we consider as inanimate objects in
+the real world are &#8220;alive&#8221; in the virtual world, e.g., a playing card.
+And there are concepts that are not entities in the real world that exist as
+entities in the virtual world, e.g., a &#8220;hand&#8221; of cards.
+We must visualize the virtual world that we build within the computer before
+we type a line of code.
+<em>We must make a design before we build.</em></p>
+<p>Consider the card game, Blackjack (&#8220;21&#8221;), where a dealer gives two cards to
+each player, and a player collects more cards to obtain a score for her hand
+that is as close as possible to 21 without exceeding it (else the player loses).
+(In Blackjack, a numbered card has its number as its value, a face card has 10
+as its value, and an Ace can be valued at <em>either</em> 1 or 11, as the player chooses.)
+The player with the highest score &lt;= 21 is the winner.</p>
+<p>Watch this video of a round of Blackjack.
+What are the entities and their abilities and responsibilities?
+What are the classes?</p>
+<p><a class="reference external" href="http://www.youtube.com/watch?v=PXyHBOVNeEk">How to play blackjack, part 1</a>.</p>
+</div>
+</div>
+<div class="section" id="class">
+<h2>3.2. Class<a class="headerlink" href="#class" title="Permalink to this headline">¶</a></h2>
+<p>Here is an example of a playing card that might be coded in C#:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="c1">// A _NAMESPACE_ IS THE SAME THING AS A VISUAL STUDIO PROJECT:</span>
+<span class="k">namespace</span> <span class="nn">CardConcepts</span> <span class="p">{</span>
+
+  <span class="c1">// AN _ENUMERATION_ IS A NEW &quot;PRIMITIVE DATA TYPE&quot; THAT YOU DEFINE:</span>
+  <span class="c1">// enumerations of the Suits and Counts that a playing card can have:</span>
+  <span class="k">public</span> <span class="k">enum</span> <span class="n">Suit</span> <span class="p">{</span> <span class="n">Spades</span><span class="p">,</span> <span class="n">Hearts</span><span class="p">,</span> <span class="n">Diamonds</span><span class="p">,</span> <span class="n">Clubs</span> <span class="p">};</span>
+  <span class="k">public</span> <span class="k">enum</span> <span class="n">Count</span> <span class="p">{</span> <span class="n">Ace</span><span class="p">,</span> <span class="n">Two</span><span class="p">,</span> <span class="n">Three</span><span class="p">,</span> <span class="n">Four</span><span class="p">,</span> <span class="n">Five</span><span class="p">,</span> <span class="n">Six</span><span class="p">,</span> <span class="n">Seven</span><span class="p">,</span> <span class="n">Eight</span><span class="p">,</span> <span class="n">Nine</span><span class="p">,</span> <span class="n">Ten</span><span class="p">,</span> <span class="n">Jack</span><span class="p">,</span> <span class="n">Queen</span><span class="p">,</span> <span class="n">King</span> <span class="p">};</span>
+
+  <span class="c1">// CLASS FOR CONSTRUCTING A PLAYING CARD:</span>
+  <span class="k">public</span> <span class="k">class</span> <span class="nc">Card</span> <span class="p">{</span>
+    <span class="k">public</span> <span class="k">readonly</span> <span class="n">Count</span> <span class="n">count</span><span class="p">;</span> <span class="c1">// THIS IS A _FIELD_; SO IS THE LINE BELOW:</span>
+    <span class="k">public</span> <span class="k">readonly</span> <span class="n">Suit</span> <span class="n">suit</span><span class="p">;</span>   <span class="c1">// &quot;readonly&quot; means var&#39;s value cannot change</span>
+
+    <span class="c1">// THIS IS A _CONSTRUCTOR METHOD_; IT TAKES TWO _PARAMETERS_:</span>
+    <span class="k">public</span> <span class="nf">Card</span><span class="p">(</span><span class="n">Count</span> <span class="n">a</span><span class="p">,</span> <span class="n">Suit</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="n">count</span> <span class="p">=</span> <span class="n">a</span><span class="p">;</span>  <span class="n">suit</span> <span class="p">=</span> <span class="n">b</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="c1">// THIS IS A _METHOD_; IT RETURNS AN ANSWER:</span>
+    <span class="c1">// returns the int value of a card in Blackjack (it assumes an Ace has value 1)</span>
+    <span class="k">public</span> <span class="kt">int</span> <span class="nf">BJvalue</span><span class="p">()</span> <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">count</span> <span class="p">+</span> <span class="m">1</span><span class="p">;</span>   <span class="c1">// obtain int value that underlies the Count</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="p">&gt;</span> <span class="m">10</span><span class="p">)</span> <span class="p">{</span> <span class="n">i</span> <span class="p">=</span> <span class="m">10</span><span class="p">;</span> <span class="p">}</span>   <span class="c1">// in Blackjack, face cards have value 10</span>
+      <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// returns the string value of a card; overrides default  ToString  coding</span>
+    <span class="k">public</span> <span class="k">override</span> <span class="kt">string</span> <span class="nf">ToString</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">count</span> <span class="p">+</span> <span class="s">&quot; of &quot;</span> <span class="p">+</span> <span class="n">suit</span><span class="p">;</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Make certain you understand all the constructions and all the comments in the
+above example.
+The fields in class Card list its attributes, count and suit;
+the methods are the abilities.
+Although inanimate, a card can tell you its Blackjack value and its name
+(a string).</p>
+<p>The class is saved in a Visual Studio project named CardConcepts.
+In the main program, we construct objects,</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">Card</span> <span class="n">c1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Card</span><span class="p">(</span><span class="n">Count</span><span class="p">.</span><span class="n">Ace</span><span class="p">,</span> <span class="n">Suit</span><span class="p">.</span><span class="n">Hearts</span><span class="p">);</span>
+  <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;card {0} has value {1}&quot;</span><span class="p">,</span> <span class="n">c1</span><span class="p">.</span><span class="n">ToString</span><span class="p">(),</span> <span class="n">c1</span><span class="p">.</span><span class="n">BJvalue</span><span class="p">());</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">c1</span><span class="p">.</span><span class="n">suit</span> <span class="p">==</span> <span class="n">Suit</span><span class="p">.</span><span class="n">Clubs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;it&#39;s a club!&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>and the card entities come to (virtual, electrical) life.</p>
+</div>
+<div class="section" id="unit-testing">
+<h2>3.3. Unit Testing<a class="headerlink" href="#unit-testing" title="Permalink to this headline">¶</a></h2>
+<p>A program is an assembly of objects constructed from classes.
+A class by itself is not a program and might not &#8220;execute&#8221; all alone.
+This is a serious problem in modern software engineering &#8212;
+if we develop a complex software system in stages, we want to design, build,
+and test the components (classes) one at a time, so that when we assemble them,
+we have high confidence that the assembly operates as desired.</p>
+<p>How do we test and validate the quality of a class that cannot &#8220;execute&#8221; all alone?</p>
+<p>There are special tools to test a class alone;
+Visual Studio provides an easy way to write a
+<a href="#id1"><span class="problematic" id="id2">`test harness &lt;http://istqbexamcertification.com/what-is-test-harness-unit-test-framework-tools-in-software-testing/`__</span></a>
+for <em>unit testing</em> an individual class.
+(Like its name suggests, &#8220;unit testing&#8221; is the testing of one unit of a system.)</p>
+<p>A unit test of a class is a script of actions that use one or more objects
+constructed from the class.
+The script exercises the attributes and methods.
+There should be enough unit tests that all the attributes and methods are
+exercised, in all possible, significant orders.</p>
+<p>That last phrase is important &#8212; most classes are defined with multiple methods,
+where the methods are to be used in a certain order, a <em>protocol</em>.</p>
+<p>For example, here is the protocol for using the methods of a text-file object:</p>
+<ol class="arabic simple">
+<li>open the file in mode <tt class="docutils literal"><span class="pre">M</span></tt>, where <tt class="docutils literal"><span class="pre">M</span></tt> is either <tt class="docutils literal"><span class="pre">read</span></tt> or <tt class="docutils literal"><span class="pre">write</span></tt></li>
+<li>do operation <tt class="docutils literal"><span class="pre">M</span></tt> multiple times</li>
+<li>close the file</li>
+</ol>
+<p>When we unit-test <tt class="docutils literal"><span class="pre">class</span> <span class="pre">TextFile</span></tt>, we test that it operates properly with the
+proper protocol, and we test that it does not corrupt its contents if a caller
+violates the protocol:</p>
+<div class="highlight-c#"><div class="highlight"><pre> <span class="k">public</span> <span class="k">enum</span> <span class="n">FileMode</span> <span class="p">{</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span><span class="p">,</span> <span class="n">available</span> <span class="p">};</span>
+
+ <span class="k">class</span> <span class="nc">TextFile</span> <span class="p">{</span>
+   <span class="k">private</span> <span class="kt">string</span> <span class="n">filename</span><span class="p">;</span>
+   <span class="k">private</span> <span class="n">FileStream</span> <span class="n">address_on_disk</span><span class="p">;</span>
+   <span class="k">private</span> <span class="n">Mode</span> <span class="n">mode</span><span class="p">;</span>  <span class="c1">// should be  Mode.Read  or  Mode.Write</span>
+
+   <span class="k">public</span> <span class="nf">TextFile</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">,</span> <span class="n">Mode</span> <span class="n">mode</span><span class="p">)</span> <span class="p">{</span>
+     <span class="c1">// ...code to initialize  mode  and open the file</span>
+   <span class="p">}</span>
+
+   <span class="k">public</span> <span class="kt">string</span> <span class="nf">ReadLine</span><span class="p">()</span> <span class="p">{</span>
+     <span class="c1">// ... code to read textline from filename, provided mode == Mode.Read</span>
+   <span class="p">}</span>
+
+   <span class="k">public</span> <span class="kt">string</span> <span class="nf">WriteLine</span><span class="p">()</span> <span class="p">{</span>
+     <span class="c1">// ... code to write textline to filename, provided mode == Mode.Write</span>
+   <span class="p">}</span>
+
+   <span class="k">public</span> <span class="kt">bool</span> <span class="nf">CloseFile</span><span class="p">()</span> <span class="p">{</span> <span class="n">mode</span> <span class="p">=</span> <span class="n">Mode</span><span class="p">.</span><span class="n">available</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The unit tests for <tt class="docutils literal"><span class="pre">class</span> <span class="pre">TextFile</span></tt> should include scripts that follow the
+proper protocol, as well as scripts that call methods in the wrong order
+(e.g., construct, close, read) as well as scripts that call methods improperly
+(e.g., construct a read-file and then write to it).</p>
+<p>The unit tests should be collected together, used, and reused while the class is
+coded, and maintained.
+The unit tests form a &#8220;validation suite&#8221; for establishing confidence in the
+quality of the class code.</p>
+<div class="section" id="unit-testing-in-visual-studio">
+<h3>3.3.1. Unit Testing in Visual Studio<a class="headerlink" href="#unit-testing-in-visual-studio" title="Permalink to this headline">¶</a></h3>
+<p>The details are found in the <a class="reference internal" href="../01-tooling/index.html#unit-testing"><em>Unit Testing</em></a> course note.
+For our card example, say we coded <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Card</span></tt> in Visual Studio in solution
+<tt class="docutils literal"><span class="pre">03-Classes-VR</span></tt>.
+If you look in VS&#8217;s Solution Explorer window, you see that solution
+<tt class="docutils literal"><span class="pre">03-Classes-VR</span></tt> holds two <em>Project</em> s, named <tt class="docutils literal"><span class="pre">03-Classes-VR-CardConcepts</span></tt> and
+<tt class="docutils literal"><span class="pre">03-Classes-VR-UnitTests</span></tt>.
+And within the <tt class="docutils literal"><span class="pre">03-Classes-VR-CardConcepts</span></tt> project is a file, <tt class="docutils literal"><span class="pre">Card.cs</span></tt>,
+that holds <tt class="docutils literal"><span class="pre">class</span> <span class="pre">Card</span></tt>.</p>
+<p>Here is an example of a test class with a test method, ready to run:</p>
+<div class="highlight-c#"><div class="highlight"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.VisualStudio.TestTools.UnitTesting</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Classes_VR_CardConcepts</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">Classes_VR_UnitTests</span> <span class="p">{</span>
+
+<span class="na">  [TestClass]</span>
+  <span class="k">public</span> <span class="k">class</span> <span class="nc">UnitTest1</span> <span class="p">{</span>
+
+<span class="na">    [TestMethod]</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">TestMethod1</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">Card</span> <span class="n">c1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Card</span><span class="p">(</span><span class="n">Count</span><span class="p">.</span><span class="n">Ace</span><span class="p">,</span> <span class="n">Suit</span><span class="p">.</span><span class="n">Hearts</span><span class="p">);</span>
+      <span class="n">Assert</span><span class="p">.</span><span class="n">AreEqual</span><span class="p">(</span><span class="n">Count</span><span class="p">.</span><span class="n">Ace</span><span class="p">,</span> <span class="n">c1</span><span class="p">.</span><span class="n">count</span><span class="p">);</span>
+    <span class="p">}</span>
+
+<span class="na">    [TestMethod]</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">TestMethod2</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">Card</span> <span class="n">c1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Card</span><span class="p">(</span><span class="n">Count</span><span class="p">.</span><span class="n">Ace</span><span class="p">,</span> <span class="n">Suit</span><span class="p">.</span><span class="n">Hearts</span><span class="p">);</span>
+      <span class="n">Assert</span><span class="p">.</span><span class="n">AreEqual</span><span class="p">(</span><span class="n">Suit</span><span class="p">.</span><span class="n">Hearts</span><span class="p">,</span> <span class="n">c1</span><span class="p">.</span><span class="n">suit</span><span class="p">);</span>
+    <span class="p">}</span>
+
+<span class="na">    [TestMethod]</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">TestMethod3</span><span class="p">()</span> <span class="p">{</span>
+      <span class="n">Card</span> <span class="n">c1</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Card</span><span class="p">(</span><span class="n">Count</span><span class="p">.</span><span class="n">Ace</span><span class="p">,</span> <span class="n">Suit</span><span class="p">.</span><span class="n">Hearts</span><span class="p">);</span>
+      <span class="n">Assert</span><span class="p">.</span><span class="n">AreEqual</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="n">c1</span><span class="p">.</span><span class="n">BJvalue</span><span class="p">());</span>
+      <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">c1</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This code lives in <tt class="docutils literal"><span class="pre">UnitTest1.cs</span></tt> within Project <tt class="docutils literal"><span class="pre">03-Classes-VR-UnitTests</span></tt>
+inside Solution <tt class="docutils literal"><span class="pre">03-Classes-VR</span></tt>.
+The <tt class="docutils literal"><span class="pre">Assert.AreEqual</span></tt> method is used above to ensure that the expected value
+(first argument) is equal to the resulting/actual value
+(second argument); if they are inequal, then the test fails.</p>
+<p>To run the unit tests, you can use the &#8220;Run&#8221; (or &#8220;Debug&#8221;) &#8220;All tests&#8221; menu item
+under the Visual Studio &#8220;TEST&#8221; menu.
+For each test ran, Visual Studio displays its status (i.e., pass/fail)
+in the &#8220;Test Explorer&#8221; window.
+One can click on each test result to see more details such as the test console
+output (i.e., see the output for <tt class="docutils literal"><span class="pre">TestMethod3</span></tt>).</p>
+</div>
+<div class="section" id="code-coverage">
+<h3>3.3.2. Code Coverage<a class="headerlink" href="#code-coverage" title="Permalink to this headline">¶</a></h3>
+<p>It is considered best practice if your test suite exercises all
+(non-test) code in your solution.
+Visual Studio has a code coverage analysis tool that can tell you if you are
+missing exercising certain parts of your code.
+You can run the code coverage analysis by selecting <tt class="docutils literal"><span class="pre">Analyze</span> <span class="pre">Code</span> <span class="pre">Coverage</span></tt>
+and <tt class="docutils literal"><span class="pre">All</span> <span class="pre">Tests</span></tt> under the <tt class="docutils literal"><span class="pre">TEST</span></tt> menu.</p>
+<p>For more information, see MSDN&#8217;s
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/dd537628.aspx">Using Code Coverage to Determine How Much Code is being Tested</a>
+article.</p>
+<hr class="docutils" />
+<p align=right><small><em>
+This note was adapted from David Schmidt's CIS 501, Spring 2014,
+<a href="http://people.cis.ksu.edu/~schmidt/501s14/Lectures/Lecture02S.html">Lecture 2</a>
+course note. © Copyright 2014, David Schmidt.
+</em></small></p></div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>
